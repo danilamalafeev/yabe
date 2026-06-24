@@ -1,6 +1,6 @@
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_name.cc.o: \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/src/benchmark_name.cc \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/include/benchmark/benchmark.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_name.cc \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include/benchmark/benchmark.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config_site \
@@ -784,4 +784,4 @@ _deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_name.cc.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/not_fn.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/perfect_forward.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/set \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/include/benchmark/export.h
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include/benchmark/export.h

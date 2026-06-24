@@ -1,5 +1,6 @@
 #include "lob/backtest_engine.hpp"
 
+#include <cmath>
 #include <iomanip>
 #include <stdexcept>
 #include <utility>
@@ -184,24 +185,24 @@ void BacktestEngine::route_trades(const std::vector<Trade>& trades) {
 
         if (own_buy) {
             pending_fills_.push_back(StrategyFill {
-                .asset_id = 0U,
                 .order_id = trade.buyer_id,
-                .side = Side::Buy,
-                .price = trade.price,
+                .price = static_cast<std::int64_t>(std::llround(trade.price * 100'000'000.0)),
                 .quantity = trade.quantity,
                 .timestamp = trade.timestamp,
+                .asset_id = 0U,
+                .side = Side::Buy,
                 .liquidity_role = trade.buyer_id == trade.taker_order_id ? LiquidityRole::Taker : LiquidityRole::Maker,
             });
         }
 
         if (own_sell) {
             pending_fills_.push_back(StrategyFill {
-                .asset_id = 0U,
                 .order_id = trade.seller_id,
-                .side = Side::Sell,
-                .price = trade.price,
+                .price = static_cast<std::int64_t>(std::llround(trade.price * 100'000'000.0)),
                 .quantity = trade.quantity,
                 .timestamp = trade.timestamp,
+                .asset_id = 0U,
+                .side = Side::Sell,
                 .liquidity_role = trade.seller_id == trade.taker_order_id ? LiquidityRole::Taker : LiquidityRole::Maker,
             });
         }
@@ -214,7 +215,7 @@ void BacktestEngine::route_trades(const std::vector<Trade>& trades) {
 
 void BacktestEngine::route_strategy_fill(const StrategyFill& fill) {
     const double quantity_units = QuantityToUnits(fill.quantity);
-    const double notional = fill.price * quantity_units;
+    const double notional = (static_cast<double>(fill.price) / 100'000'000.0) * quantity_units;
     const double fee_bps = fill.liquidity_role == LiquidityRole::Maker
         ? config_.maker_fee_bps
         : config_.taker_fee_bps;
@@ -341,12 +342,12 @@ void BacktestEngine::sweep_book(LiveOrder& live_order, std::uint64_t timestamp) 
                 ? level_quantity
                 : live_order.remaining_quantity;
             route_strategy_fill(StrategyFill {
-                .asset_id = live_order.asset_id,
                 .order_id = live_order.order_id,
-                .side = Side::Buy,
-                .price = ask_it->first,
+                .price = static_cast<std::int64_t>(std::llround(ask_it->first * 100'000'000.0)),
                 .quantity = fill_quantity,
                 .timestamp = timestamp,
+                .asset_id = live_order.asset_id,
+                .side = Side::Buy,
                 .liquidity_role = LiquidityRole::Taker,
             });
 
@@ -375,12 +376,12 @@ void BacktestEngine::sweep_book(LiveOrder& live_order, std::uint64_t timestamp) 
             ? level_quantity
             : live_order.remaining_quantity;
         route_strategy_fill(StrategyFill {
-            .asset_id = live_order.asset_id,
             .order_id = live_order.order_id,
-            .side = Side::Sell,
-            .price = bid_it->first,
+            .price = static_cast<std::int64_t>(std::llround(bid_it->first * 100'000'000.0)),
             .quantity = fill_quantity,
             .timestamp = timestamp,
+            .asset_id = live_order.asset_id,
+            .side = Side::Sell,
             .liquidity_role = LiquidityRole::Taker,
         });
 
@@ -425,12 +426,12 @@ void BacktestEngine::update_passive_queue_on_market_trade(const Order& market_or
 
         const std::uint64_t order_id = live_order.order_id;
         route_strategy_fill(StrategyFill {
-            .asset_id = live_order.asset_id,
             .order_id = order_id,
-            .side = live_order.side,
-            .price = live_order.price,
+            .price = static_cast<std::int64_t>(std::llround(live_order.price * 100'000'000.0)),
             .quantity = fill_quantity,
             .timestamp = market_order.timestamp,
+            .asset_id = live_order.asset_id,
+            .side = live_order.side,
             .liquidity_role = LiquidityRole::Maker,
         });
         trade_quantity_remaining -= fill_quantity;

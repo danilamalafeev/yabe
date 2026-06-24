@@ -20,8 +20,8 @@ public:
     explicit L2MarketMakerStrategy(Config config) : config_(config) {}
 
     void on_tick(AssetID asset_id, const L2OrderBook& book, OrderGateway& gateway) override {
-        const double best_bid = book.effective_best_bid();
-        const double best_ask = book.effective_best_ask();
+        const double best_bid = static_cast<double>(book.effective_best_bid()) / 100'000'000.0;
+        const double best_ask = static_cast<double>(book.effective_best_ask()) / 100'000'000.0;
         const std::uint64_t timestamp = gateway.current_timestamp();
         if (best_bid <= 0.0 || best_ask <= 0.0 || timestamp < next_refresh_timestamp_) {
             return;

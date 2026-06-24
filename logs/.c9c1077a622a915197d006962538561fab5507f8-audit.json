@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/danilamalafeev/Documents/YABE/logs/.c9c1077a622a915197d006962538561fab5507f8-audit.json",
+    "files": [
+        {
+            "date": 1782314956939,
+            "name": "/Users/danilamalafeev/Documents/YABE/logs/mcp-puppeteer-2026-06-24.log",
+            "hash": "e9afd20b7d5070a704ac446dca09c3d504325e536a07dd497c0a81c1d3a58c71"
+        }
+    ],
+    "hashType": "sha256"
+}

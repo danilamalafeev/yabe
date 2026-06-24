@@ -51,7 +51,7 @@ add_library(benchmark::benchmark STATIC IMPORTED)
 
 set_target_properties(benchmark::benchmark PROPERTIES
   INTERFACE_COMPILE_DEFINITIONS "BENCHMARK_STATIC_DEFINE"
-  INTERFACE_INCLUDE_DIRECTORIES "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include"
+  INTERFACE_INCLUDE_DIRECTORIES "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include"
   INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:Threads::Threads>"
 )
 
@@ -66,14 +66,14 @@ set_target_properties(benchmark::benchmark_main PROPERTIES
 set_property(TARGET benchmark::benchmark APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(benchmark::benchmark PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
-  IMPORTED_LOCATION_RELEASE "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src/libbenchmark.a"
+  IMPORTED_LOCATION_RELEASE "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src/libbenchmark.a"
   )
 
 # Import target "benchmark::benchmark_main" for configuration "Release"
 set_property(TARGET benchmark::benchmark_main APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(benchmark::benchmark_main PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
-  IMPORTED_LOCATION_RELEASE "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src/libbenchmark_main.a"
+  IMPORTED_LOCATION_RELEASE "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src/libbenchmark_main.a"
   )
 
 # This file does not depend on other imported targets which have

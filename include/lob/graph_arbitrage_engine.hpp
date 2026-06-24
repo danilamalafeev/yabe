@@ -461,13 +461,15 @@ private:
         state.book.update_level(event.is_bid, event.price, event.qty);
         update_pair_edges(pair_id);
 
-        const double bid_depth = state.book.bid_total_qty();
-        const double ask_depth = state.book.ask_total_qty();
-        const double bid_notional = state.book.bid_total_notional();
-        const double ask_notional = state.book.ask_total_notional();
+        const double kQtyScale = 100'000'000.0;
+        const double kNotionalScale = 10'000'000'000'000'000.0;  // 1e16 (ticks * lots)
+        const double bid_depth = static_cast<double>(state.book.bid_total_qty()) / kQtyScale;
+        const double ask_depth = static_cast<double>(state.book.ask_total_qty()) / kQtyScale;
+        const double bid_notional = static_cast<double>(state.book.bid_total_notional()) / kNotionalScale;
+        const double ask_notional = static_cast<double>(state.book.ask_total_notional()) / kNotionalScale;
         const double depth_sum = bid_depth + ask_depth;
-        const double best_bid = state.book.best_bid();
-        const double best_ask = state.book.best_ask();
+        const double best_bid = static_cast<double>(state.book.best_bid()) / kQtyScale;
+        const double best_ask = static_cast<double>(state.book.best_ask()) / kQtyScale;
 
         if (depth_sum > kEpsilon && best_bid > 0.0 && best_ask > 0.0) {
             state.obi = (bid_depth - ask_depth) / depth_sum;
@@ -523,7 +525,7 @@ private:
 
         const PairState& pair = pair_states_[pair_id];
         if (Edge* bid_edge = mutable_edge_for(pair.base_id, pair.quote_id)) {
-            const double best_bid = pair.book.best_bid();
+            const double best_bid = static_cast<double>(pair.book.best_bid()) / 100'000'000.0;
             const double bid_capacity = side_input_capacity(pair_id, true);
             bid_edge->rate = best_bid > 0.0 && bid_capacity > 0.0 ? best_bid : 0.0;
             bid_edge->available_from_qty = bid_capacity;
@@ -531,7 +533,7 @@ private:
         }
 
         if (Edge* ask_edge = mutable_edge_for(pair.quote_id, pair.base_id)) {
-            const double best_ask = pair.book.best_ask();
+            const double best_ask = static_cast<double>(pair.book.best_ask()) / 100'000'000.0;
             const double ask_capacity = side_input_capacity(pair_id, false);
             ask_edge->rate = best_ask > 0.0 && ask_capacity > 0.0 ? 1.0 / best_ask : 0.0;
             ask_edge->available_from_qty = ask_capacity;
@@ -824,9 +826,9 @@ private:
     [[nodiscard]] double side_input_capacity(AssetID pair_id, bool use_bid) const noexcept {
         const PairState& pair = pair_states_[pair_id];
         if (use_bid) {
-            return pair.book.bid_effective_qty();
+            return static_cast<double>(pair.book.bid_effective_qty()) / 100'000'000.0;
         }
-        return pair.book.ask_effective_notional();
+        return static_cast<double>(pair.book.ask_effective_notional()) / 10'000'000'000'000'000.0;
     }
 
     [[nodiscard]] double quote_visible_depth(const Edge& edge, double input_quantity) const noexcept {
@@ -839,27 +841,29 @@ private:
                 if (remaining <= kEpsilon) {
                     break;
                 }
-                const double effective_qty = level.effective_qty();
+                const double effective_qty = static_cast<double>(level.effective_qty()) / 100'000'000.0;
                 if (effective_qty <= 0.0) {
                     continue;
                 }
+                const double level_price = static_cast<double>(level.price) / 100'000'000.0;
                 const double consumed = remaining < effective_qty ? remaining : effective_qty;
                 remaining -= consumed;
-                output += consumed * level.price;
+                output += consumed * level_price;
             }
         } else {
             for (const auto& level : pair.book.asks()) {
                 if (remaining <= kEpsilon) {
                     break;
                 }
-                const double effective_qty = level.effective_qty();
+                const double effective_qty = static_cast<double>(level.effective_qty()) / 100'000'000.0;
                 if (effective_qty <= 0.0) {
                     continue;
                 }
-                const double level_notional = level.price * effective_qty;
+                const double level_price = static_cast<double>(level.price) / 100'000'000.0;
+                const double level_notional = level_price * effective_qty;
                 const double consumed_quote = remaining < level_notional ? remaining : level_notional;
                 remaining -= consumed_quote;
-                output += consumed_quote / level.price;
+                output += consumed_quote / level_price;
             }
         }
         return output;
@@ -875,28 +879,29 @@ private:
                 if (remaining <= kEpsilon) {
                     break;
                 }
-                const double effective_qty = level.effective_qty();
+                const double effective_qty = static_cast<double>(level.effective_qty()) / 100'000'000.0;
                 if (effective_qty <= 0.0) {
                     continue;
                 }
                 const double consumed = remaining < effective_qty ? remaining : effective_qty;
-                pair.book.deplete_level(true, level.price, consumed);
+                pair.book.deplete_level(true, level.price, static_cast<std::uint64_t>(std::llround(consumed * 100'000'000.0)));
                 remaining -= consumed;
-                output += consumed * level.price;
+                output += consumed * static_cast<double>(level.price) / 100'000'000.0;
             }
         } else {
             for (const auto& level : pair.book.asks()) {
                 if (remaining <= kEpsilon) {
                     break;
                 }
-                const double effective_qty = level.effective_qty();
+                const double effective_qty = static_cast<double>(level.effective_qty()) / 100'000'000.0;
                 if (effective_qty <= 0.0) {
                     continue;
                 }
-                const double level_notional = level.price * effective_qty;
+                const double level_price = static_cast<double>(level.price) / 100'000'000.0;
+                const double level_notional = level_price * effective_qty;
                 const double consumed_quote = remaining < level_notional ? remaining : level_notional;
-                const double consumed_base = consumed_quote / level.price;
-                pair.book.deplete_level(false, level.price, consumed_base);
+                const double consumed_base = consumed_quote / level_price;
+                pair.book.deplete_level(false, level.price, static_cast<std::uint64_t>(std::llround(consumed_base * 100'000'000.0)));
                 remaining -= consumed_quote;
                 output += consumed_base;
             }
@@ -911,12 +916,13 @@ private:
         PairState& pair = pair_states_[edge.pair_id];
         if (edge.use_bid) {
             if (!pair.book.bids().empty()) {
-                pair.book.deplete_level(true, pair.book.bids().back().price, input_quantity);
+                pair.book.deplete_level(true, pair.book.bids().back().price, static_cast<std::uint64_t>(std::llround(input_quantity * 100'000'000.0)));
             }
         } else {
             if (!pair.book.asks().empty()) {
-                const double tail_price = pair.book.asks().back().price;
-                pair.book.deplete_level(false, tail_price, input_quantity / tail_price);
+                const std::int64_t tail_price = pair.book.asks().back().price;
+                const double tail_price_double = static_cast<double>(tail_price) / 100'000'000.0;
+                pair.book.deplete_level(false, tail_price, static_cast<std::uint64_t>(std::llround((input_quantity / tail_price_double) * 100'000'000.0)));
             }
         }
     }
@@ -947,7 +953,7 @@ private:
         }
 
         const PairState& pair = pair_states_[pair_id];
-        const double price = use_bid ? pair.book.best_bid() : pair.book.best_ask();
+        const double price = static_cast<double>(use_bid ? pair.book.best_bid() : pair.book.best_ask()) / 100'000'000.0;
         const double capacity = side_input_capacity(pair_id, use_bid);
         if (price <= 0.0 || capacity <= 0.0) {
             return false;

@@ -1,6 +1,6 @@
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_api_internal.cc.o: \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/src/benchmark_api_internal.cc \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/src/benchmark_api_internal.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_api_internal.cc \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_api_internal.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cmath \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config_site \
@@ -753,7 +753,7 @@ _deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_api_internal.
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_types/_nl_item.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale_dir/locale_base_api/bsd_locale_defaults.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cstdarg \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/include/benchmark/benchmark.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include/benchmark/benchmark.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cassert \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/assert.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_static_assert.h \
@@ -785,15 +785,15 @@ _deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_api_internal.
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/not_fn.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/perfect_forward.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/set \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/include/benchmark/export.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/src/commandlineflags.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include/benchmark/export.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/commandlineflags.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cinttypes \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/inttypes.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/inttypes.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/inttypes.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_inttypes.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/xlocale/_inttypes.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/src/string_util.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/string_util.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/sstream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__ostream/basic_ostream.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/bitset \
@@ -809,8 +809,8 @@ _deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_api_internal.
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/stack.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/print \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/unistd.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/src/check.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/src/internal_macros.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/check.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/internal_macros.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googlebenchmark-src/src/log.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/log.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream

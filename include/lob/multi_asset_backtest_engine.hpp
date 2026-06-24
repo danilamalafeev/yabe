@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <filesystem>
@@ -251,7 +252,7 @@ public:
                     leg_timestamp,
                     request.asset_id,
                     request.side,
-                    report.vwap_price,
+                    static_cast<double>(report.vwap_price) / 100'000'000.0,
                     report.filled_quantity
                 );
                 panic_close_group(result, leg_index, leg_timestamp);
@@ -494,12 +495,12 @@ private:
                     level_quantity < remaining_quantity ? level_quantity : remaining_quantity;
                 if (fill_quantity > 0U) {
                     route_fill(FillEvent {
-                        .asset_id = asset_id,
                         .order_id = order_id,
-                        .side = Side::Buy,
-                        .price = ask_it->first,
+                        .price = static_cast<std::int64_t>(std::llround(ask_it->first * 100'000'000.0)),
                         .quantity = fill_quantity,
                         .timestamp = timestamp,
+                        .asset_id = asset_id,
+                        .side = Side::Buy,
                         .liquidity_role = LiquidityRole::Taker,
                     });
                     remaining_quantity -= fill_quantity;
@@ -519,12 +520,12 @@ private:
                 level_quantity < remaining_quantity ? level_quantity : remaining_quantity;
             if (fill_quantity > 0U) {
                 route_fill(FillEvent {
-                    .asset_id = asset_id,
                     .order_id = order_id,
-                    .side = Side::Sell,
-                    .price = bid_it->first,
+                    .price = static_cast<std::int64_t>(std::llround(bid_it->first * 100'000'000.0)),
                     .quantity = fill_quantity,
                     .timestamp = timestamp,
+                    .asset_id = asset_id,
+                    .side = Side::Sell,
                     .liquidity_role = LiquidityRole::Taker,
                 });
                 remaining_quantity -= fill_quantity;
@@ -538,11 +539,12 @@ private:
         LogEventType log_event_type = LogEventType::Fill
     ) {
         const double quantity_units = static_cast<double>(fill.quantity) / kQuantityScale;
-        const double notional = fill.price * quantity_units;
+        const double fill_price_double = static_cast<double>(fill.price) / 100'000'000.0;
+        const double notional = fill_price_double * quantity_units;
         const double fee_bps =
             fill.liquidity_role == LiquidityRole::Maker ? config_.maker_fee_bps : config_.taker_fee_bps;
         const double fee_usdt = fee_to_usdt(fill.asset_id, fill.side, quantity_units, notional, fee_bps);
-        const double slippage_usdt = slippage_to_usdt(fill.asset_id, fill.side, fill.price, quantity_units);
+        const double slippage_usdt = slippage_to_usdt(fill.asset_id, fill.side, fill_price_double, quantity_units);
         const double pnl_impact = -fee_usdt - slippage_usdt;
         apply_portfolio_fill(fill.asset_id, fill.side, quantity_units, notional, fee_bps);
 
@@ -586,7 +588,7 @@ private:
                 .event_type = log_event_type,
                 .group_id = group_id,
                 .side = fill.side,
-                .price = fill.price,
+                .price = fill_price_double,
                 .qty = quantity_units,
                 .pnl_impact = pnl_impact,
                 .current_nav = mark_to_market_nav(),
@@ -603,34 +605,37 @@ private:
         OrderExecutionReport& report
     ) {
         report = OrderExecutionReport {
+            .expected_price = request.expected_price > 0 ? request.expected_price : request.price,
+            .requested_quantity = request.quantity,
             .asset_id = request.asset_id,
             .side = request.side,
-            .expected_price = request.expected_price > 0.0 ? request.expected_price : request.price,
-            .requested_quantity = request.quantity,
         };
 
         if (request.asset_id >= N || request.quantity == 0U) {
             return;
         }
 
+        const double request_price_double = static_cast<double>(request.price) / 100'000'000.0;
         const std::uint64_t available_quantity =
-            available_cross_quantity(request.asset_id, request.side, request.price, request.quantity);
+            available_cross_quantity(request.asset_id, request.side, request_price_double, request.quantity);
         if (available_quantity < request.quantity) {
             return;
         }
 
         const std::uint64_t order_id = next_strategy_order_id_++;
+        double vwap_price_double = 0.0;
         report.filled_quantity = sweep_request(
             request.asset_id,
             request.side,
-            request.price,
+            request_price_double,
             request.quantity,
             timestamp,
             order_id,
             group.group_id,
             LogEventType::Fill,
-            &report.vwap_price
+            &vwap_price_double
         );
+        report.vwap_price = static_cast<std::int64_t>(std::llround(vwap_price_double * 100'000'000.0));
         report.fully_filled = report.filled_quantity == request.quantity;
         report.slippage_breached = report.fully_filled && is_slippage_breached(report, group);
     }
@@ -663,12 +668,12 @@ private:
                     level_quantity < remaining_quantity ? level_quantity : remaining_quantity;
                 if (fill_quantity > 0U) {
                     route_fill(FillEvent {
-                        .asset_id = asset_id,
                         .order_id = order_id,
-                        .side = Side::Buy,
-                        .price = ask_it->first,
+                        .price = static_cast<std::int64_t>(std::llround(ask_it->first * 100'000'000.0)),
                         .quantity = fill_quantity,
                         .timestamp = timestamp,
+                        .asset_id = asset_id,
+                        .side = Side::Buy,
                         .liquidity_role = LiquidityRole::Taker,
                     }, group_id, log_event_type);
                     remaining_quantity -= fill_quantity;
@@ -688,12 +693,12 @@ private:
                     level_quantity < remaining_quantity ? level_quantity : remaining_quantity;
                 if (fill_quantity > 0U) {
                     route_fill(FillEvent {
-                        .asset_id = asset_id,
                         .order_id = order_id,
-                        .side = Side::Sell,
-                        .price = bid_it->first,
+                        .price = static_cast<std::int64_t>(std::llround(bid_it->first * 100'000'000.0)),
                         .quantity = fill_quantity,
                         .timestamp = timestamp,
+                        .asset_id = asset_id,
+                        .side = Side::Sell,
                         .liquidity_role = LiquidityRole::Taker,
                     }, group_id, log_event_type);
                     remaining_quantity -= fill_quantity;
@@ -711,7 +716,7 @@ private:
 
     [[nodiscard]] bool is_slippage_breached(const OrderExecutionReport& report, const OrderGroup& group) const noexcept {
         const double tolerance = group.slippage_tolerance > 0.0 ? group.slippage_tolerance : 0.0;
-        if (report.expected_price <= 0.0 || tolerance <= 0.0) {
+        if (report.expected_price <= 0 || tolerance <= 0.0) {
             return false;
         }
 

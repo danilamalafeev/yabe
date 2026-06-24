@@ -196,8 +196,9 @@ private:
     [[nodiscard]] bool has_visible_book() const noexcept;
     [[nodiscard]] bool is_aggressive(const LiveOrder& live_order) const noexcept;
     [[nodiscard]] std::uint64_t sweep_visible_depth(LiveOrder& live_order, LiquidityRole role, std::uint64_t timestamp);
-    [[nodiscard]] std::uint64_t level_qty_to_order_qty(double qty) const noexcept;
+    [[nodiscard]] std::uint64_t level_qty_to_order_qty(std::uint64_t qty_lots) const noexcept;
     [[nodiscard]] double order_qty_to_units(std::uint64_t quantity) const noexcept;
+    [[nodiscard]] std::uint64_t order_qty_to_lots(std::uint64_t quantity) const noexcept;
     [[nodiscard]] bool add_live_order(const LiveOrder& live_order) noexcept;
     [[nodiscard]] std::size_t find_live_order_index(std::uint64_t order_id) const noexcept;
     void erase_live_order(std::size_t index) noexcept;

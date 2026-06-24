@@ -22,14 +22,15 @@ struct MarketSnapshot {
 };
 
 struct FillEvent {
-    AssetID asset_id {};
     std::uint64_t order_id {};
-    Side side {Side::Buy};
-    double price {};
+    std::int64_t price {};
     std::uint64_t quantity {};
     std::uint64_t timestamp {};
+    AssetID asset_id {};
+    Side side {Side::Buy};
     LiquidityRole liquidity_role {LiquidityRole::Maker};
 };
+static_assert(sizeof(FillEvent) == 40);
 
 using StrategyFill = FillEvent;
 

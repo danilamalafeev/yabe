@@ -57,10 +57,10 @@ RM = /opt/homebrew/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/Users/danilamalafeev/Documents/New project"
+CMAKE_SOURCE_DIR = /Users/danilamalafeev/Documents/YABE
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/Users/danilamalafeev/Documents/New project/build-release"
+CMAKE_BINARY_DIR = /Users/danilamalafeev/Documents/YABE/build-release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -142,9 +142,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/danilamalafeev/Documents/New project/build-release/CMakeFiles" "/Users/danilamalafeev/Documents/New project/build-release//CMakeFiles/progress.marks"
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/danilamalafeev/Documents/YABE/build-release/CMakeFiles /Users/danilamalafeev/Documents/YABE/build-release//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/danilamalafeev/Documents/New project/build-release/CMakeFiles" 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/danilamalafeev/Documents/YABE/build-release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -591,6 +591,30 @@ tests/test_lob.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lob_tests.dir/build.make CMakeFiles/lob_tests.dir/tests/test_lob.cpp.s
 .PHONY : tests/test_lob.cpp.s
 
+tests/test_sim.o: tests/test_sim.cpp.o
+.PHONY : tests/test_sim.o
+
+# target to build an object file
+tests/test_sim.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lob_tests.dir/build.make CMakeFiles/lob_tests.dir/tests/test_sim.cpp.o
+.PHONY : tests/test_sim.cpp.o
+
+tests/test_sim.i: tests/test_sim.cpp.i
+.PHONY : tests/test_sim.i
+
+# target to preprocess a source file
+tests/test_sim.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lob_tests.dir/build.make CMakeFiles/lob_tests.dir/tests/test_sim.cpp.i
+.PHONY : tests/test_sim.cpp.i
+
+tests/test_sim.s: tests/test_sim.cpp.s
+.PHONY : tests/test_sim.s
+
+# target to generate assembly for a file
+tests/test_sim.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lob_tests.dir/build.make CMakeFiles/lob_tests.dir/tests/test_sim.cpp.s
+.PHONY : tests/test_sim.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -649,6 +673,9 @@ help:
 	@echo "... tests/test_lob.o"
 	@echo "... tests/test_lob.i"
 	@echo "... tests/test_lob.s"
+	@echo "... tests/test_sim.o"
+	@echo "... tests/test_sim.i"
+	@echo "... tests/test_sim.s"
 .PHONY : help
 
 

@@ -1,3 +1,3 @@
-/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/CMakeFiles/googletest-populate.dir
-/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/CMakeFiles/edit_cache.dir
-/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/CMakeFiles/rebuild_cache.dir
+/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/CMakeFiles/googletest-populate.dir
+/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/CMakeFiles/edit_cache.dir
+/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/CMakeFiles/rebuild_cache.dir

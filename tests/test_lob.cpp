@@ -30,6 +30,14 @@
 
 namespace {
 
+[[nodiscard]] std::int64_t P(double p) noexcept {
+    return static_cast<std::int64_t>(std::llround(p * 100'000'000.0));
+}
+
+[[nodiscard]] std::uint64_t Q(double q) noexcept {
+    return static_cast<std::uint64_t>(std::llround(q * 100'000'000.0));
+}
+
 template <std::size_t Capacity>
 class FakeStreamParser {
 public:
@@ -88,127 +96,127 @@ TEST(OrderBookTest, InitializesSuccessfully) {
 TEST(L2OrderBookTest, MaintainsBidAndAskSortOrder) {
     lob::L2OrderBook book {8U};
 
-    book.update_level(true, 99.0, 1.0);
-    book.update_level(true, 101.0, 2.0);
-    book.update_level(true, 100.0, 3.0);
-    book.update_level(false, 103.0, 4.0);
-    book.update_level(false, 101.0, 5.0);
-    book.update_level(false, 102.0, 6.0);
+    book.update_level(true, P(99.0), Q(1.0));
+    book.update_level(true, P(101.0), Q(2.0));
+    book.update_level(true, P(100.0), Q(3.0));
+    book.update_level(false, P(103.0), Q(4.0));
+    book.update_level(false, P(101.0), Q(5.0));
+    book.update_level(false, P(102.0), Q(6.0));
 
     ASSERT_EQ(book.bids().size(), 3U);
-    EXPECT_DOUBLE_EQ(book.bids()[0].price, 101.0);
-    EXPECT_DOUBLE_EQ(book.bids()[1].price, 100.0);
-    EXPECT_DOUBLE_EQ(book.bids()[2].price, 99.0);
+    EXPECT_EQ(book.bids()[0].price, P(101.0));
+    EXPECT_EQ(book.bids()[1].price, P(100.0));
+    EXPECT_EQ(book.bids()[2].price, P(99.0));
 
     ASSERT_EQ(book.asks().size(), 3U);
-    EXPECT_DOUBLE_EQ(book.asks()[0].price, 101.0);
-    EXPECT_DOUBLE_EQ(book.asks()[1].price, 102.0);
-    EXPECT_DOUBLE_EQ(book.asks()[2].price, 103.0);
+    EXPECT_EQ(book.asks()[0].price, P(101.0));
+    EXPECT_EQ(book.asks()[1].price, P(102.0));
+    EXPECT_EQ(book.asks()[2].price, P(103.0));
 }
 
 TEST(L2OrderBookTest, UpdatesAndRemovesLevels) {
     lob::L2OrderBook book {8U};
 
-    book.update_level(true, 100.0, 5.0);
-    book.deplete_level(true, 100.0, 2.0);
-    EXPECT_DOUBLE_EQ(book.effective_qty(true, 100.0), 3.0);
+    book.update_level(true, P(100.0), Q(5.0));
+    book.deplete_level(true, P(100.0), Q(2.0));
+    EXPECT_EQ(book.effective_qty(true, P(100.0)), Q(3.0));
 
-    book.update_level(true, 100.0, 1.0);
+    book.update_level(true, P(100.0), Q(1.0));
     ASSERT_EQ(book.bids().size(), 1U);
-    EXPECT_DOUBLE_EQ(book.bids()[0].qty, 1.0);
-    EXPECT_DOUBLE_EQ(book.bids()[0].depleted_qty, 1.0);
-    EXPECT_DOUBLE_EQ(book.effective_qty(true, 100.0), 0.0);
+    EXPECT_EQ(book.bids()[0].qty, Q(1.0));
+    EXPECT_EQ(book.bids()[0].depleted_qty, Q(1.0));
+    EXPECT_EQ(book.effective_qty(true, P(100.0)), 0U);
 
-    book.update_level(true, 100.0, 0.0);
+    book.update_level(true, P(100.0), 0U);
     EXPECT_TRUE(book.bids().empty());
-    EXPECT_DOUBLE_EQ(book.effective_qty(true, 100.0), 0.0);
+    EXPECT_EQ(book.effective_qty(true, P(100.0)), 0U);
 }
 
 TEST(L2OrderBookTest, AllowsSimulatedDepletionBeyondVisibleQuantityUntilFeedRefresh) {
     lob::L2OrderBook book {8U};
 
-    book.update_level(false, 101.0, 5.0);
-    book.deplete_level(false, 101.0, 8.0);
+    book.update_level(false, P(101.0), Q(5.0));
+    book.deplete_level(false, P(101.0), Q(8.0));
 
     ASSERT_EQ(book.asks().size(), 1U);
-    EXPECT_DOUBLE_EQ(book.asks()[0].depleted_qty, 8.0);
-    EXPECT_DOUBLE_EQ(book.effective_qty(false, 101.0), 0.0);
+    EXPECT_EQ(book.asks()[0].depleted_qty, Q(8.0));
+    EXPECT_EQ(book.effective_qty(false, P(101.0)), 0U);
 
-    book.update_level(false, 101.0, 6.0);
-    EXPECT_DOUBLE_EQ(book.asks()[0].depleted_qty, 6.0);
-    EXPECT_DOUBLE_EQ(book.effective_qty(false, 101.0), 0.0);
+    book.update_level(false, P(101.0), Q(6.0));
+    EXPECT_EQ(book.asks()[0].depleted_qty, Q(6.0));
+    EXPECT_EQ(book.effective_qty(false, P(101.0)), 0U);
 }
 
 TEST(L2OrderBookTest, EnforcesCapacityByDroppingDeepLevels) {
     lob::L2OrderBook book {3U};
 
-    book.update_level(true, 100.0, 1.0);
-    book.update_level(true, 99.0, 1.0);
-    book.update_level(true, 98.0, 1.0);
-    book.update_level(true, 97.0, 1.0);
+    book.update_level(true, P(100.0), Q(1.0));
+    book.update_level(true, P(99.0), Q(1.0));
+    book.update_level(true, P(98.0), Q(1.0));
+    book.update_level(true, P(97.0), Q(1.0));
 
     ASSERT_EQ(book.bids().size(), 3U);
-    EXPECT_DOUBLE_EQ(book.bids()[0].price, 100.0);
-    EXPECT_DOUBLE_EQ(book.bids()[1].price, 99.0);
-    EXPECT_DOUBLE_EQ(book.bids()[2].price, 98.0);
+    EXPECT_EQ(book.bids()[0].price, P(100.0));
+    EXPECT_EQ(book.bids()[1].price, P(99.0));
+    EXPECT_EQ(book.bids()[2].price, P(98.0));
 
-    book.update_level(true, 101.0, 1.0);
+    book.update_level(true, P(101.0), Q(1.0));
     ASSERT_EQ(book.bids().size(), 3U);
-    EXPECT_DOUBLE_EQ(book.bids()[0].price, 101.0);
-    EXPECT_DOUBLE_EQ(book.bids()[1].price, 100.0);
-    EXPECT_DOUBLE_EQ(book.bids()[2].price, 99.0);
+    EXPECT_EQ(book.bids()[0].price, P(101.0));
+    EXPECT_EQ(book.bids()[1].price, P(100.0));
+    EXPECT_EQ(book.bids()[2].price, P(99.0));
 
-    book.update_level(false, 101.0, 1.0);
-    book.update_level(false, 102.0, 1.0);
-    book.update_level(false, 103.0, 1.0);
-    book.update_level(false, 104.0, 1.0);
+    book.update_level(false, P(101.0), Q(1.0));
+    book.update_level(false, P(102.0), Q(1.0));
+    book.update_level(false, P(103.0), Q(1.0));
+    book.update_level(false, P(104.0), Q(1.0));
 
     ASSERT_EQ(book.asks().size(), 3U);
-    EXPECT_DOUBLE_EQ(book.asks()[0].price, 101.0);
-    EXPECT_DOUBLE_EQ(book.asks()[1].price, 102.0);
-    EXPECT_DOUBLE_EQ(book.asks()[2].price, 103.0);
+    EXPECT_EQ(book.asks()[0].price, P(101.0));
+    EXPECT_EQ(book.asks()[1].price, P(102.0));
+    EXPECT_EQ(book.asks()[2].price, P(103.0));
 
-    book.update_level(false, 100.0, 1.0);
+    book.update_level(false, P(100.0), Q(1.0));
     ASSERT_EQ(book.asks().size(), 3U);
-    EXPECT_DOUBLE_EQ(book.asks()[0].price, 100.0);
-    EXPECT_DOUBLE_EQ(book.asks()[1].price, 101.0);
-    EXPECT_DOUBLE_EQ(book.asks()[2].price, 102.0);
+    EXPECT_EQ(book.asks()[0].price, P(100.0));
+    EXPECT_EQ(book.asks()[1].price, P(101.0));
+    EXPECT_EQ(book.asks()[2].price, P(102.0));
 }
 
 TEST(L2OrderBookTest, AppliesSnapshotByClearingBothSides) {
     lob::L2OrderBook book {8U};
-    book.update_level(true, 100.0, 1.0);
-    book.update_level(false, 101.0, 1.0);
+    book.update_level(true, P(100.0), Q(1.0));
+    book.update_level(false, P(101.0), Q(1.0));
 
     book.apply_update(lob::L2UpdateEvent {
         .timestamp_ns = 10U,
+        .price = P(99.0),
+        .qty = Q(2.0),
         .is_snapshot = true,
         .is_bid = true,
-        .price = 99.0,
-        .qty = 2.0,
     });
 
     ASSERT_EQ(book.bids().size(), 1U);
-    EXPECT_DOUBLE_EQ(book.bids()[0].price, 99.0);
+    EXPECT_EQ(book.bids()[0].price, P(99.0));
     EXPECT_TRUE(book.asks().empty());
 }
 
 TEST(L2OrderBookTest, RemovesLevelsNotPresentInSnapshotWithoutClearingRetainedDepletion) {
     lob::L2OrderBook book {8U};
-    book.update_level(true, 101.0, 3.0);
-    book.update_level(true, 100.0, 5.0);
-    book.update_level(true, 99.0, 7.0);
-    book.deplete_level(true, 100.0, 2.0);
+    book.update_level(true, P(101.0), Q(3.0));
+    book.update_level(true, P(100.0), Q(5.0));
+    book.update_level(true, P(99.0), Q(7.0));
+    book.deplete_level(true, P(100.0), Q(2.0));
 
-    const std::array<double, 2U> retained_prices {101.0, 100.0};
+    const std::array<std::int64_t, 2U> retained_prices {P(101.0), P(100.0)};
     book.remove_levels_not_in(true, retained_prices);
 
     ASSERT_EQ(book.bids().size(), 2U);
-    EXPECT_DOUBLE_EQ(book.bids()[0].price, 101.0);
-    EXPECT_DOUBLE_EQ(book.bids()[0].depleted_qty, 0.0);
-    EXPECT_DOUBLE_EQ(book.bids()[1].price, 100.0);
-    EXPECT_DOUBLE_EQ(book.bids()[1].depleted_qty, 2.0);
-    EXPECT_DOUBLE_EQ(book.effective_qty(true, 99.0), 0.0);
+    EXPECT_EQ(book.bids()[0].price, P(101.0));
+    EXPECT_EQ(book.bids()[0].depleted_qty, 0U);
+    EXPECT_EQ(book.bids()[1].price, P(100.0));
+    EXPECT_EQ(book.bids()[1].depleted_qty, Q(2.0));
+    EXPECT_EQ(book.effective_qty(true, P(99.0)), 0U);
 }
 
 TEST(PolymarketOrderBookTest, MaintainsDepthByCentIndexAndFindsBboWithMasks) {
@@ -256,20 +264,20 @@ TEST(PolymarketFeedAdapterTest, RoutesDenseTokenUpdatesToBoundBooks) {
 
     EXPECT_TRUE(adapter.on_l2_update(lob::PolymarketL2Update {
         .timestamp_ns = 1U,
+        .new_size = static_cast<std::uint64_t>(std::llround(12.0 * 100'000'000.0)),
         .market_id = lob::MarketId {7U},
         .token_id = lob::TokenId {1U},
         .side = lob::Side::Buy,
         .price_cents = lob::PriceCents {64U},
-        .new_size = 12.0,
         .is_snapshot = false,
     }));
     EXPECT_TRUE(adapter.on_l2_update(lob::PolymarketL2Update {
         .timestamp_ns = 2U,
+        .new_size = static_cast<std::uint64_t>(std::llround(8.0 * 100'000'000.0)),
         .market_id = lob::MarketId {7U},
         .token_id = lob::TokenId {2U},
         .side = lob::Side::Sell,
         .price_cents = lob::PriceCents {36U},
-        .new_size = 8.0,
         .is_snapshot = false,
     }));
 
@@ -277,11 +285,11 @@ TEST(PolymarketFeedAdapterTest, RoutesDenseTokenUpdatesToBoundBooks) {
     EXPECT_EQ(no_book.best_ask_price_cents(), lob::PriceCents {36U});
     EXPECT_FALSE(adapter.on_l2_update(lob::PolymarketL2Update {
         .timestamp_ns = 3U,
+        .new_size = static_cast<std::uint64_t>(std::llround(1.0 * 100'000'000.0)),
         .market_id = lob::MarketId {7U},
         .token_id = lob::TokenId {3U},
         .side = lob::Side::Buy,
         .price_cents = lob::PriceCents {50U},
-        .new_size = 1.0,
         .is_snapshot = false,
     }));
 }
@@ -633,8 +641,8 @@ TEST(L2UpdateCsvParserTest, StreamsRawL2UpdatesAndBooleanFormats) {
     EXPECT_EQ(first_event.timestamp_ns, 1000U);
     EXPECT_TRUE(first_event.is_snapshot);
     EXPECT_TRUE(first_event.is_bid);
-    EXPECT_DOUBLE_EQ(first_event.price, 99.5);
-    EXPECT_DOUBLE_EQ(first_event.qty, 2.25);
+    EXPECT_EQ(first_event.price, static_cast<std::int64_t>(std::llround(99.5 * 100'000'000.0)));
+    EXPECT_EQ(first_event.qty, static_cast<std::uint64_t>(std::llround(2.25 * 100'000'000.0)));
 
     parser.advance();
     ASSERT_TRUE(parser.has_next());
@@ -642,8 +650,8 @@ TEST(L2UpdateCsvParserTest, StreamsRawL2UpdatesAndBooleanFormats) {
     EXPECT_EQ(second_event.timestamp_ns, 1000U);
     EXPECT_FALSE(second_event.is_snapshot);
     EXPECT_FALSE(second_event.is_bid);
-    EXPECT_DOUBLE_EQ(second_event.price, 100.5);
-    EXPECT_DOUBLE_EQ(second_event.qty, 0.0);
+    EXPECT_EQ(second_event.price, static_cast<std::int64_t>(std::llround(100.5 * 100'000'000.0)));
+    EXPECT_EQ(second_event.qty, 0U);
 
     parser.advance();
     EXPECT_FALSE(parser.has_next());
@@ -780,10 +788,10 @@ public:
     void on_tick(lob::AssetID asset_id, const lob::L2OrderBook& book, lob::OrderGateway& gateway) override {
         last_asset_id = asset_id;
         last_timestamp = gateway.current_timestamp();
-        last_best_bid = book.best_bid();
-        last_best_ask = book.best_ask();
-        last_bid_visible_qty = book.bid_effective_qty();
-        last_ask_visible_qty = book.ask_effective_qty();
+        last_best_bid = static_cast<double>(book.best_bid()) / 100'000'000.0;
+        last_best_ask = static_cast<double>(book.best_ask()) / 100'000'000.0;
+        last_bid_visible_qty = static_cast<double>(book.bid_effective_qty()) / 100'000'000.0;
+        last_ask_visible_qty = static_cast<double>(book.ask_effective_qty()) / 100'000'000.0;
         ++ticks;
     }
 

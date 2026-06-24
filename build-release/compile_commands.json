@@ -1,212 +1,218 @@
 [
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/include\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/backtest_engine.cpp.o -c \"/Users/danilamalafeev/Documents/New project/src/backtest_engine.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/src/backtest_engine.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/include -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/backtest_engine.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/backtest_engine.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/src/backtest_engine.cpp",
   "output": "CMakeFiles/lob_core.dir/src/backtest_engine.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/include\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/csv_parser.cpp.o -c \"/Users/danilamalafeev/Documents/New project/src/csv_parser.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/src/csv_parser.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/include -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/csv_parser.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/csv_parser.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/src/csv_parser.cpp",
   "output": "CMakeFiles/lob_core.dir/src/csv_parser.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/include\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/l2_backtest_engine.cpp.o -c \"/Users/danilamalafeev/Documents/New project/src/l2_backtest_engine.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/src/l2_backtest_engine.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/include -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/l2_backtest_engine.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/l2_backtest_engine.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/src/l2_backtest_engine.cpp",
   "output": "CMakeFiles/lob_core.dir/src/l2_backtest_engine.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/include\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/l2_csv_parser.cpp.o -c \"/Users/danilamalafeev/Documents/New project/src/l2_csv_parser.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/src/l2_csv_parser.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/include -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/l2_csv_parser.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/l2_csv_parser.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/src/l2_csv_parser.cpp",
   "output": "CMakeFiles/lob_core.dir/src/l2_csv_parser.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/include\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/l2_depth5_csv_parser.cpp.o -c \"/Users/danilamalafeev/Documents/New project/src/l2_depth5_csv_parser.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/src/l2_depth5_csv_parser.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/include -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/l2_depth5_csv_parser.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/l2_depth5_csv_parser.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/src/l2_depth5_csv_parser.cpp",
   "output": "CMakeFiles/lob_core.dir/src/l2_depth5_csv_parser.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/include\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o -c \"/Users/danilamalafeev/Documents/New project/src/l2_update_csv_parser.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/src/l2_update_csv_parser.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/include -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/l2_update_csv_parser.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/src/l2_update_csv_parser.cpp",
   "output": "CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/include\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/order_book.cpp.o -c \"/Users/danilamalafeev/Documents/New project/src/order_book.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/src/order_book.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/include -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/order_book.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/order_book.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/src/order_book.cpp",
   "output": "CMakeFiles/lob_core.dir/src/order_book.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++ -Dyabe_EXPORTS -I\"/Users/danilamalafeev/Documents/New project/include\" -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/pybind11-src/include\" -isystem /opt/anaconda3/include/python3.12 -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -fvisibility=hidden -flto -o CMakeFiles/yabe.dir/src/bindings.cpp.o -c \"/Users/danilamalafeev/Documents/New project/src/bindings.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/src/bindings.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++ -Dyabe_EXPORTS -I/Users/danilamalafeev/Documents/YABE/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/pybind11-src/include -isystem /opt/anaconda3/include/python3.12 -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -fvisibility=hidden -flto -o CMakeFiles/yabe.dir/src/bindings.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/bindings.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/src/bindings.cpp",
   "output": "CMakeFiles/yabe.dir/src/bindings.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/include\" -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest/include\" -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -o CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o -c \"/Users/danilamalafeev/Documents/New project/tests/test_lob.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/tests/test_lob.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++ -DLOB_SIM_TESTING=1 -I/Users/danilamalafeev/Documents/YABE/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest -O3 -DNDEBUG -std=c++20 -arch arm64 -o CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o -c /Users/danilamalafeev/Documents/YABE/tests/test_lob.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/tests/test_lob.cpp",
   "output": "CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -I\"/Users/danilamalafeev/Documents/New project/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -o CMakeFiles/lob_benchmarks.dir/benchmarks/bench_order_book.cpp.o -c \"/Users/danilamalafeev/Documents/New project/benchmarks/bench_order_book.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/benchmarks/bench_order_book.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++ -DLOB_SIM_TESTING=1 -I/Users/danilamalafeev/Documents/YABE/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest -O3 -DNDEBUG -std=c++20 -arch arm64 -o CMakeFiles/lob_tests.dir/tests/test_sim.cpp.o -c /Users/danilamalafeev/Documents/YABE/tests/test_sim.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/tests/test_sim.cpp",
+  "output": "CMakeFiles/lob_tests.dir/tests/test_sim.cpp.o"
+},
+{
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -I/Users/danilamalafeev/Documents/YABE/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -O3 -DNDEBUG -std=c++20 -arch arm64 -o CMakeFiles/lob_benchmarks.dir/benchmarks/bench_order_book.cpp.o -c /Users/danilamalafeev/Documents/YABE/benchmarks/bench_order_book.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/benchmarks/bench_order_book.cpp",
   "output": "CMakeFiles/lob_benchmarks.dir/benchmarks/bench_order_book.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/include\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64 -o CMakeFiles/lob_backtest.dir/src/main_backtest.cpp.o -c \"/Users/danilamalafeev/Documents/New project/src/main_backtest.cpp\"",
-  "file": "/Users/danilamalafeev/Documents/New project/src/main_backtest.cpp",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/include -O3 -DNDEBUG -std=c++20 -arch arm64 -o CMakeFiles/lob_backtest.dir/src/main_backtest.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/main_backtest.cpp",
+  "file": "/Users/danilamalafeev/Documents/YABE/src/main_backtest.cpp",
   "output": "CMakeFiles/lob_backtest.dir/src/main_backtest.cpp.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-build/googlemock",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googlemock/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googlemock\" -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest/include\" -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64  -DGTEST_HAS_PTHREAD=1   -o CMakeFiles/gmock.dir/src/gmock-all.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googlemock/src/gmock-all.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googlemock/src/gmock-all.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-build/googlemock",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googlemock/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googlemock -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest -O3 -DNDEBUG -std=c++20 -arch arm64  -DGTEST_HAS_PTHREAD=1   -o CMakeFiles/gmock.dir/src/gmock-all.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googlemock/src/gmock-all.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googlemock/src/gmock-all.cc",
   "output": "_deps/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-build/googlemock",
-  "command": "/usr/bin/c++  -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googlemock/include\" -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googlemock\" -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest/include\" -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64  -DGTEST_HAS_PTHREAD=1   -o CMakeFiles/gmock_main.dir/src/gmock_main.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googlemock/src/gmock_main.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googlemock/src/gmock_main.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-build/googlemock",
+  "command": "/usr/bin/c++  -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googlemock/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googlemock -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest -O3 -DNDEBUG -std=c++20 -arch arm64  -DGTEST_HAS_PTHREAD=1   -o CMakeFiles/gmock_main.dir/src/gmock_main.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googlemock/src/gmock_main.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googlemock/src/gmock_main.cc",
   "output": "_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-build/googletest",
-  "command": "/usr/bin/c++  -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64  -DGTEST_HAS_PTHREAD=1   -o CMakeFiles/gtest.dir/src/gtest-all.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest/src/gtest-all.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest/src/gtest-all.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-build/googletest",
+  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest -O3 -DNDEBUG -std=c++20 -arch arm64  -DGTEST_HAS_PTHREAD=1   -o CMakeFiles/gtest.dir/src/gtest-all.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/src/gtest-all.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/src/gtest-all.cc",
   "output": "_deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-build/googletest",
-  "command": "/usr/bin/c++  -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest/include\" -isystem \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest\" -O3 -march=native -DNDEBUG -O3 -DNDEBUG -std=c++20 -arch arm64  -DGTEST_HAS_PTHREAD=1   -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest/src/gtest_main.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src/googletest/src/gtest_main.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-build/googletest",
+  "command": "/usr/bin/c++  -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest -O3 -DNDEBUG -std=c++20 -arch arm64  -DGTEST_HAS_PTHREAD=1   -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/src/gtest_main.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/src/gtest_main.cc",
   "output": "_deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -DBENCHMARK_VERSION=\\\"v1.9.1\\\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -DBENCHMARK_VERSION=\\\"v1.9.1\\\" -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark_api_internal.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_api_internal.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_api_internal.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark_api_internal.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_api_internal.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_api_internal.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_api_internal.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark_name.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_name.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_name.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark_name.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_name.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_name.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_name.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark_register.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_register.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_register.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark_register.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_register.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_register.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_register.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark_runner.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_runner.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_runner.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/benchmark_runner.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_runner.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_runner.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark_runner.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/check.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/check.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/check.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/check.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/check.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/check.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/check.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/colorprint.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/colorprint.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/colorprint.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/colorprint.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/colorprint.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/colorprint.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/colorprint.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/commandlineflags.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/commandlineflags.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/commandlineflags.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/commandlineflags.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/commandlineflags.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/commandlineflags.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/commandlineflags.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/complexity.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/complexity.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/complexity.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/complexity.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/complexity.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/complexity.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/complexity.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/console_reporter.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/console_reporter.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/console_reporter.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/console_reporter.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/console_reporter.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/console_reporter.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/console_reporter.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/counter.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/counter.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/counter.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/counter.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/counter.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/counter.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/counter.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/csv_reporter.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/csv_reporter.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/csv_reporter.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/csv_reporter.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/csv_reporter.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/csv_reporter.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/csv_reporter.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/json_reporter.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/json_reporter.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/json_reporter.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/json_reporter.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/json_reporter.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/json_reporter.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/json_reporter.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/perf_counters.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/perf_counters.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/perf_counters.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/perf_counters.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/perf_counters.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/perf_counters.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/perf_counters.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/reporter.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/reporter.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/reporter.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/reporter.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/reporter.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/reporter.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/reporter.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/statistics.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/statistics.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/statistics.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/statistics.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/statistics.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/statistics.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/statistics.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/string_util.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/string_util.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/string_util.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/string_util.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/string_util.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/string_util.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/string_util.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/sysinfo.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/sysinfo.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/sysinfo.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/sysinfo.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/sysinfo.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/sysinfo.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/sysinfo.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/timers.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/timers.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/timers.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark.dir/timers.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/timers.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/timers.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/timers.cc.o"
 },
 {
-  "directory": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src",
-  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include\" -I\"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src\" -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark_main.dir/benchmark_main.cc.o -c \"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc\"",
-  "file": "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc",
+  "directory": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src",
+  "command": "/usr/bin/c++ -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden -o CMakeFiles/benchmark_main.dir/benchmark_main.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc",
+  "file": "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc",
   "output": "_deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.o"
 }
 ]

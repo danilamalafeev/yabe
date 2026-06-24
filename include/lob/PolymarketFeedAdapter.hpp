@@ -10,15 +10,16 @@
 
 namespace lob {
 
-struct PolymarketL2Update {
+struct alignas(32) PolymarketL2Update {
     std::uint64_t timestamp_ns {};
+    std::uint64_t new_size {};
     MarketId market_id {};
     TokenId token_id {};
     Side side {Side::Buy};
     PriceCents price_cents {};
-    double new_size {};
     bool is_snapshot {};
 };
+static_assert(sizeof(PolymarketL2Update) == 32);
 
 class PolymarketFeedAdapter {
 public:
@@ -72,7 +73,7 @@ public:
             book->clear();
         }
 
-        return book->apply_delta(update.side, update.price_cents, update.new_size);
+        return book->apply_delta(update.side, update.price_cents, static_cast<double>(update.new_size) / 100'000'000.0);
     }
 
 private:

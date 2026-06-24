@@ -6,22 +6,22 @@ cmake_minimum_required(VERSION ${CMAKE_VERSION}) # this file comes with cmake
 # If CMAKE_DISABLE_SOURCE_CHANGES is set to true and the source directory is an
 # existing directory in our source tree, calling file(MAKE_DIRECTORY) on it
 # would cause a fatal error, even though it would be a no-op.
-if(NOT EXISTS "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src")
-  file(MAKE_DIRECTORY "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-src")
+if(NOT EXISTS "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src")
+  file(MAKE_DIRECTORY "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src")
 endif()
 file(MAKE_DIRECTORY
-  "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-build"
-  "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/googletest-populate-prefix"
-  "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/googletest-populate-prefix/tmp"
-  "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp"
-  "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src"
-  "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp"
+  "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-build"
+  "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/googletest-populate-prefix"
+  "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/googletest-populate-prefix/tmp"
+  "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp"
+  "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src"
+  "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp"
 )
 
 set(configSubDirs )
 foreach(subDir IN LISTS configSubDirs)
-    file(MAKE_DIRECTORY "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/${subDir}")
+    file(MAKE_DIRECTORY "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/${subDir}")
 endforeach()
 if(cfgdir)
-  file(MAKE_DIRECTORY "/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp${cfgdir}") # cfgdir has leading slash
+  file(MAKE_DIRECTORY "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp${cfgdir}") # cfgdir has leading slash
 endif()

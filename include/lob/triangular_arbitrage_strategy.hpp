@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
@@ -178,31 +179,31 @@ private:
             .slippage_tolerance = config_.slippage_tolerance,
             .legs = {
                 OrderRequest {
-                    .asset_id = kBtcUsdt,
-                    .side = Side::Buy,
-                    .price = best_ask_[kBtcUsdt],
                     .quantity = btc_scaled,
                     .timestamp = timestamp,
-                    .expected_price = best_ask_[kBtcUsdt],
+                    .price = static_cast<std::int64_t>(std::llround(best_ask_[kBtcUsdt] * 100'000'000.0)),
+                    .expected_price = static_cast<std::int64_t>(std::llround(best_ask_[kBtcUsdt] * 100'000'000.0)),
                     .slippage_tolerance = config_.slippage_tolerance,
+                    .asset_id = kBtcUsdt,
+                    .side = Side::Buy,
                 },
                 OrderRequest {
-                    .asset_id = kEthBtc,
-                    .side = Side::Buy,
-                    .price = best_ask_[kEthBtc],
                     .quantity = eth_scaled,
                     .timestamp = timestamp,
-                    .expected_price = best_ask_[kEthBtc],
+                    .price = static_cast<std::int64_t>(std::llround(best_ask_[kEthBtc] * 100'000'000.0)),
+                    .expected_price = static_cast<std::int64_t>(std::llround(best_ask_[kEthBtc] * 100'000'000.0)),
                     .slippage_tolerance = config_.slippage_tolerance,
+                    .asset_id = kEthBtc,
+                    .side = Side::Buy,
                 },
                 OrderRequest {
-                    .asset_id = kEthUsdt,
-                    .side = Side::Sell,
-                    .price = best_bid_[kEthUsdt],
                     .quantity = eth_after_fee_scaled,
                     .timestamp = timestamp,
-                    .expected_price = best_bid_[kEthUsdt],
+                    .price = static_cast<std::int64_t>(std::llround(best_bid_[kEthUsdt] * 100'000'000.0)),
+                    .expected_price = static_cast<std::int64_t>(std::llround(best_bid_[kEthUsdt] * 100'000'000.0)),
                     .slippage_tolerance = config_.slippage_tolerance,
+                    .asset_id = kEthUsdt,
+                    .side = Side::Sell,
                 },
             },
         };
@@ -236,31 +237,31 @@ private:
             .slippage_tolerance = config_.slippage_tolerance,
             .legs = {
                 OrderRequest {
-                    .asset_id = kEthUsdt,
-                    .side = Side::Buy,
-                    .price = best_ask_[kEthUsdt],
                     .quantity = eth_scaled,
                     .timestamp = timestamp,
-                    .expected_price = best_ask_[kEthUsdt],
+                    .price = static_cast<std::int64_t>(std::llround(best_ask_[kEthUsdt] * 100'000'000.0)),
+                    .expected_price = static_cast<std::int64_t>(std::llround(best_ask_[kEthUsdt] * 100'000'000.0)),
                     .slippage_tolerance = config_.slippage_tolerance,
+                    .asset_id = kEthUsdt,
+                    .side = Side::Buy,
                 },
                 OrderRequest {
-                    .asset_id = kEthBtc,
-                    .side = Side::Sell,
-                    .price = best_bid_[kEthBtc],
                     .quantity = eth_after_fee_scaled,
                     .timestamp = timestamp,
-                    .expected_price = best_bid_[kEthBtc],
+                    .price = static_cast<std::int64_t>(std::llround(best_bid_[kEthBtc] * 100'000'000.0)),
+                    .expected_price = static_cast<std::int64_t>(std::llround(best_bid_[kEthBtc] * 100'000'000.0)),
                     .slippage_tolerance = config_.slippage_tolerance,
+                    .asset_id = kEthBtc,
+                    .side = Side::Sell,
                 },
                 OrderRequest {
-                    .asset_id = kBtcUsdt,
-                    .side = Side::Sell,
-                    .price = best_bid_[kBtcUsdt],
                     .quantity = btc_scaled,
                     .timestamp = timestamp,
-                    .expected_price = best_bid_[kBtcUsdt],
+                    .price = static_cast<std::int64_t>(std::llround(best_bid_[kBtcUsdt] * 100'000'000.0)),
+                    .expected_price = static_cast<std::int64_t>(std::llround(best_bid_[kBtcUsdt] * 100'000'000.0)),
                     .slippage_tolerance = config_.slippage_tolerance,
+                    .asset_id = kBtcUsdt,
+                    .side = Side::Sell,
                 },
             },
         };

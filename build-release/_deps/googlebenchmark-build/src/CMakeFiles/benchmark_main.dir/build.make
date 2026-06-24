@@ -53,10 +53,10 @@ RM = /opt/homebrew/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/Users/danilamalafeev/Documents/New project"
+CMAKE_SOURCE_DIR = /Users/danilamalafeev/Documents/YABE
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/Users/danilamalafeev/Documents/New project/build-release"
+CMAKE_BINARY_DIR = /Users/danilamalafeev/Documents/YABE/build-release
 
 # Include any dependencies generated for this target.
 include _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/depend.make
@@ -75,16 +75,16 @@ _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/codegen:
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.o: _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/flags.make
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.o: _deps/googlebenchmark-src/src/benchmark_main.cc
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.o: _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/danilamalafeev/Documents/New project/build-release/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.o"
-	cd "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src" && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.o -MF CMakeFiles/benchmark_main.dir/benchmark_main.cc.o.d -o CMakeFiles/benchmark_main.dir/benchmark_main.cc.o -c "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/danilamalafeev/Documents/YABE/build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.o"
+	cd /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.o -MF CMakeFiles/benchmark_main.dir/benchmark_main.cc.o.d -o CMakeFiles/benchmark_main.dir/benchmark_main.cc.o -c /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc
 
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/benchmark_main.dir/benchmark_main.cc.i"
-	cd "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src" && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc" > CMakeFiles/benchmark_main.dir/benchmark_main.cc.i
+	cd /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc > CMakeFiles/benchmark_main.dir/benchmark_main.cc.i
 
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/benchmark_main.dir/benchmark_main.cc.s"
-	cd "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src" && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc" -o CMakeFiles/benchmark_main.dir/benchmark_main.cc.s
+	cd /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src/benchmark_main.cc -o CMakeFiles/benchmark_main.dir/benchmark_main.cc.s
 
 # Object files for target benchmark_main
 benchmark_main_OBJECTS = \
@@ -96,19 +96,19 @@ benchmark_main_EXTERNAL_OBJECTS =
 _deps/googlebenchmark-build/src/libbenchmark_main.a: _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/benchmark_main.cc.o
 _deps/googlebenchmark-build/src/libbenchmark_main.a: _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/build.make
 _deps/googlebenchmark-build/src/libbenchmark_main.a: _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/danilamalafeev/Documents/New project/build-release/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libbenchmark_main.a"
-	cd "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src" && $(CMAKE_COMMAND) -P CMakeFiles/benchmark_main.dir/cmake_clean_target.cmake
-	cd "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src" && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/benchmark_main.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/danilamalafeev/Documents/YABE/build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libbenchmark_main.a"
+	cd /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src && $(CMAKE_COMMAND) -P CMakeFiles/benchmark_main.dir/cmake_clean_target.cmake
+	cd /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/benchmark_main.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/build: _deps/googlebenchmark-build/src/libbenchmark_main.a
 .PHONY : _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/build
 
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/clean:
-	cd "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src" && $(CMAKE_COMMAND) -P CMakeFiles/benchmark_main.dir/cmake_clean.cmake
+	cd /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src && $(CMAKE_COMMAND) -P CMakeFiles/benchmark_main.dir/cmake_clean.cmake
 .PHONY : _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/clean
 
 _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/depend:
-	cd "/Users/danilamalafeev/Documents/New project/build-release" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/Users/danilamalafeev/Documents/New project" "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src" "/Users/danilamalafeev/Documents/New project/build-release" "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src" "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/DependInfo.cmake" "--color=$(COLOR)" benchmark_main
+	cd /Users/danilamalafeev/Documents/YABE/build-release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/danilamalafeev/Documents/YABE /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src /Users/danilamalafeev/Documents/YABE/build-release /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src /Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/DependInfo.cmake "--color=$(COLOR)" benchmark_main
 .PHONY : _deps/googlebenchmark-build/src/CMakeFiles/benchmark_main.dir/depend
 

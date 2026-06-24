@@ -98,8 +98,8 @@ L2BacktestEngine::Result L2BacktestEngine::run(const std::filesystem::path& file
     result.execution = execution_;
     result.final_cash = cash_;
     result.final_position = position_;
-    result.final_best_bid = book_.effective_best_bid();
-    result.final_best_ask = book_.effective_best_ask();
+    result.final_best_bid = static_cast<double>(book_.effective_best_bid()) / 100'000'000.0;
+    result.final_best_ask = static_cast<double>(book_.effective_best_ask()) / 100'000'000.0;
     result.final_mid_price = current_mid_price();
     result.final_nav = current_nav();
     result.last_fill_timestamp = last_fill_timestamp_;
@@ -285,7 +285,7 @@ void L2BacktestEngine::rebuild_strategy_book() {
         }
         (void)strategy_book_.process_order(Order {
             .id = synthetic_order_id_++,
-            .price = level.price,
+            .price = static_cast<double>(level.price) / 100'000'000.0,
             .quantity = quantity,
             .side = Side::Buy,
             .timestamp = current_time_ns_,
@@ -298,7 +298,7 @@ void L2BacktestEngine::rebuild_strategy_book() {
         }
         (void)strategy_book_.process_order(Order {
             .id = synthetic_order_id_++,
-            .price = level.price,
+            .price = static_cast<double>(level.price) / 100'000'000.0,
             .quantity = quantity,
             .side = Side::Sell,
             .timestamp = current_time_ns_,
@@ -308,7 +308,7 @@ void L2BacktestEngine::rebuild_strategy_book() {
 
 void L2BacktestEngine::route_strategy_fill(const StrategyFill& fill) {
     const double quantity_units = order_qty_to_units(fill.quantity);
-    const double notional = fill.price * quantity_units;
+    const double notional = (static_cast<double>(fill.price) / 100'000'000.0) * quantity_units;
     const double fee_bps = fill.liquidity_role == LiquidityRole::Maker
         ? config_.maker_fee_bps
         : config_.taker_fee_bps;
@@ -380,20 +380,20 @@ void L2BacktestEngine::sample_features(std::uint64_t timestamp) {
         }
     }
 
-    const double best_bid = book_.effective_best_bid();
-    const double best_ask = book_.effective_best_ask();
+    const double best_bid = static_cast<double>(book_.effective_best_bid()) / 100'000'000.0;
+    const double best_ask = static_cast<double>(book_.effective_best_ask()) / 100'000'000.0;
     const double mid = SnapshotMidPrice(best_bid, best_ask);
     const double spread_bps = mid > 0.0 ? (best_ask - best_bid) / mid * 10'000.0 : 0.0;
     double bid_qty_1 = 0.0;
     for (const L2OrderBook::Level& level : book_.bids()) {
-        bid_qty_1 = level.effective_qty();
+        bid_qty_1 = static_cast<double>(level.effective_qty()) / 100'000'000.0;
         if (bid_qty_1 > 0.0) {
             break;
         }
     }
     double ask_qty_1 = 0.0;
     for (const L2OrderBook::Level& level : book_.asks()) {
-        ask_qty_1 = level.effective_qty();
+        ask_qty_1 = static_cast<double>(level.effective_qty()) / 100'000'000.0;
         if (ask_qty_1 > 0.0) {
             break;
         }
@@ -410,15 +410,18 @@ void L2BacktestEngine::sample_features(std::uint64_t timestamp) {
         .bid_qty_1 = bid_qty_1,
         .ask_qty_1 = ask_qty_1,
         .imbalance_1 = imbalance_1,
-        .bid_qty_visible = book_.bid_effective_qty(),
-        .ask_qty_visible = book_.ask_effective_qty(),
+        .bid_qty_visible = static_cast<double>(book_.bid_effective_qty()) / 100'000'000.0,
+        .ask_qty_visible = static_cast<double>(book_.ask_effective_qty()) / 100'000'000.0,
         .position = position_,
         .nav = current_nav(),
     });
 }
 
 double L2BacktestEngine::current_mid_price() const noexcept {
-    return SnapshotMidPrice(book_.effective_best_bid(), book_.effective_best_ask());
+    return SnapshotMidPrice(
+        static_cast<double>(book_.effective_best_bid()) / 100'000'000.0,
+        static_cast<double>(book_.effective_best_ask()) / 100'000'000.0
+    );
 }
 
 double L2BacktestEngine::current_nav() const noexcept {
@@ -426,15 +429,15 @@ double L2BacktestEngine::current_nav() const noexcept {
 }
 
 bool L2BacktestEngine::has_visible_book() const noexcept {
-    return book_.effective_best_bid() > 0.0 && book_.effective_best_ask() > 0.0;
+    return book_.effective_best_bid() > 0 && book_.effective_best_ask() > 0;
 }
 
 bool L2BacktestEngine::is_aggressive(const LiveOrder& live_order) const noexcept {
     if (live_order.side == Side::Buy) {
-        const double best_ask = book_.effective_best_ask();
+        const double best_ask = static_cast<double>(book_.effective_best_ask()) / 100'000'000.0;
         return best_ask > 0.0 && live_order.price >= best_ask;
     }
-    const double best_bid = book_.effective_best_bid();
+    const double best_bid = static_cast<double>(book_.effective_best_bid()) / 100'000'000.0;
     return best_bid > 0.0 && live_order.price <= best_bid;
 }
 
@@ -450,7 +453,8 @@ std::uint64_t L2BacktestEngine::sweep_visible_depth(
     std::uint64_t total_filled = 0U;
     if (live_order.side == Side::Buy) {
         for (const L2OrderBook::Level& level : book_.asks()) {
-            if (live_order.remaining_quantity == 0U || level.price > live_order.price) {
+            const double level_price = static_cast<double>(level.price) / 100'000'000.0;
+            if (live_order.remaining_quantity == 0U || level_price > live_order.price) {
                 break;
             }
             const std::uint64_t level_quantity = level_qty_to_order_qty(level.effective_qty());
@@ -460,14 +464,14 @@ std::uint64_t L2BacktestEngine::sweep_visible_depth(
             const std::uint64_t fill_quantity = level_quantity < live_order.remaining_quantity
                 ? level_quantity
                 : live_order.remaining_quantity;
-            book_.deplete_level(false, level.price, order_qty_to_units(fill_quantity));
+            book_.deplete_level(false, level.price, order_qty_to_lots(fill_quantity));
             route_strategy_fill(StrategyFill {
-                .asset_id = live_order.asset_id,
                 .order_id = live_order.order_id,
-                .side = Side::Buy,
                 .price = level.price,
                 .quantity = fill_quantity,
                 .timestamp = timestamp,
+                .asset_id = live_order.asset_id,
+                .side = Side::Buy,
                 .liquidity_role = role,
             });
             total_filled += fill_quantity;
@@ -479,7 +483,8 @@ std::uint64_t L2BacktestEngine::sweep_visible_depth(
     }
 
     for (const L2OrderBook::Level& level : book_.bids()) {
-        if (live_order.remaining_quantity == 0U || level.price < live_order.price) {
+        const double level_price = static_cast<double>(level.price) / 100'000'000.0;
+        if (live_order.remaining_quantity == 0U || level_price < live_order.price) {
             break;
         }
         const std::uint64_t level_quantity = level_qty_to_order_qty(level.effective_qty());
@@ -489,14 +494,14 @@ std::uint64_t L2BacktestEngine::sweep_visible_depth(
         const std::uint64_t fill_quantity = level_quantity < live_order.remaining_quantity
             ? level_quantity
             : live_order.remaining_quantity;
-        book_.deplete_level(true, level.price, order_qty_to_units(fill_quantity));
+        book_.deplete_level(true, level.price, order_qty_to_lots(fill_quantity));
         route_strategy_fill(StrategyFill {
-            .asset_id = live_order.asset_id,
             .order_id = live_order.order_id,
-            .side = Side::Sell,
             .price = level.price,
             .quantity = fill_quantity,
             .timestamp = timestamp,
+            .asset_id = live_order.asset_id,
+            .side = Side::Sell,
             .liquidity_role = role,
         });
         total_filled += fill_quantity;
@@ -507,15 +512,19 @@ std::uint64_t L2BacktestEngine::sweep_visible_depth(
     return total_filled;
 }
 
-std::uint64_t L2BacktestEngine::level_qty_to_order_qty(double qty) const noexcept {
-    if (qty <= 0.0) {
+std::uint64_t L2BacktestEngine::level_qty_to_order_qty(std::uint64_t qty_lots) const noexcept {
+    if (qty_lots == 0U) {
         return 0U;
     }
-    return static_cast<std::uint64_t>(std::llround(qty * config_.quantity_scale));
+    return static_cast<std::uint64_t>(std::llround(static_cast<double>(qty_lots) / 100'000'000.0 * config_.quantity_scale));
 }
 
 double L2BacktestEngine::order_qty_to_units(std::uint64_t quantity) const noexcept {
     return static_cast<double>(quantity) / config_.quantity_scale;
+}
+
+std::uint64_t L2BacktestEngine::order_qty_to_lots(std::uint64_t quantity) const noexcept {
+    return static_cast<std::uint64_t>(std::llround(order_qty_to_units(quantity) * 100'000'000.0));
 }
 
 bool L2BacktestEngine::add_live_order(const LiveOrder& live_order) noexcept {
