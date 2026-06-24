@@ -1,14 +1,13 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <concepts>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
-#include <queue>
 #include <stdexcept>
 #include <utility>
-#include <vector>
 
 #include "lob/csv_parser.hpp"
 #include "lob/event.hpp"
@@ -35,8 +34,7 @@ public:
     EventMerger() : EventMerger(ParserArray {}) {}
 
     explicit EventMerger(ParserArray parsers)
-        : parsers_(std::move(parsers)),
-          heap_(HeapCompare {}, MakeReservedHeapStorage()) {
+        : parsers_(std::move(parsers)) {
         if constexpr (N > 4U) {
             InitializeHeap();
         }
@@ -51,7 +49,7 @@ public:
             }
             return false;
         } else {
-            return !heap_.empty();
+            return heap_size_ != 0U;
         }
     }
 
@@ -78,19 +76,15 @@ private:
         }
     };
 
-    using HeapStorage = std::vector<HeapNode>;
-    using Heap = std::priority_queue<HeapNode, HeapStorage, HeapCompare>;
-
-    [[nodiscard]] static HeapStorage MakeReservedHeapStorage() {
-        HeapStorage storage {};
-        storage.reserve(N);
-        return storage;
+    inline void PushHeap(HeapNode node) noexcept {
+        heap_[heap_size_++] = node;
+        std::push_heap(heap_.begin(), heap_.begin() + static_cast<std::ptrdiff_t>(heap_size_), HeapCompare {});
     }
 
     inline void InitializeHeap() {
         for (std::size_t index = 0U; index < N; ++index) {
             if (parsers_[index].has_next()) [[likely]] {
-                heap_.push(HeapNode {
+                PushHeap(HeapNode {
                     .next_timestamp = parsers_[index].peek_time(),
                     .asset_id = static_cast<AssetID>(index),
                 });
@@ -125,19 +119,19 @@ private:
     }
 
     [[nodiscard]] inline Event next_dynamic() {
-        if (heap_.empty()) [[unlikely]] {
+        if (heap_size_ == 0U) [[unlikely]] {
             throw std::out_of_range("EventMerger::get_next called with no remaining events");
         }
 
-        const HeapNode node = heap_.top();
-        heap_.pop();
+        std::pop_heap(heap_.begin(), heap_.begin() + static_cast<std::ptrdiff_t>(heap_size_), HeapCompare {});
+        const HeapNode node = heap_[--heap_size_];
 
         Parser& parser = parsers_[node.asset_id];
         Event event = parser.pop();
         event.asset_id = node.asset_id;
 
         if (parser.has_next()) [[likely]] {
-            heap_.push(HeapNode {
+            PushHeap(HeapNode {
                 .next_timestamp = parser.peek_time(),
                 .asset_id = node.asset_id,
             });
@@ -147,7 +141,8 @@ private:
     }
 
     ParserArray parsers_ {};
-    Heap heap_;
+    std::array<HeapNode, N> heap_ {};
+    std::size_t heap_size_ {};
 };
 
 }  // namespace lob

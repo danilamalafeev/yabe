@@ -8,7 +8,8 @@
 
 namespace lob {
 
-class InventorySkewStrategy final : public Strategy {
+template <typename Gateway>
+class InventorySkewStrategy final : public Strategy<Gateway> {
 public:
     struct Config {
         double target_position {};
@@ -26,7 +27,7 @@ public:
         l2_asks_.reserve(kL2Depth);
     }
 
-    void on_tick(AssetID asset_id, const OrderBook& book, OrderGateway& gateway) override {
+    void on_tick(AssetID asset_id, const FixedMatchingBook& book, Gateway& gateway) override {
         const std::uint64_t timestamp = gateway.current_timestamp();
         if (timestamp < next_refresh_timestamp_) {
             return;
@@ -42,13 +43,13 @@ public:
 
         book.get_l2_snapshot(l2_bids_, l2_asks_, kL2Depth);
         double bid_volume = 0.0;
-        for (const PriceLevelInfo& level : l2_bids_) {
-            bid_volume += level.total_qty;
+        for (const FixedPriceLevelInfo& level : l2_bids_) {
+            bid_volume += static_cast<double>(level.quantity_lots);
         }
 
         double ask_volume = 0.0;
-        for (const PriceLevelInfo& level : l2_asks_) {
-            ask_volume += level.total_qty;
+        for (const FixedPriceLevelInfo& level : l2_asks_) {
+            ask_volume += static_cast<double>(level.quantity_lots);
         }
 
         const bool massive_sell_pressure = ask_volume > bid_volume * config_.imbalance_threshold;
@@ -85,7 +86,7 @@ public:
         next_refresh_timestamp_ = timestamp + config_.refresh_interval_ns;
     }
 
-    void on_fill(const StrategyFill& fill, OrderGateway& gateway) override {
+    void on_fill(const StrategyFill& fill, Gateway& gateway) override {
         (void)gateway;
 
         const double filled_units = static_cast<double>(fill.quantity) / kQuantityScale;
@@ -113,7 +114,7 @@ public:
     }
 
 private:
-    void cancel_active_quotes(AssetID asset_id, OrderGateway& gateway) {
+    void cancel_active_quotes(AssetID asset_id, Gateway& gateway) {
         if (bid_order_id_ != 0U && gateway.cancel_order(asset_id, bid_order_id_)) {
             bid_order_id_ = 0U;
             bid_remaining_quantity_ = 0U;
@@ -130,8 +131,8 @@ private:
 
     Config config_ {};
     double position_ {};
-    std::vector<PriceLevelInfo> l2_bids_ {};
-    std::vector<PriceLevelInfo> l2_asks_ {};
+    std::vector<FixedPriceLevelInfo> l2_bids_ {};
+    std::vector<FixedPriceLevelInfo> l2_asks_ {};
     std::uint64_t bid_order_id_ {};
     std::uint64_t ask_order_id_ {};
     std::uint64_t bid_remaining_quantity_ {};

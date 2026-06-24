@@ -11,13 +11,14 @@
 #include "lob/l2_order_book.hpp"
 #include "lob/l2_strategy.hpp"
 #include "lob/l2_update_csv_parser.hpp"
-#include "lob/order_book.hpp"
+#include "lob/indexed_pending_min_heap.hpp"
+#include "lob/fixed_matching_book.hpp"
 #include "lob/order_gateway.hpp"
 #include "lob/strategy.hpp"
 
 namespace lob {
 
-class L2BacktestEngine final : public OrderGateway {
+class L2BacktestEngine final : public OrderGateway<L2BacktestEngine> {
 public:
     struct Config {
         double initial_cash {100'000'000.0};
@@ -77,23 +78,23 @@ public:
         std::vector<FeatureRow> features {};
     };
 
-    explicit L2BacktestEngine(Strategy& strategy);
-    L2BacktestEngine(Strategy& strategy, Config config);
-    explicit L2BacktestEngine(L2Strategy& strategy);
-    L2BacktestEngine(L2Strategy& strategy, Config config);
+    explicit L2BacktestEngine(Strategy<L2BacktestEngine>& strategy);
+    L2BacktestEngine(Strategy<L2BacktestEngine>& strategy, Config config);
+    explicit L2BacktestEngine(L2Strategy<L2BacktestEngine>& strategy);
+    L2BacktestEngine(L2Strategy<L2BacktestEngine>& strategy, Config config);
 
     [[nodiscard]] Result run(const std::filesystem::path& file_path);
 
-    [[nodiscard]] std::uint64_t submit_order(
+    [[nodiscard]] std::uint64_t submit_order_impl(
         AssetID asset_id,
         Side side,
         double price,
         std::uint64_t quantity,
         std::uint64_t timestamp
-    ) override;
+    );
 
-    [[nodiscard]] bool cancel_order(AssetID asset_id, std::uint64_t order_id) override;
-    [[nodiscard]] std::uint64_t current_timestamp() const noexcept override;
+    [[nodiscard]] bool cancel_order_impl(AssetID asset_id, std::uint64_t order_id);
+    [[nodiscard]] std::uint64_t current_timestamp_impl() const noexcept;
 
 private:
     enum class PendingCommandType : std::uint8_t {
@@ -109,60 +110,6 @@ private:
         Side side {Side::Buy};
         double price {};
         std::uint64_t quantity {};
-    };
-
-    template <std::size_t Capacity>
-    class PendingOrderMinHeap {
-    public:
-        [[nodiscard]] bool empty() const noexcept { return size_ == 0U; }
-        [[nodiscard]] const PendingOrder& top() const noexcept { return heap_[0]; }
-        [[nodiscard]] std::size_t size() const noexcept { return size_; }
-        void clear() noexcept { size_ = 0U; }
-
-        bool push(const PendingOrder& order) noexcept {
-            if (size_ == Capacity) {
-                return false;
-            }
-            std::size_t index = size_++;
-            heap_[index] = order;
-            while (index > 0U) {
-                const std::size_t parent = (index - 1U) / 2U;
-                if (heap_[parent].release_time_ns <= heap_[index].release_time_ns) {
-                    break;
-                }
-                std::swap(heap_[parent], heap_[index]);
-                index = parent;
-            }
-            return true;
-        }
-
-        void pop() noexcept {
-            if (size_ == 0U) {
-                return;
-            }
-            heap_[0] = heap_[--size_];
-            std::size_t index = 0U;
-            while (true) {
-                const std::size_t left = (index * 2U) + 1U;
-                const std::size_t right = left + 1U;
-                if (left >= size_) {
-                    break;
-                }
-                std::size_t smallest = left;
-                if (right < size_ && heap_[right].release_time_ns < heap_[left].release_time_ns) {
-                    smallest = right;
-                }
-                if (heap_[index].release_time_ns <= heap_[smallest].release_time_ns) {
-                    break;
-                }
-                std::swap(heap_[index], heap_[smallest]);
-                index = smallest;
-            }
-        }
-
-    private:
-        std::array<PendingOrder, Capacity> heap_ {};
-        std::size_t size_ {};
     };
 
     struct LiveOrder {
@@ -203,13 +150,13 @@ private:
     [[nodiscard]] std::size_t find_live_order_index(std::uint64_t order_id) const noexcept;
     void erase_live_order(std::size_t index) noexcept;
 
-    Strategy* strategy_ {};
-    L2Strategy* l2_strategy_ {};
+    Strategy<L2BacktestEngine>* strategy_ {};
+    L2Strategy<L2BacktestEngine>* l2_strategy_ {};
     Config config_ {};
     L2UpdateCsvParser parser_ {};
     L2OrderBook book_ {};
-    OrderBook strategy_book_ {};
-    PendingOrderMinHeap<kPendingOrderCapacity> pending_orders_ {};
+    FixedMatchingBook strategy_book_ {};
+    IndexedPendingMinHeap<PendingOrder, kPendingOrderCapacity> pending_orders_ {};
     std::array<LiveOrder, kLiveOrderCapacity> live_orders_ {};
     std::size_t live_order_count_ {};
     std::vector<double> equity_curve_ {};

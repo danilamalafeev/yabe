@@ -156,20 +156,6 @@ CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/danilamalafeev/Documents/YABE/src/l2_update_csv_parser.cpp -o CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.s
 
-CMakeFiles/lob_core.dir/src/order_book.cpp.o: CMakeFiles/lob_core.dir/flags.make
-CMakeFiles/lob_core.dir/src/order_book.cpp.o: /Users/danilamalafeev/Documents/YABE/src/order_book.cpp
-CMakeFiles/lob_core.dir/src/order_book.cpp.o: CMakeFiles/lob_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/danilamalafeev/Documents/YABE/build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/lob_core.dir/src/order_book.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/lob_core.dir/src/order_book.cpp.o -MF CMakeFiles/lob_core.dir/src/order_book.cpp.o.d -o CMakeFiles/lob_core.dir/src/order_book.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/order_book.cpp
-
-CMakeFiles/lob_core.dir/src/order_book.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/lob_core.dir/src/order_book.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/danilamalafeev/Documents/YABE/src/order_book.cpp > CMakeFiles/lob_core.dir/src/order_book.cpp.i
-
-CMakeFiles/lob_core.dir/src/order_book.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/lob_core.dir/src/order_book.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/danilamalafeev/Documents/YABE/src/order_book.cpp -o CMakeFiles/lob_core.dir/src/order_book.cpp.s
-
 # Object files for target lob_core
 lob_core_OBJECTS = \
 "CMakeFiles/lob_core.dir/src/backtest_engine.cpp.o" \
@@ -177,8 +163,7 @@ lob_core_OBJECTS = \
 "CMakeFiles/lob_core.dir/src/l2_backtest_engine.cpp.o" \
 "CMakeFiles/lob_core.dir/src/l2_csv_parser.cpp.o" \
 "CMakeFiles/lob_core.dir/src/l2_depth5_csv_parser.cpp.o" \
-"CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o" \
-"CMakeFiles/lob_core.dir/src/order_book.cpp.o"
+"CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o"
 
 # External object files for target lob_core
 lob_core_EXTERNAL_OBJECTS =
@@ -189,10 +174,9 @@ liblob_core.a: CMakeFiles/lob_core.dir/src/l2_backtest_engine.cpp.o
 liblob_core.a: CMakeFiles/lob_core.dir/src/l2_csv_parser.cpp.o
 liblob_core.a: CMakeFiles/lob_core.dir/src/l2_depth5_csv_parser.cpp.o
 liblob_core.a: CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o
-liblob_core.a: CMakeFiles/lob_core.dir/src/order_book.cpp.o
 liblob_core.a: CMakeFiles/lob_core.dir/build.make
 liblob_core.a: CMakeFiles/lob_core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/danilamalafeev/Documents/YABE/build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library liblob_core.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/danilamalafeev/Documents/YABE/build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library liblob_core.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/lob_core.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/lob_core.dir/link.txt --verbose=$(VERBOSE)
 

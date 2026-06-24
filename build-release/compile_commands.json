@@ -37,12 +37,6 @@
 },
 {
   "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
-  "command": "/usr/bin/c++  -I/Users/danilamalafeev/Documents/YABE/include -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -o CMakeFiles/lob_core.dir/src/order_book.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/order_book.cpp",
-  "file": "/Users/danilamalafeev/Documents/YABE/src/order_book.cpp",
-  "output": "CMakeFiles/lob_core.dir/src/order_book.cpp.o"
-},
-{
-  "directory": "/Users/danilamalafeev/Documents/YABE/build-release",
   "command": "/usr/bin/c++ -Dyabe_EXPORTS -I/Users/danilamalafeev/Documents/YABE/include -isystem /Users/danilamalafeev/Documents/YABE/build-release/_deps/pybind11-src/include -isystem /opt/anaconda3/include/python3.12 -O3 -DNDEBUG -std=c++20 -arch arm64 -fPIC -fvisibility=hidden -flto -o CMakeFiles/yabe.dir/src/bindings.cpp.o -c /Users/danilamalafeev/Documents/YABE/src/bindings.cpp",
   "file": "/Users/danilamalafeev/Documents/YABE/src/bindings.cpp",
   "output": "CMakeFiles/yabe.dir/src/bindings.cpp.o"

@@ -1066,16 +1066,18 @@ CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o: \
   /Users/danilamalafeev/Documents/YABE/include/lob/csv_parser.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/event.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/order.hpp \
-  /Users/danilamalafeev/Documents/YABE/include/lob/order_book.hpp \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/list \
-  /Users/danilamalafeev/Documents/YABE/include/lob/price_level.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/fixed_matching_book.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/sim/matching_book.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/sim/types.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/venue_replay.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/trade.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/indexed_pending_min_heap.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/strategy.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/event_merger.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/order_gateway.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/oms.hpp \
-  /Users/danilamalafeev/Documents/YABE/include/lob/dynamic_wallet.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/graph_arbitrage_engine.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/wallet.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/l2_order_book.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/event_l2_update.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/l2_update_csv_parser.hpp \
@@ -1121,9 +1123,7 @@ CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__stop_token/stop_source.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__thread/thread.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__thread/this_thread.h \
-  /Users/danilamalafeev/Documents/YABE/include/lob/wallet.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/PolymarketFeedAdapter.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/PolymarketOrderBook.hpp \
   /Users/danilamalafeev/Documents/YABE/include/lob/PolymarketTypes.hpp \
-  /Users/danilamalafeev/Documents/YABE/include/lob/venue_manifest.hpp \
-  /Users/danilamalafeev/Documents/YABE/include/lob/venue_replay.hpp
+  /Users/danilamalafeev/Documents/YABE/include/lob/venue_manifest.hpp

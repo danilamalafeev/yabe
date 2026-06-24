@@ -52,7 +52,6 @@ add_library(lob_core STATIC
     src/l2_csv_parser.cpp
     src/l2_depth5_csv_parser.cpp
     src/l2_update_csv_parser.cpp
-    src/order_book.cpp
 )
 target_include_directories(
     lob_core

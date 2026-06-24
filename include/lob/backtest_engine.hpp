@@ -10,12 +10,13 @@
 #include <vector>
 
 #include "lob/csv_parser.hpp"
-#include "lob/order_book.hpp"
+#include "lob/indexed_pending_min_heap.hpp"
+#include "lob/fixed_matching_book.hpp"
 #include "lob/strategy.hpp"
 
 namespace lob {
 
-class BacktestEngine final : public OrderGateway {
+class BacktestEngine final : public OrderGateway<BacktestEngine> {
 public:
     enum class LatencyDistribution : std::uint8_t {
         None,
@@ -63,21 +64,21 @@ public:
         std::vector<double> equity_curve {};
     };
 
-    explicit BacktestEngine(Strategy& strategy);
-    BacktestEngine(Strategy& strategy, Config config);
+    explicit BacktestEngine(Strategy<BacktestEngine>& strategy);
+    BacktestEngine(Strategy<BacktestEngine>& strategy, Config config);
 
     [[nodiscard]] Result run(const std::filesystem::path& file_path);
 
-    [[nodiscard]] std::uint64_t submit_order(
+    [[nodiscard]] std::uint64_t submit_order_impl(
         AssetID asset_id,
         Side side,
         double price,
         std::uint64_t quantity,
         std::uint64_t timestamp
-    ) override;
+    );
 
-    [[nodiscard]] bool cancel_order(AssetID asset_id, std::uint64_t order_id) override;
-    [[nodiscard]] std::uint64_t current_timestamp() const noexcept override;
+    [[nodiscard]] bool cancel_order_impl(AssetID asset_id, std::uint64_t order_id);
+    [[nodiscard]] std::uint64_t current_timestamp_impl() const noexcept;
 
 private:
     enum class PendingCommandType : std::uint8_t {
@@ -91,89 +92,15 @@ private:
         std::uint64_t release_time_ns {};
         std::uint64_t order_id {};
         Side side {Side::Buy};
-        double price {};
+        std::int64_t price {};
         std::uint64_t quantity {};
-    };
-
-    template <std::size_t Capacity>
-    class PendingOrderMinHeap {
-    public:
-        [[nodiscard]] bool empty() const noexcept {
-            return size_ == 0U;
-        }
-
-        [[nodiscard]] const PendingOrder& top() const noexcept {
-            return heap_[0];
-        }
-
-        [[nodiscard]] std::size_t size() const noexcept {
-            return size_;
-        }
-
-        void clear() noexcept {
-            size_ = 0U;
-        }
-
-        bool push(const PendingOrder& order) noexcept {
-            if (size_ == Capacity) {
-                return false;
-            }
-
-            std::size_t index = size_++;
-            heap_[index] = order;
-
-            while (index > 0U) {
-                const std::size_t parent = (index - 1U) / 2U;
-                if (heap_[parent].release_time_ns <= heap_[index].release_time_ns) {
-                    break;
-                }
-
-                std::swap(heap_[parent], heap_[index]);
-                index = parent;
-            }
-
-            return true;
-        }
-
-        void pop() noexcept {
-            if (size_ == 0U) {
-                return;
-            }
-
-            heap_[0] = heap_[--size_];
-            std::size_t index = 0U;
-
-            while (true) {
-                const std::size_t left = (index * 2U) + 1U;
-                const std::size_t right = left + 1U;
-                if (left >= size_) {
-                    break;
-                }
-
-                std::size_t smallest = left;
-                if (right < size_ && heap_[right].release_time_ns < heap_[left].release_time_ns) {
-                    smallest = right;
-                }
-
-                if (heap_[index].release_time_ns <= heap_[smallest].release_time_ns) {
-                    break;
-                }
-
-                std::swap(heap_[index], heap_[smallest]);
-                index = smallest;
-            }
-        }
-
-    private:
-        std::array<PendingOrder, Capacity> heap_ {};
-        std::size_t size_ {};
     };
 
     struct LiveOrder {
         AssetID asset_id {};
         std::uint64_t order_id {};
         Side side {Side::Buy};
-        double price {};
+        std::int64_t price {};
         std::uint64_t remaining_quantity {};
         std::uint64_t volume_ahead {};
         bool active {};
@@ -194,7 +121,7 @@ private:
     void apply_pessimistic_volume_update();
     [[nodiscard]] std::uint64_t sample_latency_ns();
     void sample_equity(std::uint64_t timestamp);
-    void update_snapshot(std::uint64_t timestamp, double fallback_price);
+    void update_snapshot(std::uint64_t timestamp, std::int64_t fallback_price_ticks);
     void open_trace_log();
     void close_trace_log();
     void write_trace_row(std::uint64_t timestamp, int is_bot_trade, const char* trade_side);
@@ -206,12 +133,12 @@ private:
     [[nodiscard]] bool add_live_order(const LiveOrder& live_order) noexcept;
     void erase_live_order(std::size_t index) noexcept;
 
-    Strategy& strategy_;
+    Strategy<BacktestEngine>& strategy_;
     Config config_ {};
     CsvParser parser_ {};
-    OrderBook order_book_ {};
+    FixedMatchingBook order_book_ {};
     MarketSnapshot snapshot_ {};
-    PendingOrderMinHeap<kPendingOrderCapacity> pending_orders_ {};
+    IndexedPendingMinHeap<PendingOrder, kPendingOrderCapacity> pending_orders_ {};
     std::vector<Trade> trade_buffer_ {};
     std::array<LiveOrder, kLiveOrderCapacity> live_orders_ {};
     std::size_t live_order_count_ {};

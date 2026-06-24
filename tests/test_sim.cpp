@@ -2675,4 +2675,151 @@ TEST(MatchingBookTest, UnfilledGtcRejectsResidualWhenPostMatchRestCapacityUnavai
     EXPECT_FALSE(book.remaining_quantity(2U).has_value());
 }
 
+TEST(MatchingBookTest, DeepBookMaintainsSortedDepthAndConstantTimeLevelLookup) {
+    using DeepMatchingBook = lob::sim::MatchingBook<96U, 80U, 192U>;
+    DeepMatchingBook book {};
+
+    for (std::uint64_t i = 0U; i < 40U; ++i) {
+        ASSERT_TRUE(book.submit_limit(make_order(1U + i, lob::Side::Buy, 1000 + static_cast<std::int64_t>(i), i + 1U))
+                        .accepted);
+        ASSERT_TRUE(
+            book.submit_limit(make_order(41U + i, lob::Side::Sell, 2000 + static_cast<std::int64_t>(i), i + 101U))
+                .accepted);
+    }
+
+    EXPECT_EQ(book.active_price_level_count(), 80U);
+    EXPECT_EQ(book.best_bid(), 1039);
+    EXPECT_EQ(book.best_ask(), 2000);
+    EXPECT_EQ(book.total_quantity_at_price(lob::Side::Buy, 1017), 18U);
+    EXPECT_EQ(book.total_quantity_at_price(lob::Side::Sell, 2033), 134U);
+    EXPECT_EQ(book.total_quantity_at_price(lob::Side::Buy, 9999), 0U);
+
+    lob::sim::MarketDepthSnapshot<40U> depth {};
+    book.copy_depth(depth);
+    ASSERT_EQ(depth.bid_count, 40U);
+    ASSERT_EQ(depth.ask_count, 40U);
+    for (std::size_t i = 0U; i < 40U; ++i) {
+        EXPECT_EQ(depth.bids[i].price_ticks, 1039 - static_cast<std::int64_t>(i));
+        EXPECT_EQ(depth.asks[i].price_ticks, 2000 + static_cast<std::int64_t>(i));
+    }
+
+    ASSERT_TRUE(book.cancel(40U).canceled);
+    ASSERT_TRUE(book.cancel(41U).canceled);
+    EXPECT_EQ(book.best_bid(), 1038);
+    EXPECT_EQ(book.best_ask(), 2001);
+
+    ASSERT_TRUE(book.submit_limit(make_order(81U, lob::Side::Buy, 1100, 7U)).accepted);
+    ASSERT_TRUE(book.submit_limit(make_order(82U, lob::Side::Sell, 1900, 9U)).accepted);
+    EXPECT_EQ(book.best_bid(), 1100);
+    EXPECT_EQ(book.best_ask(), 1900);
+    EXPECT_EQ(book.total_quantity_at_price(lob::Side::Buy, 1100), 7U);
+    EXPECT_EQ(book.total_quantity_at_price(lob::Side::Sell, 1900), 9U);
+}
+
+TEST(MatchingBookTest, DeepBookMatchesAcrossSortedLevelsInPriceTimeOrder) {
+    lob::sim::MatchingBook<96U, 64U, 128U> book {};
+    for (std::uint64_t i = 0U; i < 40U; ++i) {
+        ASSERT_TRUE(book.submit_limit(make_order(1U + i,
+                                                 lob::Side::Sell,
+                                                 1000 + static_cast<std::int64_t>(39U - i),
+                                                 1U,
+                                                 10U + static_cast<lob::sim::AgentID>(i),
+                                                 i))
+                        .accepted);
+    }
+
+    const auto result = book.submit_limit(make_order(100U, lob::Side::Buy, 1039, 40U, 99U, 100U));
+
+    ASSERT_TRUE(result.accepted);
+    ASSERT_EQ(result.status, lob::sim::OrderStatus::Filled);
+    ASSERT_EQ(result.execution_count, 80U);
+    for (std::size_t fill = 0U; fill < 40U; ++fill) {
+        EXPECT_EQ(result.executions[fill * 2U].price_ticks, 1000 + static_cast<std::int64_t>(fill));
+        EXPECT_EQ(result.executions[fill * 2U].counterparty_order_id, 40U - fill);
+    }
+    EXPECT_FALSE(book.best_ask().has_value());
+    EXPECT_EQ(book.active_price_level_count(), 0U);
+}
+
+TEST(MatchingBookTest, RobinHoodIndexHandlesWrapAroundDeletionAndFreeListReuse) {
+    lob::sim::MatchingBook<6U, 40U, 4U, 7U> book {};
+    constexpr std::array<lob::sim::OrderID, 4U> colliding_ids {6U, 13U, 20U, 27U};
+
+    for (const auto order_id : colliding_ids) {
+        ASSERT_TRUE(book.submit_limit(make_order(order_id, lob::Side::Buy, 1000, order_id)).accepted);
+    }
+    ASSERT_TRUE(book.cancel(13U).canceled);
+    EXPECT_FALSE(book.remaining_quantity(13U).has_value());
+    EXPECT_EQ(book.remaining_quantity(6U), 6U);
+    EXPECT_EQ(book.remaining_quantity(20U), 20U);
+    EXPECT_EQ(book.remaining_quantity(27U), 27U);
+
+    ASSERT_TRUE(book.submit_limit(make_order(34U, lob::Side::Buy, 1000, 34U)).accepted);
+    EXPECT_EQ(book.remaining_quantity(34U), 34U);
+    ASSERT_TRUE(book.cancel(6U).canceled);
+    ASSERT_TRUE(book.cancel(27U).canceled);
+    EXPECT_EQ(book.remaining_quantity(20U), 20U);
+    EXPECT_EQ(book.remaining_quantity(34U), 34U);
+}
+
+TEST(MatchingBookTest, RobinHoodIndexSupportsProbeLengthsBeyondUint8Range) {
+    constexpr std::size_t index_capacity = 263U;
+    constexpr std::size_t order_count = 258U;
+    lob::sim::MatchingBook<260U, 40U, 4U, index_capacity> book {};
+
+    for (std::uint64_t i = 0U; i < order_count; ++i) {
+        const lob::sim::OrderID order_id = 262U + (i * index_capacity);
+        ASSERT_TRUE(book.submit_limit(make_order(order_id, lob::Side::Buy, 1000, 1U)).accepted) << i;
+    }
+
+    const lob::sim::OrderID erased_id = 262U + (129U * index_capacity);
+    ASSERT_TRUE(book.cancel(erased_id).canceled);
+    EXPECT_FALSE(book.remaining_quantity(erased_id).has_value());
+    for (std::uint64_t i = 0U; i < order_count; ++i) {
+        const lob::sim::OrderID order_id = 262U + (i * index_capacity);
+        if (order_id != erased_id) {
+            EXPECT_EQ(book.remaining_quantity(order_id), 1U) << i;
+        }
+    }
+
+    const lob::sim::OrderID replacement_id = 262U + (order_count * index_capacity);
+    ASSERT_TRUE(book.submit_limit(make_order(replacement_id, lob::Side::Buy, 1000, 2U)).accepted);
+    EXPECT_EQ(book.remaining_quantity(replacement_id), 2U);
+}
+
+TEST(MatchingBookTest, ClearResetsDeepIndicesHashesAndFreeLists) {
+    lob::sim::MatchingBook<48U, 40U, 8U, 53U> book {};
+    for (std::uint64_t i = 0U; i < 40U; ++i) {
+        ASSERT_TRUE(book.submit_limit(make_order(52U + (i * 53U),
+                                                 lob::Side::Buy,
+                                                 1000 + static_cast<std::int64_t>(i),
+                                                 i + 1U))
+                        .accepted);
+    }
+
+    book.clear();
+
+    EXPECT_EQ(book.resting_order_count(), 0U);
+    EXPECT_EQ(book.active_price_level_count(), 0U);
+    EXPECT_FALSE(book.best_bid().has_value());
+    EXPECT_FALSE(book.best_ask().has_value());
+    EXPECT_EQ(book.total_quantity_at_price(lob::Side::Buy, 1000), 0U);
+    EXPECT_FALSE(book.remaining_quantity(52U).has_value());
+
+    for (std::uint64_t i = 0U; i < 40U; ++i) {
+        ASSERT_TRUE(book.submit_limit(make_order(10000U + i,
+                                                 lob::Side::Sell,
+                                                 2000 + static_cast<std::int64_t>(39U - i),
+                                                 1U))
+                        .accepted);
+    }
+    EXPECT_EQ(book.best_ask(), 2000);
+    lob::sim::MarketDepthSnapshot<40U> depth {};
+    book.copy_depth(depth);
+    ASSERT_EQ(depth.ask_count, 40U);
+    for (std::size_t i = 0U; i < depth.ask_count; ++i) {
+        EXPECT_EQ(depth.asks[i].price_ticks, 2000 + static_cast<std::int64_t>(i));
+    }
+}
+
 }  // namespace

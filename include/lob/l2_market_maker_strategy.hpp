@@ -8,7 +8,8 @@
 
 namespace lob {
 
-class L2MarketMakerStrategy final : public L2Strategy {
+template <typename Gateway>
+class L2MarketMakerStrategy final : public L2Strategy<Gateway> {
 public:
     struct Config {
         double quote_offset {5.0};
@@ -19,7 +20,7 @@ public:
     L2MarketMakerStrategy() : L2MarketMakerStrategy(Config {}) {}
     explicit L2MarketMakerStrategy(Config config) : config_(config) {}
 
-    void on_tick(AssetID asset_id, const L2OrderBook& book, OrderGateway& gateway) override {
+    void on_tick(AssetID asset_id, const L2OrderBook& book, Gateway& gateway) override {
         const double best_bid = static_cast<double>(book.effective_best_bid()) / 100'000'000.0;
         const double best_ask = static_cast<double>(book.effective_best_ask()) / 100'000'000.0;
         const std::uint64_t timestamp = gateway.current_timestamp();
@@ -51,7 +52,7 @@ public:
         next_refresh_timestamp_ = timestamp + config_.refresh_interval_ns;
     }
 
-    void on_fill(const StrategyFill& fill, OrderGateway& gateway) override {
+    void on_fill(const StrategyFill& fill, Gateway& gateway) override {
         (void)gateway;
 
         if (fill.order_id == bid_order_id_) {
@@ -72,7 +73,7 @@ public:
     }
 
 private:
-    void cancel_active_quotes(AssetID asset_id, OrderGateway& gateway) {
+    void cancel_active_quotes(AssetID asset_id, Gateway& gateway) {
         if (bid_order_id_ != 0U && gateway.cancel_order(asset_id, bid_order_id_)) {
             bid_order_id_ = 0U;
             bid_remaining_quantity_ = 0U;

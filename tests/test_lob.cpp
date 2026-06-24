@@ -6,14 +6,17 @@
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
+#include <limits>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include "lob/analytics.hpp"
 #include "lob/csv_parser.hpp"
-#include "lob/dynamic_wallet.hpp"
+#include "lob/fixed_matching_book.hpp"
 #include "lob/event_merger.hpp"
 #include "lob/graph_arbitrage_engine.hpp"
+#include "lob/indexed_pending_min_heap.hpp"
 #include "lob/l2_backtest_engine.hpp"
 #include "lob/l2_market_maker_strategy.hpp"
 #include "lob/l2_order_book.hpp"
@@ -21,7 +24,7 @@
 #include "lob/l2_update_csv_parser.hpp"
 #include "lob/market_maker_strategy.hpp"
 #include "lob/multi_asset_backtest_engine.hpp"
-#include "lob/order_book.hpp"
+#include "lob/wallet.hpp"
 #include "lob/PolymarketFeedAdapter.hpp"
 #include "lob/PolymarketOrderBook.hpp"
 #include "lob/PolymarketTypes.hpp"
@@ -61,7 +64,7 @@ public:
             .timestamp = timestamp,
             .order = lob::Order {
                 .id = timestamp,
-                .price = 100.0,
+                .price = P(100.0),
                 .quantity = 0U,
                 .side = lob::Side::Buy,
                 .timestamp = timestamp,
@@ -75,9 +78,17 @@ private:
     std::size_t index_ {};
 };
 
-class CountingStrategy final : public lob::Strategy {
+using CountingEngine = lob::MultiAssetBacktestEngine<2U, FakeStreamParser<2U>>;
+
+static_assert(!std::is_polymorphic_v<lob::OrderGateway<lob::BacktestEngine>>);
+static_assert(!std::is_polymorphic_v<lob::BacktestEngine>);
+static_assert(!std::is_polymorphic_v<lob::L2BacktestEngine>);
+static_assert(std::is_base_of_v<lob::OrderGateway<lob::BacktestEngine>, lob::BacktestEngine>);
+static_assert(std::is_base_of_v<lob::OrderGateway<CountingEngine>, CountingEngine>);
+
+class CountingStrategy final : public lob::Strategy<CountingEngine> {
 public:
-    void on_tick(lob::AssetID asset_id, const lob::OrderBook& book, lob::OrderGateway& gateway) override {
+    void on_tick(lob::AssetID asset_id, const lob::FixedMatchingBook& book, CountingEngine& gateway) override {
         (void)book;
         (void)gateway;
         ++ticks_by_asset_[asset_id];
@@ -86,11 +97,51 @@ public:
     std::array<std::uint64_t, 2U> ticks_by_asset_ {};
 };
 
-TEST(OrderBookTest, InitializesSuccessfully) {
-    const lob::OrderBook order_book {};
-    (void)order_book;
+TEST(StaticVectorTest, SupportsFixedCapacityInsertionErasureAndFailureReporting) {
+    lob::StaticVector<int, 3U> values {};
 
-    ASSERT_TRUE(true);
+    EXPECT_TRUE(values.empty());
+    EXPECT_EQ(values.capacity(), 3U);
+    EXPECT_TRUE(values.reserve(3U));
+    EXPECT_FALSE(values.reserve(4U));
+    EXPECT_TRUE(values.push_back(2));
+    EXPECT_TRUE(values.push_back(3));
+
+    const auto inserted = values.insert(values.cbegin(), 1);
+    ASSERT_EQ(inserted, values.begin());
+    ASSERT_EQ(values.size(), 3U);
+    EXPECT_EQ(values.front(), 1);
+    EXPECT_EQ(values.back(), 3);
+    EXPECT_TRUE(values.full());
+
+    EXPECT_FALSE(values.push_back(4));
+    EXPECT_EQ(values.insert(values.cend(), 4), values.end());
+    EXPECT_EQ(values.size(), 3U);
+
+    EXPECT_EQ(values.erase(values.cend()), values.end());
+    const auto next = values.erase(values.cbegin() + 1);
+    ASSERT_EQ(next, values.begin() + 1);
+    EXPECT_EQ(*next, 3);
+    EXPECT_EQ(values.size(), 2U);
+
+    EXPECT_TRUE(values.pop_back());
+    EXPECT_TRUE(values.pop_back());
+    EXPECT_FALSE(values.pop_back());
+    EXPECT_TRUE(values.empty());
+}
+
+TEST(StaticVectorTest, StoresElementsInsideTheObjectWithoutDynamicStorage) {
+    using Container = lob::StaticVector<lob::L2OrderBook::Level, 128U>;
+    static_assert(std::is_trivially_destructible_v<Container>);
+
+    Container levels {};
+    ASSERT_TRUE(levels.push_back({.price = P(100.0), .qty = Q(1.0), .depleted_qty = 0U}));
+
+    const auto object_begin = reinterpret_cast<std::uintptr_t>(&levels);
+    const auto object_end = object_begin + sizeof(levels);
+    const auto storage_address = reinterpret_cast<std::uintptr_t>(levels.begin());
+    EXPECT_GE(storage_address, object_begin);
+    EXPECT_LT(storage_address, object_end);
 }
 
 TEST(L2OrderBookTest, MaintainsBidAndAskSortOrder) {
@@ -183,6 +234,64 @@ TEST(L2OrderBookTest, EnforcesCapacityByDroppingDeepLevels) {
     EXPECT_EQ(book.asks()[2].price, P(102.0));
 }
 
+TEST(L2OrderBookTest, PreservesOrderingAcrossLinearAndBinarySearchBoundary) {
+    lob::L2OrderBook book {};
+
+    for (std::int64_t price = 100; price < 116; ++price) {
+        book.update_level(true, P(static_cast<double>(price)), Q(1.0));
+        book.update_level(false, P(static_cast<double>(216 - price)), Q(1.0));
+    }
+    ASSERT_EQ(book.bids().size(), 16U);
+    ASSERT_EQ(book.asks().size(), 16U);
+
+    book.update_level(true, P(108.5), Q(2.0));
+    book.update_level(false, P(108.5), Q(3.0));
+    ASSERT_EQ(book.bids().size(), 17U);
+    ASSERT_EQ(book.asks().size(), 17U);
+
+    EXPECT_EQ(book.effective_qty(true, P(108.5)), Q(2.0));
+    EXPECT_EQ(book.effective_qty(false, P(108.5)), Q(3.0));
+    for (std::size_t i = 1U; i < book.bids().size(); ++i) {
+        EXPECT_GT(book.bids()[i - 1U].price, book.bids()[i].price);
+    }
+    for (std::size_t i = 1U; i < book.asks().size(); ++i) {
+        EXPECT_LT(book.asks()[i - 1U].price, book.asks()[i].price);
+    }
+
+    book.update_level(true, P(108.5), 0U);
+    book.update_level(false, P(108.5), 0U);
+    EXPECT_EQ(book.bids().size(), 16U);
+    EXPECT_EQ(book.asks().size(), 16U);
+    EXPECT_EQ(book.effective_qty(true, P(108.5)), 0U);
+    EXPECT_EQ(book.effective_qty(false, P(108.5)), 0U);
+}
+
+TEST(L2OrderBookTest, EnforcesPhysicalCapacityOf128LevelsPerSide) {
+    lob::L2OrderBook book {std::numeric_limits<std::size_t>::max()};
+    EXPECT_EQ(book.max_levels_per_side(), lob::L2OrderBook::kCapacity);
+
+    for (std::int64_t price = 1; price <= 128; ++price) {
+        book.update_level(true, P(static_cast<double>(price)), Q(1.0));
+        book.update_level(false, P(static_cast<double>(price)), Q(1.0));
+    }
+    ASSERT_EQ(book.bids().size(), 128U);
+    ASSERT_EQ(book.asks().size(), 128U);
+
+    book.update_level(true, P(0.5), Q(1.0));
+    book.update_level(false, P(129.0), Q(1.0));
+    EXPECT_EQ(book.bids().back().price, P(1.0));
+    EXPECT_EQ(book.asks().back().price, P(128.0));
+
+    book.update_level(true, P(129.0), Q(2.0));
+    book.update_level(false, P(0.5), Q(3.0));
+    ASSERT_EQ(book.bids().size(), 128U);
+    ASSERT_EQ(book.asks().size(), 128U);
+    EXPECT_EQ(book.bids().front().price, P(129.0));
+    EXPECT_EQ(book.bids().back().price, P(2.0));
+    EXPECT_EQ(book.asks().front().price, P(0.5));
+    EXPECT_EQ(book.asks().back().price, P(127.0));
+}
+
 TEST(L2OrderBookTest, AppliesSnapshotByClearingBothSides) {
     lob::L2OrderBook book {8U};
     book.update_level(true, P(100.0), Q(1.0));
@@ -217,6 +326,51 @@ TEST(L2OrderBookTest, RemovesLevelsNotPresentInSnapshotWithoutClearingRetainedDe
     EXPECT_EQ(book.bids()[1].price, P(100.0));
     EXPECT_EQ(book.bids()[1].depleted_qty, Q(2.0));
     EXPECT_EQ(book.effective_qty(true, P(99.0)), 0U);
+}
+
+TEST(L2OrderBookTest, PreservesScaledNotionalWithoutEffectiveAggregateUnderflow) {
+    lob::L2OrderBook book {8U};
+    book.update_level(false, P(50'000.0), Q(10.0));
+
+    constexpr double kNotionalScale = 10'000'000'000'000'000.0;
+    EXPECT_DOUBLE_EQ(static_cast<double>(book.ask_total_notional()) / kNotionalScale, 500'000.0);
+
+    book.deplete_level(false, P(50'000.0), Q(11.0));
+
+    EXPECT_EQ(book.ask_depleted_qty(), Q(11.0));
+    EXPECT_EQ(book.ask_effective_qty(), 0U);
+    EXPECT_DOUBLE_EQ(static_cast<double>(book.ask_effective_notional()) / kNotionalScale, 0.0);
+}
+
+TEST(L2OrderBookTest, KeepsWideAccumulatorsCorrectAcrossReplacementAndRemoval) {
+    lob::L2OrderBook book {2U};
+    constexpr std::int64_t kLargePrice = std::numeric_limits<std::int64_t>::max() / 4;
+    constexpr std::uint64_t kLargeQty = std::numeric_limits<std::uint64_t>::max() / 4U;
+    const auto first_notional =
+        static_cast<lob::L2OrderBook::NotionalTicksLots>(kLargePrice) *
+        static_cast<lob::L2OrderBook::NotionalTicksLots>(kLargeQty);
+
+    book.update_level(true, kLargePrice, kLargeQty);
+    EXPECT_EQ(book.bid_total_notional(), first_notional);
+
+    book.deplete_level(true, kLargePrice, kLargeQty + 1U);
+    EXPECT_EQ(book.bid_effective_qty(), 0U);
+    EXPECT_EQ(book.bid_effective_notional(), 0);
+
+    book.update_level(true, kLargePrice, 2U);
+    EXPECT_EQ(book.bid_total_qty(), 2U);
+    EXPECT_EQ(book.bid_depleted_qty(), 2U);
+    EXPECT_EQ(
+        book.bid_total_notional(),
+        static_cast<lob::L2OrderBook::NotionalTicksLots>(kLargePrice) * 2
+    );
+
+    book.update_level(true, kLargePrice, 0U);
+    EXPECT_TRUE(book.bids().empty());
+    EXPECT_EQ(book.bid_total_qty(), 0U);
+    EXPECT_EQ(book.bid_depleted_qty(), 0U);
+    EXPECT_EQ(book.bid_total_notional(), 0);
+    EXPECT_EQ(book.bid_depleted_notional(), 0);
 }
 
 TEST(PolymarketOrderBookTest, MaintainsDepthByCentIndexAndFindsBboWithMasks) {
@@ -294,251 +448,65 @@ TEST(PolymarketFeedAdapterTest, RoutesDenseTokenUpdatesToBoundBooks) {
     }));
 }
 
-TEST(DynamicWalletTest, TracksReservedAndFreeBalances) {
-    lob::DynamicWallet wallet {};
-    wallet.reset(2U, 0U, 100.0);
-
-    EXPECT_TRUE(wallet.reserve_balance(0U, 60.0));
-    EXPECT_DOUBLE_EQ(wallet.balance(0U), 100.0);
-    EXPECT_DOUBLE_EQ(wallet.reserved(0U), 60.0);
-    EXPECT_DOUBLE_EQ(wallet.free_balance(0U), 40.0);
-    EXPECT_FALSE(wallet.reserve_balance(0U, 50.0));
-
-    EXPECT_TRUE(wallet.consume_reserved(0U, 25.0));
-    EXPECT_DOUBLE_EQ(wallet.balance(0U), 75.0);
-    EXPECT_DOUBLE_EQ(wallet.reserved(0U), 35.0);
-    EXPECT_DOUBLE_EQ(wallet.free_balance(0U), 40.0);
-
-    wallet.release_reserved(0U, 35.0);
-    EXPECT_DOUBLE_EQ(wallet.balance(0U), 75.0);
-    EXPECT_DOUBLE_EQ(wallet.reserved(0U), 0.0);
-    EXPECT_DOUBLE_EQ(wallet.free_balance(0U), 75.0);
+TEST(WalletTest, TracksFixedPointReservedAndFreeBalances) {
+    lob::Wallet wallet {};
+    wallet.reset(2U, 0U, P(100.0));
+    EXPECT_TRUE(wallet.reserve_balance(0U, P(60.0)));
+    EXPECT_EQ(wallet.free_balance(0U), P(40.0));
+    EXPECT_TRUE(wallet.consume_reserved(0U, P(25.0)));
+    EXPECT_EQ(wallet.balance(0U), P(75.0));
+    EXPECT_EQ(wallet.reserved(0U), P(35.0));
+    EXPECT_TRUE(wallet.release_reserved(0U, P(35.0)));
+    EXPECT_EQ(wallet.free_balance(0U), P(75.0));
 }
 
-TEST(OrderBookTest, ProcessOrderRestsBuyOrderWhenBookDoesNotCross) {
-    lob::OrderBook order_book {};
-    const lob::Order order {
-        .id = 1U,
-        .price = 100.25,
-        .quantity = 10U,
-        .side = lob::Side::Buy,
-        .timestamp = 1'000U,
-    };
-
-    const auto trades = order_book.process_order(order);
-
-    ASSERT_TRUE(trades.empty());
-    ASSERT_EQ(order_book.bids().size(), 1U);
-    ASSERT_TRUE(order_book.asks().empty());
-    ASSERT_EQ(order_book.order_index().size(), 1U);
-
-    const auto bid_level_it = order_book.bids().find(order.price);
-    ASSERT_NE(bid_level_it, order_book.bids().end());
-    ASSERT_EQ(bid_level_it->second.orders.size(), 1U);
-    EXPECT_EQ(bid_level_it->second.orders.back().id, order.id);
-    EXPECT_EQ(order_book.order_index().at(order.id).order_iterator->id, order.id);
+TEST(WalletTest, RejectsBoundsAndOverflow) {
+    lob::Wallet wallet {};
+    wallet.reset(2U, 0U, std::numeric_limits<std::int64_t>::max());
+    EXPECT_FALSE(wallet.add_balance(0U, 1));
+    EXPECT_FALSE(wallet.add_balance(2U, 1));
+    EXPECT_FALSE(wallet.reserve_balance(2U, 1));
+    std::int64_t converted {};
+    EXPECT_FALSE(lob::Wallet::from_double(std::numeric_limits<double>::infinity(), converted));
 }
 
-TEST(OrderBookTest, ProcessOrderRestsSellOrderWhenBookDoesNotCross) {
-    lob::OrderBook order_book {};
-    const lob::Order order {
-        .id = 2U,
-        .price = 100.50,
-        .quantity = 12U,
-        .side = lob::Side::Sell,
-        .timestamp = 1'001U,
-    };
-
-    const auto trades = order_book.process_order(order);
-
-    ASSERT_TRUE(trades.empty());
-    ASSERT_TRUE(order_book.bids().empty());
-    ASSERT_EQ(order_book.asks().size(), 1U);
-    ASSERT_EQ(order_book.order_index().size(), 1U);
-
-    const auto ask_level_it = order_book.asks().find(order.price);
-    ASSERT_NE(ask_level_it, order_book.asks().end());
-    ASSERT_EQ(ask_level_it->second.orders.size(), 1U);
-    EXPECT_EQ(ask_level_it->second.orders.back().id, order.id);
-    EXPECT_EQ(order_book.order_index().at(order.id).order_iterator->id, order.id);
+TEST(WalletTest, UpdatesCachedNavAndRiskAfterBalanceAndFactorChanges) {
+    lob::Wallet wallet {};
+    wallet.reset(3U, 0U, P(100.0));
+    EXPECT_TRUE(wallet.set_liquidation_factor(1U, P(50.0)));
+    EXPECT_TRUE(wallet.add_balance(1U, P(2.0)));
+    EXPECT_EQ(wallet.mark_to_market_nav(), P(200.0));
+    EXPECT_EQ(wallet.get_total_inventory_risk(), P(100.0));
+    EXPECT_TRUE(wallet.set_liquidation_factor(1U, P(60.0)));
+    EXPECT_EQ(wallet.mark_to_market_nav(), P(220.0));
+    EXPECT_EQ(wallet.get_total_inventory_risk(), P(120.0));
 }
 
-TEST(OrderBookTest, ProcessOrderMatchesCrossSpreadUsingPriceTimePriority) {
-    lob::OrderBook order_book {};
-
-    const auto first_resting_trades = order_book.process_order(lob::Order {
-        .id = 10U,
-        .price = 100.00,
-        .quantity = 5U,
-        .side = lob::Side::Sell,
-        .timestamp = 1U,
-    });
-    const auto second_resting_trades = order_book.process_order(lob::Order {
-        .id = 11U,
-        .price = 100.00,
-        .quantity = 7U,
-        .side = lob::Side::Sell,
-        .timestamp = 2U,
-    });
-    const auto third_resting_trades = order_book.process_order(lob::Order {
-        .id = 12U,
-        .price = 101.00,
-        .quantity = 4U,
-        .side = lob::Side::Sell,
-        .timestamp = 3U,
-    });
-
-    ASSERT_TRUE(first_resting_trades.empty());
-    ASSERT_TRUE(second_resting_trades.empty());
-    ASSERT_TRUE(third_resting_trades.empty());
-
-    const auto trades = order_book.process_order(lob::Order {
-        .id = 20U,
-        .price = 101.00,
-        .quantity = 14U,
-        .side = lob::Side::Buy,
-        .timestamp = 4U,
-    });
-
-    ASSERT_EQ(trades.size(), 3U);
-    EXPECT_EQ(trades[0].buyer_id, 20U);
-    EXPECT_EQ(trades[0].seller_id, 10U);
-    EXPECT_EQ(trades[0].taker_order_id, 20U);
-    EXPECT_DOUBLE_EQ(trades[0].price, 100.00);
-    EXPECT_EQ(trades[0].quantity, 5U);
-
-    EXPECT_EQ(trades[1].buyer_id, 20U);
-    EXPECT_EQ(trades[1].seller_id, 11U);
-    EXPECT_EQ(trades[1].taker_order_id, 20U);
-    EXPECT_DOUBLE_EQ(trades[1].price, 100.00);
-    EXPECT_EQ(trades[1].quantity, 7U);
-
-    EXPECT_EQ(trades[2].buyer_id, 20U);
-    EXPECT_EQ(trades[2].seller_id, 12U);
-    EXPECT_EQ(trades[2].taker_order_id, 20U);
-    EXPECT_DOUBLE_EQ(trades[2].price, 101.00);
-    EXPECT_EQ(trades[2].quantity, 2U);
-
-    ASSERT_TRUE(order_book.bids().empty());
-    ASSERT_EQ(order_book.asks().size(), 1U);
-    ASSERT_EQ(order_book.asks().count(100.00), 0U);
-    ASSERT_EQ(order_book.order_index().count(10U), 0U);
-    ASSERT_EQ(order_book.order_index().count(11U), 0U);
-    ASSERT_EQ(order_book.order_index().count(20U), 0U);
-    ASSERT_EQ(order_book.order_index().count(12U), 1U);
-    ASSERT_EQ(order_book.asks().at(101.00).orders.size(), 1U);
-    EXPECT_EQ(order_book.asks().at(101.00).orders.front().id, 12U);
-    EXPECT_EQ(order_book.asks().at(101.00).orders.front().quantity, 2U);
+TEST(FixedMatchingBookTest, PreservesPriceTimeAndFixedPointDepth) {
+    lob::FixedMatchingBook book {};
+    EXPECT_TRUE(book.submit(10U, lob::Side::Sell, P(100.0), Q(5.0), 1U).rested);
+    EXPECT_TRUE(book.submit(11U, lob::Side::Sell, P(100.0), Q(7.0), 2U).rested);
+    const auto result = book.submit(20U, lob::Side::Buy, P(100.0), Q(6.0), 3U);
+    ASSERT_EQ(result.execution_count, 4U);
+    EXPECT_EQ(result.executions[0].counterparty_order_id, 10U);
+    EXPECT_EQ(result.executions[2].counterparty_order_id, 11U);
+    EXPECT_EQ(book.total_quantity_at_price(lob::Side::Sell, P(100.0)), Q(6.0));
+    EXPECT_EQ(book.best_ask_ticks(), P(100.0));
 }
 
-TEST(OrderBookTest, ProcessOrderRestsResidualQuantityAfterPartialIncomingFill) {
-    lob::OrderBook order_book {};
-
-    ASSERT_TRUE(order_book.process_order(lob::Order {
-        .id = 30U,
-        .price = 100.00,
-        .quantity = 4U,
-        .side = lob::Side::Sell,
-        .timestamp = 10U,
-    }).empty());
-
-    const auto trades = order_book.process_order(lob::Order {
-        .id = 31U,
-        .price = 101.00,
-        .quantity = 10U,
-        .side = lob::Side::Buy,
-        .timestamp = 11U,
-    });
-
-    ASSERT_EQ(trades.size(), 1U);
-    EXPECT_EQ(trades.front().buyer_id, 31U);
-    EXPECT_EQ(trades.front().seller_id, 30U);
-    EXPECT_DOUBLE_EQ(trades.front().price, 100.00);
-    EXPECT_EQ(trades.front().quantity, 4U);
-
-    ASSERT_TRUE(order_book.asks().empty());
-    ASSERT_EQ(order_book.bids().size(), 1U);
-    ASSERT_EQ(order_book.order_index().count(30U), 0U);
-    ASSERT_EQ(order_book.order_index().count(31U), 1U);
-    ASSERT_EQ(order_book.bids().at(101.00).orders.size(), 1U);
-    EXPECT_EQ(order_book.bids().at(101.00).orders.front().quantity, 6U);
-}
-
-TEST(OrderBookTest, CancelOrderRemovesEmptyBidPriceLevelAndIndexEntry) {
-    lob::OrderBook order_book {};
-    const lob::Order first_order {
-        .id = 10U,
-        .price = 99.75,
-        .quantity = 15U,
-        .side = lob::Side::Buy,
-        .timestamp = 2'000U,
-    };
-    const lob::Order second_order {
-        .id = 11U,
-        .price = 99.75,
-        .quantity = 20U,
-        .side = lob::Side::Buy,
-        .timestamp = 2'001U,
-    };
-
-    ASSERT_TRUE(order_book.process_order(first_order).empty());
-    ASSERT_TRUE(order_book.process_order(second_order).empty());
-
-    ASSERT_TRUE(order_book.cancel_order(first_order.id));
-    ASSERT_EQ(order_book.bids().size(), 1U);
-    ASSERT_EQ(order_book.bids().at(first_order.price).orders.size(), 1U);
-    ASSERT_EQ(order_book.order_index().count(first_order.id), 0U);
-
-    ASSERT_TRUE(order_book.cancel_order(second_order.id));
-    ASSERT_TRUE(order_book.bids().empty());
-    ASSERT_EQ(order_book.order_index().count(second_order.id), 0U);
-}
-
-TEST(OrderBookTest, CancelOrderReturnsFalseForUnknownId) {
-    lob::OrderBook order_book {};
-    EXPECT_FALSE(order_book.cancel_order(999U));
-}
-
-TEST(OrderBookTest, ExposesBestPricesAndL2Snapshot) {
-    lob::OrderBook order_book {};
-    ASSERT_TRUE(order_book.process_order(lob::Order {
-        .id = 100U,
-        .price = 99.50,
-        .quantity = 10U,
-        .side = lob::Side::Buy,
-        .timestamp = 1U,
-    }).empty());
-    ASSERT_TRUE(order_book.process_order(lob::Order {
-        .id = 101U,
-        .price = 99.50,
-        .quantity = 15U,
-        .side = lob::Side::Buy,
-        .timestamp = 2U,
-    }).empty());
-    ASSERT_TRUE(order_book.process_order(lob::Order {
-        .id = 102U,
-        .price = 100.50,
-        .quantity = 20U,
-        .side = lob::Side::Sell,
-        .timestamp = 3U,
-    }).empty());
-
-    EXPECT_DOUBLE_EQ(order_book.get_best_bid(), 99.50);
-    EXPECT_DOUBLE_EQ(order_book.get_best_ask(), 100.50);
-
-    std::vector<lob::PriceLevelInfo> bids {};
-    std::vector<lob::PriceLevelInfo> asks {};
-    bids.reserve(5U);
-    asks.reserve(5U);
-
-    order_book.get_l2_snapshot(bids, asks, 5);
-
-    ASSERT_EQ(bids.size(), 1U);
+TEST(FixedMatchingBookTest, CancelsAndExportsFixedDepth) {
+    lob::FixedMatchingBook book {};
+    EXPECT_TRUE(book.submit(1U, lob::Side::Buy, P(99.5), Q(2.0), 1U).rested);
+    EXPECT_TRUE(book.submit(2U, lob::Side::Sell, P(100.5), Q(3.0), 2U).rested);
+    EXPECT_TRUE(book.cancel(1U).canceled);
+    EXPECT_EQ(book.best_bid_ticks(), 0);
+    std::vector<lob::FixedPriceLevelInfo> bids {};
+    std::vector<lob::FixedPriceLevelInfo> asks {};
+    book.get_l2_snapshot(bids, asks, 5U);
+    EXPECT_TRUE(bids.empty());
     ASSERT_EQ(asks.size(), 1U);
-    EXPECT_DOUBLE_EQ(bids.front().price, 99.50);
-    EXPECT_DOUBLE_EQ(bids.front().total_qty, 25.0);
-    EXPECT_DOUBLE_EQ(asks.front().price, 100.50);
-    EXPECT_DOUBLE_EQ(asks.front().total_qty, 20.0);
+    EXPECT_EQ(asks.front().price_ticks, P(100.5));
+    EXPECT_EQ(asks.front().quantity_lots, Q(3.0));
 }
 
 TEST(AnalyticsTest, ComputesPnlAndDrawdownFromEquityCurve) {
@@ -695,6 +663,43 @@ TEST(VenueReplayTest, AcceptsNewSnapshotEpochForSameProduct) {
     EXPECT_EQ(validator.validate(new_epoch), lob::ReplayValidationStatus::Accepted);
 }
 
+TEST(VenueReplayTest, RejectsUnsupportedDirectAddressesWithoutMutatingValidState) {
+    lob::ReplaySequenceValidator validator {};
+    lob::FeedEnvelope valid {
+        .venue_id = 15U,
+        .product_id = 255U,
+        .sequence = 10U,
+        .snapshot_epoch = 1U,
+    };
+    lob::FeedEnvelope invalid_venue = valid;
+    invalid_venue.venue_id = 16U;
+    lob::FeedEnvelope invalid_product = valid;
+    invalid_product.product_id = 256U;
+
+    EXPECT_EQ(validator.validate(valid), lob::ReplayValidationStatus::Accepted);
+    EXPECT_EQ(validator.validate(invalid_venue), lob::ReplayValidationStatus::UnsupportedAddress);
+    EXPECT_EQ(validator.validate(invalid_product), lob::ReplayValidationStatus::UnsupportedAddress);
+
+    ++valid.sequence;
+    EXPECT_EQ(validator.validate(valid), lob::ReplayValidationStatus::Accepted);
+}
+
+TEST(VenueReplayTest, ResetClearsAllDirectAddressState) {
+    lob::ReplaySequenceValidator validator {};
+    lob::FeedEnvelope envelope {
+        .venue_id = 3U,
+        .product_id = 42U,
+        .sequence = 100U,
+        .snapshot_epoch = 7U,
+    };
+
+    EXPECT_EQ(validator.validate(envelope), lob::ReplayValidationStatus::Accepted);
+    validator.reset();
+    envelope.sequence = 1U;
+    envelope.snapshot_epoch = 1U;
+    EXPECT_EQ(validator.validate(envelope), lob::ReplayValidationStatus::Accepted);
+}
+
 TEST(VenueManifestTest, DescribesVenueProductScalesAndCosts) {
     lob::VenueManifest manifest {};
     manifest.assets.push_back(lob::AssetManifestEntry {
@@ -726,9 +731,13 @@ TEST(VenueManifestTest, DescribesVenueProductScalesAndCosts) {
     EXPECT_EQ(manifest.cost_models[0].proportional_fee_bps, 7.5);
 }
 
-class CountingL2Strategy final : public lob::Strategy {
+class CountingL2Strategy final : public lob::Strategy<lob::L2BacktestEngine> {
 public:
-    void on_tick(lob::AssetID asset_id, const lob::OrderBook& book, lob::OrderGateway& gateway) override {
+    void on_tick(
+        lob::AssetID asset_id,
+        const lob::FixedMatchingBook& book,
+        lob::L2BacktestEngine& gateway
+    ) override {
         last_asset_id = asset_id;
         last_timestamp = gateway.current_timestamp();
         last_best_bid = book.get_best_bid();
@@ -743,19 +752,23 @@ public:
     double last_best_ask {};
 };
 
-class SubmitOnceL2Strategy final : public lob::Strategy {
+class SubmitOnceL2Strategy final : public lob::Strategy<lob::L2BacktestEngine> {
 public:
     SubmitOnceL2Strategy(lob::Side side, double price, std::uint64_t quantity)
         : side_(side), price_(price), quantity_(quantity) {}
 
-    void on_start(lob::OrderGateway& gateway) override {
+    void on_start(lob::L2BacktestEngine& gateway) override {
         if (submit_on_start) {
             order_id = gateway.submit_order(0U, side_, price_, quantity_, gateway.current_timestamp());
             submitted = true;
         }
     }
 
-    void on_tick(lob::AssetID asset_id, const lob::OrderBook& book, lob::OrderGateway& gateway) override {
+    void on_tick(
+        lob::AssetID asset_id,
+        const lob::FixedMatchingBook& book,
+        lob::L2BacktestEngine& gateway
+    ) override {
         (void)book;
         ++ticks;
         if (!submitted) {
@@ -764,7 +777,7 @@ public:
         }
     }
 
-    void on_fill(const lob::StrategyFill& fill, lob::OrderGateway& gateway) override {
+    void on_fill(const lob::StrategyFill& fill, lob::L2BacktestEngine& gateway) override {
         (void)gateway;
         ++fills;
         last_fill = fill;
@@ -783,9 +796,13 @@ private:
     std::uint64_t quantity_ {};
 };
 
-class CountingNativeL2Strategy final : public lob::L2Strategy {
+class CountingNativeL2Strategy final : public lob::L2Strategy<lob::L2BacktestEngine> {
 public:
-    void on_tick(lob::AssetID asset_id, const lob::L2OrderBook& book, lob::OrderGateway& gateway) override {
+    void on_tick(
+        lob::AssetID asset_id,
+        const lob::L2OrderBook& book,
+        lob::L2BacktestEngine& gateway
+    ) override {
         last_asset_id = asset_id;
         last_timestamp = gateway.current_timestamp();
         last_best_bid = static_cast<double>(book.best_bid()) / 100'000'000.0;
@@ -804,12 +821,16 @@ public:
     double last_ask_visible_qty {};
 };
 
-class SubmitOnceNativeL2Strategy final : public lob::L2Strategy {
+class SubmitOnceNativeL2Strategy final : public lob::L2Strategy<lob::L2BacktestEngine> {
 public:
     SubmitOnceNativeL2Strategy(lob::Side side, double price, std::uint64_t quantity)
         : side_(side), price_(price), quantity_(quantity) {}
 
-    void on_tick(lob::AssetID asset_id, const lob::L2OrderBook& book, lob::OrderGateway& gateway) override {
+    void on_tick(
+        lob::AssetID asset_id,
+        const lob::L2OrderBook& book,
+        lob::L2BacktestEngine& gateway
+    ) override {
         (void)book;
         ++ticks;
         if (!submitted) {
@@ -818,7 +839,7 @@ public:
         }
     }
 
-    void on_fill(const lob::StrategyFill& fill, lob::OrderGateway& gateway) override {
+    void on_fill(const lob::StrategyFill& fill, lob::L2BacktestEngine& gateway) override {
         (void)gateway;
         ++fills;
         last_fill = fill;
@@ -834,6 +855,33 @@ private:
     lob::Side side_ {lob::Side::Buy};
     double price_ {};
     std::uint64_t quantity_ {};
+};
+
+class PendingCapacityReuseStrategy final : public lob::L2Strategy<lob::L2BacktestEngine> {
+public:
+    void on_start(lob::L2BacktestEngine& gateway) override {
+        for (std::uint64_t order_id = 1U; order_id <= 16'385U; ++order_id) {
+            if (!gateway.cancel_order(0U, order_id)) {
+                ++rejected;
+            }
+        }
+    }
+
+    void on_tick(
+        lob::AssetID asset_id,
+        const lob::L2OrderBook& book,
+        lob::L2BacktestEngine& gateway
+    ) override {
+        (void)book;
+        if (!submitted_after_drain) {
+            reuse_succeeded = gateway.cancel_order(asset_id, 99'999U);
+            submitted_after_drain = true;
+        }
+    }
+
+    std::uint64_t rejected {};
+    bool submitted_after_drain {};
+    bool reuse_succeeded {};
 };
 
 TEST(L2BacktestEngineTest, InitializesFromSnapshotAndInvokesStrategyOnBatch) {
@@ -903,7 +951,8 @@ TEST(L2BacktestEngineTest, MarketMakerPlacesPassiveQuotesWithoutImmediateFill) {
             << "1000,1,0,102,10\n";
     }
 
-    lob::MarketMakerStrategy strategy {lob::MarketMakerStrategy::Config {
+    using Strategy = lob::MarketMakerStrategy<lob::L2BacktestEngine>;
+    Strategy strategy {Strategy::Config {
         .quote_offset = 0.5,
         .quote_quantity = 2U,
         .refresh_interval_ns = 1'000'000'000ULL,
@@ -943,6 +992,8 @@ TEST(L2BacktestEngineTest, LatencyDelayedAggressiveOrderFillsAgainstVisibleDepth
     const lob::L2BacktestEngine::Result result = engine.run(path);
 
     EXPECT_EQ(strategy.fills, 1U);
+    EXPECT_EQ(strategy.last_fill.price, P(101.0));
+    EXPECT_EQ(strategy.last_fill.quantity, Q(3.0));
     EXPECT_EQ(result.execution.taker_fills_count, 1U);
     EXPECT_EQ(result.last_fill_timestamp, 1100U);
     EXPECT_EQ(result.final_position, 3);
@@ -1014,7 +1065,8 @@ TEST(L2BacktestEngineTest, NativeMarketMakerPlacesQuotes) {
             << "1000,1,0,102,10\n";
     }
 
-    lob::L2MarketMakerStrategy strategy {lob::L2MarketMakerStrategy::Config {
+    using Strategy = lob::L2MarketMakerStrategy<lob::L2BacktestEngine>;
+    Strategy strategy {Strategy::Config {
         .quote_offset = 0.5,
         .quote_quantity = 2U,
         .refresh_interval_ns = 1'000'000'000ULL,
@@ -1053,6 +1105,8 @@ TEST(L2BacktestEngineTest, NativeLatencyDelayedOrderFills) {
     const lob::L2BacktestEngine::Result result = engine.run(path);
 
     EXPECT_EQ(strategy.fills, 1U);
+    EXPECT_EQ(strategy.last_fill.price, P(101.0));
+    EXPECT_EQ(strategy.last_fill.quantity, Q(3.0));
     EXPECT_EQ(result.execution.taker_fills_count, 1U);
     EXPECT_EQ(result.last_fill_timestamp, 1100U);
     EXPECT_EQ(result.final_position, 3);
@@ -1130,6 +1184,76 @@ TEST(EventMergerTest, MergesLargeStreamSetWithHeapPath) {
     }
 
     EXPECT_FALSE(merger.has_next());
+}
+
+TEST(EventMergerTest, HeapPathUsesAssetIdAsDeterministicTieBreak) {
+    using Parser = FakeStreamParser<1U>;
+    lob::EventMerger<5U, Parser> merger {std::array<Parser, 5U> {
+        Parser {{10U}, 1U},
+        Parser {{10U}, 1U},
+        Parser {{10U}, 1U},
+        Parser {{10U}, 1U},
+        Parser {{10U}, 1U},
+    }};
+
+    for (lob::AssetID expected_asset = 0U; expected_asset < 5U; ++expected_asset) {
+        ASSERT_TRUE(merger.has_next());
+        const lob::Event event = merger.get_next();
+        EXPECT_EQ(event.timestamp, 10U);
+        EXPECT_EQ(event.asset_id, expected_asset);
+    }
+    EXPECT_FALSE(merger.has_next());
+}
+
+TEST(IndexedPendingMinHeapTest, OrdersByReleaseTimeAndReusesFreedSlots) {
+    struct Item {
+        std::uint64_t release_time_ns {};
+        std::uint64_t value {};
+    };
+
+    lob::IndexedPendingMinHeap<Item, 3U> heap {};
+    EXPECT_TRUE(heap.push({.release_time_ns = 30U, .value = 3U}));
+    EXPECT_TRUE(heap.push({.release_time_ns = 10U, .value = 1U}));
+    EXPECT_TRUE(heap.push({.release_time_ns = 20U, .value = 2U}));
+    EXPECT_FALSE(heap.push({.release_time_ns = 5U, .value = 0U}));
+
+    EXPECT_EQ(heap.top().value, 1U);
+    heap.pop();
+    EXPECT_TRUE(heap.push({.release_time_ns = 5U, .value = 4U}));
+    EXPECT_EQ(heap.top().value, 4U);
+    heap.pop();
+    EXPECT_EQ(heap.top().value, 2U);
+    heap.pop();
+    EXPECT_EQ(heap.top().value, 3U);
+    heap.pop();
+    EXPECT_TRUE(heap.empty());
+}
+
+TEST(L2BacktestEngineTest, PendingHeapReportsCapacityAndReusesSlotsAfterDrain) {
+    const std::filesystem::path path =
+        std::filesystem::temp_directory_path() / "l2_pending_capacity_reuse.csv";
+    {
+        std::ofstream csv {path};
+        csv << "timestamp,is_snapshot,is_bid,price,qty\n"
+            << "1000,1,1,100,2\n"
+            << "1000,1,0,101,2\n";
+    }
+
+    PendingCapacityReuseStrategy strategy {};
+    lob::L2BacktestEngine engine {strategy, lob::L2BacktestEngine::Config {
+        .latency_ns = 100U,
+        .quantity_scale = 1.0,
+        .max_book_levels_per_side = 10U,
+    }};
+    const lob::L2BacktestEngine::Result result = engine.run(path);
+
+    EXPECT_EQ(strategy.rejected, 1U);
+    EXPECT_TRUE(strategy.submitted_after_drain);
+    EXPECT_TRUE(strategy.reuse_succeeded);
+    EXPECT_EQ(result.dropped_pending_orders, 1U);
+    EXPECT_EQ(result.orders_canceled, 16'385U);
+
+    std::filesystem::remove(path);
 }
 
 TEST(MultiAssetBacktestEngineTest, RoutesMergedEventsToAssetBooksAndStrategy) {

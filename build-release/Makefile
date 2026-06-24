@@ -543,30 +543,6 @@ src/main_backtest.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lob_backtest.dir/build.make CMakeFiles/lob_backtest.dir/src/main_backtest.cpp.s
 .PHONY : src/main_backtest.cpp.s
 
-src/order_book.o: src/order_book.cpp.o
-.PHONY : src/order_book.o
-
-# target to build an object file
-src/order_book.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lob_core.dir/build.make CMakeFiles/lob_core.dir/src/order_book.cpp.o
-.PHONY : src/order_book.cpp.o
-
-src/order_book.i: src/order_book.cpp.i
-.PHONY : src/order_book.i
-
-# target to preprocess a source file
-src/order_book.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lob_core.dir/build.make CMakeFiles/lob_core.dir/src/order_book.cpp.i
-.PHONY : src/order_book.cpp.i
-
-src/order_book.s: src/order_book.cpp.s
-.PHONY : src/order_book.s
-
-# target to generate assembly for a file
-src/order_book.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lob_core.dir/build.make CMakeFiles/lob_core.dir/src/order_book.cpp.s
-.PHONY : src/order_book.cpp.s
-
 tests/test_lob.o: tests/test_lob.cpp.o
 .PHONY : tests/test_lob.o
 
@@ -667,9 +643,6 @@ help:
 	@echo "... src/main_backtest.o"
 	@echo "... src/main_backtest.i"
 	@echo "... src/main_backtest.s"
-	@echo "... src/order_book.o"
-	@echo "... src/order_book.i"
-	@echo "... src/order_book.s"
 	@echo "... tests/test_lob.o"
 	@echo "... tests/test_lob.i"
 	@echo "... tests/test_lob.s"

@@ -14,7 +14,6 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/danilamalafeev/Documents/YABE/src/l2_csv_parser.cpp" "CMakeFiles/lob_core.dir/src/l2_csv_parser.cpp.o" "gcc" "CMakeFiles/lob_core.dir/src/l2_csv_parser.cpp.o.d"
   "/Users/danilamalafeev/Documents/YABE/src/l2_depth5_csv_parser.cpp" "CMakeFiles/lob_core.dir/src/l2_depth5_csv_parser.cpp.o" "gcc" "CMakeFiles/lob_core.dir/src/l2_depth5_csv_parser.cpp.o.d"
   "/Users/danilamalafeev/Documents/YABE/src/l2_update_csv_parser.cpp" "CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o" "gcc" "CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o.d"
-  "/Users/danilamalafeev/Documents/YABE/src/order_book.cpp" "CMakeFiles/lob_core.dir/src/order_book.cpp.o" "gcc" "CMakeFiles/lob_core.dir/src/order_book.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

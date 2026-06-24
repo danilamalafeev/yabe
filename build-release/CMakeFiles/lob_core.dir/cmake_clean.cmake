@@ -11,8 +11,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/lob_core.dir/src/l2_depth5_csv_parser.cpp.o.d"
   "CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o"
   "CMakeFiles/lob_core.dir/src/l2_update_csv_parser.cpp.o.d"
-  "CMakeFiles/lob_core.dir/src/order_book.cpp.o"
-  "CMakeFiles/lob_core.dir/src/order_book.cpp.o.d"
   "liblob_core.a"
   "liblob_core.pdb"
 )

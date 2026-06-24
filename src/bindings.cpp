@@ -24,48 +24,38 @@ class PyWallet {
 public:
     PyWallet() = default;
 
-    PyWallet(lob::Wallet wallet, double btc_usdt_mid, double eth_usdt_mid)
-        : wallet_(wallet),
-          btc_usdt_mid_(btc_usdt_mid),
-          eth_usdt_mid_(eth_usdt_mid) {}
+    PyWallet(lob::Wallet wallet, double, double)
+        : wallet_(wallet) {}
 
     [[nodiscard]] double usdt() const noexcept {
-        return wallet_.usdt;
+        return lob::Wallet::to_double(wallet_.balance(0U));
     }
 
     [[nodiscard]] double btc() const noexcept {
-        return wallet_.btc;
+        return lob::Wallet::to_double(wallet_.balance(1U));
     }
 
     [[nodiscard]] double eth() const noexcept {
-        return wallet_.eth;
+        return lob::Wallet::to_double(wallet_.balance(2U));
     }
 
     [[nodiscard]] double get_nav() const noexcept {
-        return wallet_.mark_to_market_nav(btc_usdt_mid_, eth_usdt_mid_);
+        return lob::Wallet::to_double(wallet_.mark_to_market_nav());
     }
 
     [[nodiscard]] double get_total_inventory_risk() const noexcept {
-        return wallet_.get_total_inventory_risk(btc_usdt_mid_, eth_usdt_mid_);
+        return lob::Wallet::to_double(wallet_.get_total_inventory_risk());
     }
 
     [[nodiscard]] double balance(lob::AssetID asset_id) const {
-        switch (asset_id) {
-            case 0U:
-                return wallet_.usdt;
-            case 1U:
-                return wallet_.btc;
-            case 2U:
-                return wallet_.eth;
-            default:
-                throw std::out_of_range("wallet asset_id must be 0=USDT, 1=BTC, or 2=ETH");
+        if (!wallet_.contains(asset_id)) {
+            throw std::out_of_range("wallet asset_id is out of range");
         }
+        return lob::Wallet::to_double(wallet_.balance(asset_id));
     }
 
 private:
     lob::Wallet wallet_ {};
-    double btc_usdt_mid_ {};
-    double eth_usdt_mid_ {};
 };
 
 class PyBacktestResult {
@@ -299,6 +289,8 @@ private:
 
 class PyL2MarketMakerBacktest {
 public:
+    using Strategy = lob::L2MarketMakerStrategy<lob::L2BacktestEngine>;
+
     PyL2MarketMakerBacktest(
         double initial_cash,
         double maker_fee_bps,
@@ -324,21 +316,21 @@ public:
               .feature_sample_interval_ns = feature_sample_interval_ns,
               .feature_reserve = feature_reserve,
           }),
-          strategy_config_(lob::L2MarketMakerStrategy::Config {
+          strategy_config_(Strategy::Config {
               .quote_offset = quote_offset,
               .quote_quantity = quote_quantity,
               .refresh_interval_ns = refresh_interval_ns,
           }) {}
 
     [[nodiscard]] PyL2BacktestResult run(const std::string& file_path) const {
-        lob::L2MarketMakerStrategy strategy {strategy_config_};
+        Strategy strategy {strategy_config_};
         lob::L2BacktestEngine engine {strategy, engine_config_};
         return PyL2BacktestResult {engine.run(file_path)};
     }
 
 private:
     lob::L2BacktestEngine::Config engine_config_ {};
-    lob::L2MarketMakerStrategy::Config strategy_config_ {};
+    Strategy::Config strategy_config_ {};
 };
 
 template <typename Engine>
@@ -404,7 +396,8 @@ public:
 
         using Engine = lob::MultiAssetBacktestEngine<3U>;
 
-        lob::TriangularArbitrageStrategy strategy {lob::TriangularArbitrageStrategy::Config {
+        using Strategy = lob::TriangularArbitrageStrategy<Engine>;
+        Strategy strategy {Strategy::Config {
             .taker_fee_bps = taker_fee_bps_,
             .verbose = verbose_,
         }};

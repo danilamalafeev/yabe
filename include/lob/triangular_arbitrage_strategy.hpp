@@ -7,12 +7,13 @@
 #include <iomanip>
 #include <iostream>
 
-#include "lob/order_book.hpp"
+#include "lob/fixed_matching_book.hpp"
 #include "lob/strategy.hpp"
 
 namespace lob {
 
-class TriangularArbitrageStrategy final : public Strategy {
+template <typename Gateway>
+class TriangularArbitrageStrategy final : public Strategy<Gateway> {
 public:
     struct Config {
         double threshold {1.0015};
@@ -29,7 +30,7 @@ public:
     TriangularArbitrageStrategy() = default;
     explicit TriangularArbitrageStrategy(Config config) : config_(config) {}
 
-    void on_tick(AssetID asset_id, const OrderBook& book, OrderGateway& gateway) override {
+    void on_tick(AssetID asset_id, const FixedMatchingBook& book, Gateway& gateway) override {
         if (asset_id >= kAssetCount) {
             return;
         }
@@ -152,7 +153,7 @@ private:
         return 1.0 - (config_.taker_fee_bps * 0.0001);
     }
 
-    void execute_path_1(double rate, double bottleneck_usdt, std::uint64_t timestamp, OrderGateway& gateway) {
+    void execute_path_1(double rate, double bottleneck_usdt, std::uint64_t timestamp, Gateway& gateway) {
         const double btc_quantity = bottleneck_usdt / best_ask_[kBtcUsdt];
         const double btc_after_fee = btc_quantity * taker_fee_multiplier();
         const double eth_quantity = btc_after_fee / best_ask_[kEthBtc];
@@ -211,7 +212,7 @@ private:
         (void)result;
     }
 
-    void execute_path_2(double rate, double bottleneck_usdt, std::uint64_t timestamp, OrderGateway& gateway) {
+    void execute_path_2(double rate, double bottleneck_usdt, std::uint64_t timestamp, Gateway& gateway) {
         const double eth_quantity = bottleneck_usdt / best_ask_[kEthUsdt];
         const double eth_after_fee = eth_quantity * taker_fee_multiplier();
         const double btc_quantity = eth_after_fee * best_bid_[kEthBtc] * taker_fee_multiplier();
@@ -272,7 +273,7 @@ private:
     Config config_ {};
     std::array<double, kAssetCount> best_bid_ {};
     std::array<double, kAssetCount> best_ask_ {};
-    std::array<const OrderBook*, kAssetCount> books_ {};
+    std::array<const FixedMatchingBook*, kAssetCount> books_ {};
     std::uint64_t last_arb_time_ns_ {};
     std::uint64_t next_group_id_ {1U};
 };

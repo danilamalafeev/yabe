@@ -20,6 +20,8 @@ events:
     names:
       - "uname"
     candidate_directories:
+      - "/Users/danilamalafeev/.gemini/antigravity/bin/"
+      - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin/"
       - "/Users/danilamalafeev/.local/bin/"
       - "/Users/danilamalafeev/yandex-cloud/bin/"
       - "/opt/anaconda3/bin/"
@@ -38,6 +40,8 @@ events:
       - "/opt/pmk/env/global/bin/"
       - "/Library/Apple/usr/bin/"
     searched_directories:
+      - "/Users/danilamalafeev/.gemini/antigravity/bin/uname"
+      - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin/uname"
       - "/Users/danilamalafeev/.local/bin/uname"
       - "/Users/danilamalafeev/yandex-cloud/bin/uname"
       - "/opt/anaconda3/bin/uname"
@@ -49,6 +53,8 @@ events:
     found: "/usr/bin/uname"
     search_context:
       ENV{PATH}:
+        - "/Users/danilamalafeev/.gemini/antigravity/bin"
+        - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin"
         - "/Users/danilamalafeev/.local/bin"
         - "/Users/danilamalafeev/yandex-cloud/bin"
         - "/opt/anaconda3/bin"
@@ -93,6 +99,8 @@ events:
     names:
       - "install_name_tool"
     candidate_directories:
+      - "/Users/danilamalafeev/.gemini/antigravity/bin/"
+      - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin/"
       - "/Users/danilamalafeev/.local/bin/"
       - "/Users/danilamalafeev/yandex-cloud/bin/"
       - "/opt/anaconda3/bin/"
@@ -111,11 +119,15 @@ events:
       - "/opt/pmk/env/global/bin/"
       - "/Library/Apple/usr/bin/"
     searched_directories:
+      - "/Users/danilamalafeev/.gemini/antigravity/bin/install_name_tool"
+      - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin/install_name_tool"
       - "/Users/danilamalafeev/.local/bin/install_name_tool"
       - "/Users/danilamalafeev/yandex-cloud/bin/install_name_tool"
     found: "/opt/anaconda3/bin/install_name_tool"
     search_context:
       ENV{PATH}:
+        - "/Users/danilamalafeev/.gemini/antigravity/bin"
+        - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin"
         - "/Users/danilamalafeev/.local/bin"
         - "/Users/danilamalafeev/yandex-cloud/bin"
         - "/opt/anaconda3/bin"

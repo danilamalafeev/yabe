@@ -1,14 +1,35 @@
+# Build artifacts
 build/
-binance_trades.csv
-trace_log.csv
-*.html
-__pycache__/
-backtest_trace.html
+build-*/
+cmake-build-*/
+
+# Data files
 *.csv
 *.csv.gz
 *.jsonl
 *.jsonl.zst
 *.parquet
 data/tardis/
-results/*.csv
-build-release/
+
+# Generated output
+*.html
+results/
+
+# IDE / OS
+.DS_Store
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# Misc
+opencode.json
+logs/
+
+# Development/AI Documentation
+ARCHITECT_INSTRUCTIONS.md
+IMPLEMENTATION_PLAN.md
+LLM_CONTEXT.md
+TODO.md
+IDEAS.md

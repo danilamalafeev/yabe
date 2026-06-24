@@ -18,10 +18,10 @@ namespace {
 
 }  // namespace
 
-L2BacktestEngine::L2BacktestEngine(Strategy& strategy)
+L2BacktestEngine::L2BacktestEngine(Strategy<L2BacktestEngine>& strategy)
     : L2BacktestEngine(strategy, Config {}) {}
 
-L2BacktestEngine::L2BacktestEngine(Strategy& strategy, Config config)
+L2BacktestEngine::L2BacktestEngine(Strategy<L2BacktestEngine>& strategy, Config config)
     : strategy_(&strategy),
       config_(config),
       book_(config.max_book_levels_per_side),
@@ -32,10 +32,10 @@ L2BacktestEngine::L2BacktestEngine(Strategy& strategy, Config config)
     }
 }
 
-L2BacktestEngine::L2BacktestEngine(L2Strategy& strategy)
+L2BacktestEngine::L2BacktestEngine(L2Strategy<L2BacktestEngine>& strategy)
     : L2BacktestEngine(strategy, Config {}) {}
 
-L2BacktestEngine::L2BacktestEngine(L2Strategy& strategy, Config config)
+L2BacktestEngine::L2BacktestEngine(L2Strategy<L2BacktestEngine>& strategy, Config config)
     : l2_strategy_(&strategy),
       config_(config),
       book_(config.max_book_levels_per_side),
@@ -108,7 +108,7 @@ L2BacktestEngine::Result L2BacktestEngine::run(const std::filesystem::path& file
     return result;
 }
 
-std::uint64_t L2BacktestEngine::submit_order(
+std::uint64_t L2BacktestEngine::submit_order_impl(
     AssetID asset_id,
     Side side,
     double price,
@@ -149,7 +149,7 @@ std::uint64_t L2BacktestEngine::submit_order(
     return order_id;
 }
 
-bool L2BacktestEngine::cancel_order(AssetID asset_id, std::uint64_t order_id) {
+bool L2BacktestEngine::cancel_order_impl(AssetID asset_id, std::uint64_t order_id) {
     if (!pending_orders_.push(PendingOrder {
         .type = PendingCommandType::Cancel,
         .asset_id = asset_id,
@@ -163,13 +163,13 @@ bool L2BacktestEngine::cancel_order(AssetID asset_id, std::uint64_t order_id) {
     return true;
 }
 
-std::uint64_t L2BacktestEngine::current_timestamp() const noexcept {
+std::uint64_t L2BacktestEngine::current_timestamp_impl() const noexcept {
     return current_time_ns_;
 }
 
 void L2BacktestEngine::reset_runtime() {
     book_ = L2OrderBook {config_.max_book_levels_per_side};
-    strategy_book_ = OrderBook {};
+    strategy_book_.clear();
     pending_orders_.clear();
     live_order_count_ = 0U;
     equity_curve_.clear();
@@ -277,37 +277,38 @@ void L2BacktestEngine::dispatch_strategy_tick(Result& result) {
 }
 
 void L2BacktestEngine::rebuild_strategy_book() {
-    strategy_book_ = OrderBook {};
+    strategy_book_.clear();
     for (const L2OrderBook::Level& level : book_.bids()) {
         const std::uint64_t quantity = level_qty_to_order_qty(level.effective_qty());
         if (quantity == 0U) {
             continue;
         }
-        (void)strategy_book_.process_order(Order {
-            .id = synthetic_order_id_++,
-            .price = static_cast<double>(level.price) / 100'000'000.0,
-            .quantity = quantity,
-            .side = Side::Buy,
-            .timestamp = current_time_ns_,
-        });
+        (void)strategy_book_.submit(
+            synthetic_order_id_++,
+            Side::Buy,
+            level.price,
+            quantity,
+            current_time_ns_
+        );
     }
     for (const L2OrderBook::Level& level : book_.asks()) {
         const std::uint64_t quantity = level_qty_to_order_qty(level.effective_qty());
         if (quantity == 0U) {
             continue;
         }
-        (void)strategy_book_.process_order(Order {
-            .id = synthetic_order_id_++,
-            .price = static_cast<double>(level.price) / 100'000'000.0,
-            .quantity = quantity,
-            .side = Side::Sell,
-            .timestamp = current_time_ns_,
-        });
+        (void)strategy_book_.submit(
+            synthetic_order_id_++,
+            Side::Sell,
+            level.price,
+            quantity,
+            current_time_ns_
+        );
     }
 }
 
 void L2BacktestEngine::route_strategy_fill(const StrategyFill& fill) {
-    const double quantity_units = order_qty_to_units(fill.quantity);
+    const double quantity_units = static_cast<double>(fill.quantity) / 100'000'000.0;
+    const std::uint64_t filled_order_quantity = level_qty_to_order_qty(fill.quantity);
     const double notional = (static_cast<double>(fill.price) / 100'000'000.0) * quantity_units;
     const double fee_bps = fill.liquidity_role == LiquidityRole::Maker
         ? config_.maker_fee_bps
@@ -327,8 +328,8 @@ void L2BacktestEngine::route_strategy_fill(const StrategyFill& fill) {
     const std::size_t live_order_index = find_live_order_index(fill.order_id);
     if (live_order_index != kInvalidOrderIndex) {
         LiveOrder& live_order = live_orders_[live_order_index];
-        live_order.remaining_quantity = live_order.remaining_quantity > fill.quantity
-            ? live_order.remaining_quantity - fill.quantity
+        live_order.remaining_quantity = live_order.remaining_quantity > filled_order_quantity
+            ? live_order.remaining_quantity - filled_order_quantity
             : 0U;
         if (live_order.remaining_quantity == 0U) {
             erase_live_order(live_order_index);
@@ -337,10 +338,10 @@ void L2BacktestEngine::route_strategy_fill(const StrategyFill& fill) {
 
     if (fill.side == Side::Buy) {
         cash_ -= notional + fee;
-        position_ += static_cast<std::int64_t>(fill.quantity);
+        position_ += static_cast<std::int64_t>(filled_order_quantity);
     } else {
         cash_ += notional - fee;
-        position_ -= static_cast<std::int64_t>(fill.quantity);
+        position_ -= static_cast<std::int64_t>(filled_order_quantity);
     }
 
     last_fill_timestamp_ = fill.timestamp;
@@ -468,7 +469,7 @@ std::uint64_t L2BacktestEngine::sweep_visible_depth(
             route_strategy_fill(StrategyFill {
                 .order_id = live_order.order_id,
                 .price = level.price,
-                .quantity = fill_quantity,
+                .quantity = order_qty_to_lots(fill_quantity),
                 .timestamp = timestamp,
                 .asset_id = live_order.asset_id,
                 .side = Side::Buy,
@@ -498,7 +499,7 @@ std::uint64_t L2BacktestEngine::sweep_visible_depth(
         route_strategy_fill(StrategyFill {
             .order_id = live_order.order_id,
             .price = level.price,
-            .quantity = fill_quantity,
+            .quantity = order_qty_to_lots(fill_quantity),
             .timestamp = timestamp,
             .asset_id = live_order.asset_id,
             .side = Side::Sell,

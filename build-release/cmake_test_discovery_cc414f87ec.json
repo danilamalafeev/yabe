@@ -1,86 +1,76 @@
 {
-  "tests": 126,
+  "tests": 138,
   "name": "AllTests",
   "testsuites": [
     {
-      "name": "OrderBookTest",
-      "tests": 8,
+      "name": "StaticVectorTest",
+      "tests": 2,
       "testsuite": [
         {
-          "name": "InitializesSuccessfully",
+          "name": "SupportsFixedCapacityInsertionErasureAndFailureReporting",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 81
+          "line": 100
         },
         {
-          "name": "ProcessOrderRestsBuyOrderWhenBookDoesNotCross",
+          "name": "StoresElementsInsideTheObjectWithoutDynamicStorage",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 310
-        },
-        {
-          "name": "ProcessOrderRestsSellOrderWhenBookDoesNotCross",
-          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 334
-        },
-        {
-          "name": "ProcessOrderMatchesCrossSpreadUsingPriceTimePriority",
-          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 358
-        },
-        {
-          "name": "ProcessOrderRestsResidualQuantityAfterPartialIncomingFill",
-          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 426
-        },
-        {
-          "name": "CancelOrderRemovesEmptyBidPriceLevelAndIndexEntry",
-          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 459
-        },
-        {
-          "name": "CancelOrderReturnsFalseForUnknownId",
-          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 489
-        },
-        {
-          "name": "ExposesBestPricesAndL2Snapshot",
-          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 494
+          "line": 133
         }
       ]
     },
     {
       "name": "L2OrderBookTest",
-      "tests": 6,
+      "tests": 10,
       "testsuite": [
         {
           "name": "MaintainsBidAndAskSortOrder",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 88
+          "line": 147
         },
         {
           "name": "UpdatesAndRemovesLevels",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 109
+          "line": 168
         },
         {
           "name": "AllowsSimulatedDepletionBeyondVisibleQuantityUntilFeedRefresh",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 127
+          "line": 186
         },
         {
           "name": "EnforcesCapacityByDroppingDeepLevels",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 142
+          "line": 201
+        },
+        {
+          "name": "PreservesOrderingAcrossLinearAndBinarySearchBoundary",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 237
+        },
+        {
+          "name": "EnforcesPhysicalCapacityOf128LevelsPerSide",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 269
         },
         {
           "name": "AppliesSnapshotByClearingBothSides",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 178
+          "line": 295
         },
         {
           "name": "RemovesLevelsNotPresentInSnapshotWithoutClearingRetainedDepletion",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 196
+          "line": 313
+        },
+        {
+          "name": "PreservesScaledNotionalWithoutEffectiveAggregateUnderflow",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 331
+        },
+        {
+          "name": "KeepsWideAccumulatorsCorrectAcrossReplacementAndRemoval",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 345
         }
       ]
     },
@@ -91,12 +81,12 @@
         {
           "name": "MaintainsDepthByCentIndexAndFindsBboWithMasks",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 214
+          "line": 376
         },
         {
           "name": "RemovesTopLevelAndRejectsOutOfRangePrices",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 233
+          "line": 395
         }
       ]
     },
@@ -107,18 +97,44 @@
         {
           "name": "RoutesDenseTokenUpdatesToBoundBooks",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 248
+          "line": 410
         }
       ]
     },
     {
-      "name": "DynamicWalletTest",
-      "tests": 1,
+      "name": "WalletTest",
+      "tests": 3,
       "testsuite": [
         {
-          "name": "TracksReservedAndFreeBalances",
+          "name": "TracksFixedPointReservedAndFreeBalances",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 289
+          "line": 451
+        },
+        {
+          "name": "RejectsBoundsAndOverflow",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 463
+        },
+        {
+          "name": "UpdatesCachedNavAndRiskAfterBalanceAndFactorChanges",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 473
+        }
+      ]
+    },
+    {
+      "name": "FixedMatchingBookTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "PreservesPriceTimeAndFixedPointDepth",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 485
+        },
+        {
+          "name": "CancelsAndExportsFixedDepth",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 497
         }
       ]
     },
@@ -129,7 +145,7 @@
         {
           "name": "ComputesPnlAndDrawdownFromEquityCurve",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 536
+          "line": 512
         }
       ]
     },
@@ -140,7 +156,7 @@
         {
           "name": "StreamsMmapEventsWithOneEventLookahead",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 547
+          "line": 523
         }
       ]
     },
@@ -151,7 +167,7 @@
         {
           "name": "StreamsDepth5RowsAndBackfillsBboRows",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 578
+          "line": 554
         }
       ]
     },
@@ -162,23 +178,33 @@
         {
           "name": "StreamsRawL2UpdatesAndBooleanFormats",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 621
+          "line": 597
         }
       ]
     },
     {
       "name": "VenueReplayTest",
-      "tests": 2,
+      "tests": 4,
       "testsuite": [
         {
           "name": "RejectsSequenceGapsAndReorderingPerProduct",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 653
+          "line": 629
         },
         {
           "name": "AcceptsNewSnapshotEpochForSameProduct",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 674
+          "line": 650
+        },
+        {
+          "name": "RejectsUnsupportedDirectAddressesWithoutMutatingValidState",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 666
+        },
+        {
+          "name": "ResetClearsAllDirectAddressState",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 687
         }
       ]
     },
@@ -189,74 +215,95 @@
         {
           "name": "DescribesVenueProductScalesAndCosts",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 690
+          "line": 703
         }
       ]
     },
     {
       "name": "L2BacktestEngineTest",
-      "tests": 9,
+      "tests": 10,
       "testsuite": [
         {
           "name": "InitializesFromSnapshotAndInvokesStrategyOnBatch",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 831
+          "line": 887
         },
         {
           "name": "AppliesIncrementalUpdateAndDelete",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 860
+          "line": 916
         },
         {
           "name": "MarketMakerPlacesPassiveQuotesWithoutImmediateFill",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 889
+          "line": 945
         },
         {
           "name": "LatencyDelayedAggressiveOrderFillsAgainstVisibleDepth",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 918
+          "line": 975
         },
         {
           "name": "DoesNotFillBeforeBookExists",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 946
+          "line": 1005
         },
         {
           "name": "NativeStrategyConsumesL2BookWithoutAdapter",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 971
+          "line": 1030
         },
         {
           "name": "NativeMarketMakerPlacesQuotes",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1000
+          "line": 1059
         },
         {
           "name": "NativeLatencyDelayedOrderFills",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1029
+          "line": 1089
         },
         {
           "name": "RecordsFeatureRowsForMlExports",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1055
+          "line": 1117
+        },
+        {
+          "name": "PendingHeapReportsCapacityAndReusesSlotsAfterDrain",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1232
         }
       ]
     },
     {
       "name": "EventMergerTest",
-      "tests": 2,
+      "tests": 3,
       "testsuite": [
         {
           "name": "MergesSmallStreamSetWithFastPath",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1090
+          "line": 1152
         },
         {
           "name": "MergesLargeStreamSetWithHeapPath",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1108
+          "line": 1170
+        },
+        {
+          "name": "HeapPathUsesAssetIdAsDeterministicTieBreak",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1189
+        }
+      ]
+    },
+    {
+      "name": "IndexedPendingMinHeapTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "OrdersByReleaseTimeAndReusesFreedSlots",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1208
         }
       ]
     },
@@ -267,7 +314,7 @@
         {
           "name": "RoutesMergedEventsToAssetBooksAndStrategy",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1127
+          "line": 1259
         }
       ]
     },
@@ -278,27 +325,27 @@
         {
           "name": "DetectsAndExecutesNegativeCycleThroughL2OrderBook",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1142
+          "line": 1274
         },
         {
           "name": "MaxBookLevelsPerSideCapsDepthUsedByGraph",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1204
+          "line": 1336
         },
         {
           "name": "SparseLookupEngineMatchesDenseEngineOnL2Scenario",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1273
+          "line": 1405
         },
         {
           "name": "DetectsCompletedCycleRegardlessOfL2UpdateOrder",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1345
+          "line": 1477
         },
         {
           "name": "RevalidatesVisibleDepthAtPendingLegExecution",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
-          "line": 1416
+          "line": 1548
         }
       ]
     },
@@ -681,7 +728,7 @@
     },
     {
       "name": "MatchingBookTest",
-      "tests": 17,
+      "tests": 22,
       "testsuite": [
         {
           "name": "BuyLimitRestsWhenNotCrossing",
@@ -767,6 +814,31 @@
           "name": "UnfilledGtcRejectsResidualWhenPostMatchRestCapacityUnavailable",
           "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
           "line": 2658
+        },
+        {
+          "name": "DeepBookMaintainsSortedDepthAndConstantTimeLevelLookup",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2678
+        },
+        {
+          "name": "DeepBookMatchesAcrossSortedLevelsInPriceTimeOrder",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2719
+        },
+        {
+          "name": "RobinHoodIndexHandlesWrapAroundDeletionAndFreeListReuse",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2744
+        },
+        {
+          "name": "RobinHoodIndexSupportsProbeLengthsBeyondUint8Range",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2765
+        },
+        {
+          "name": "ClearResetsDeepIndicesHashesAndFreeLists",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2790
         }
       ]
     }
