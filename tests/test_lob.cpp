@@ -25,6 +25,7 @@
 #include "lob/market_maker_strategy.hpp"
 #include "lob/multi_asset_backtest_engine.hpp"
 #include "lob/wallet.hpp"
+#include "lob/inventory_skew_strategy.hpp"
 #include "lob/PolymarketFeedAdapter.hpp"
 #include "lob/PolymarketOrderBook.hpp"
 #include "lob/PolymarketTypes.hpp"
@@ -1597,6 +1598,49 @@ TEST(GraphArbitrageEngineTest, RevalidatesVisibleDepthAtPendingLegExecution) {
     std::filesystem::remove(ausdt_path);
     std::filesystem::remove(ba_path);
     std::filesystem::remove(busdt_path);
+}
+
+TEST(L2BacktestEngineTest, RunInventorySkewStrategyOnL2) {
+    const std::filesystem::path path =
+        std::filesystem::temp_directory_path() / "l2_inventory_skew_test.csv";
+    {
+        std::ofstream csv {path};
+        csv << "timestamp,is_snapshot,is_bid,price,qty\n"
+            << "1000,1,1,100.0,10.0\n"
+            << "1000,1,0,101.0,10.0\n"
+            // Wait 1 second (1,000,000,000 ns) to trigger refresh
+            << "1000001000,0,1,99.9,10.0\n"
+            << "1000002000,0,0,101.1,10.0\n"
+            // A trade event or order cross
+            << "1000003000,0,1,102.5,5.0\n" // This crosses ask quote price
+            << "1000004000,0,0,98.5,5.0\n";  // This crosses bid quote price
+    }
+
+    using Strategy = lob::InventorySkewStrategy<lob::L2BacktestEngine>;
+    Strategy strategy {Strategy::Config {
+        .target_position = 0.0,
+        .max_position = 10.0,
+        .base_spread = 1.0,
+        .risk_aversion_gamma = 0.5,
+        .imbalance_threshold = 3.0,
+        .quote_quantity = 1'000'000U,
+        .refresh_interval_ns = 1'000'000ULL, // Refresh fast in test
+    }};
+
+    lob::L2BacktestEngine engine {strategy, lob::L2BacktestEngine::Config {
+        .initial_cash = 10'000.0,
+        .maker_fee_bps = 0.0,
+        .taker_fee_bps = 0.0,
+        .latency_ns = 100U, // Low latency
+        .max_book_levels_per_side = 10U,
+    }};
+
+    const lob::L2BacktestEngine::Result result = engine.run(path);
+
+    EXPECT_GT(result.events_processed, 0U);
+    EXPECT_GT(result.orders_submitted, 0U);
+
+    std::filesystem::remove(path);
 }
 
 }  // namespace
