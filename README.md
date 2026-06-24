@@ -4,6 +4,17 @@ YABE is a high-performance, low-latency, zero-allocation C++20 backtesting engin
 
 ---
 
+## Technical Documentation
+
+Detailed guides covering internal structures and components:
+* [Architecture & Invariants](file:///Users/danilamalafeev/Documents/YABE/docs/architecture.md): Zero-allocation constraints, memory alignment, fixed-point arithmetic, and CRTP interfaces.
+* [Matching Engine Internals](file:///Users/danilamalafeev/Documents/YABE/docs/matching_engine.md): Flat memory slots, Robin Hood hash indexing with backward-shift deletion, and search policies.
+* [Simulation Engine Guide](file:///Users/danilamalafeev/Documents/YABE/docs/simulation_engine.md): Multi-level min-heap scheduler, latency/jitter channels, and double-entry reservations.
+* [Backtesting & Arbitrage Engine](file:///Users/danilamalafeev/Documents/YABE/docs/backtesting_and_arbitrage.md): L2/L3 replayers, graph routing, negative-cycle algorithms, and lazy factor updates.
+* [Python API Reference](file:///Users/danilamalafeev/Documents/YABE/docs/python_api.md): Compilation steps, bindings reference, Pandas/NumPy integration, and parallel sweeps.
+
+---
+
 ## Technical Highlights & Low-Latency Invariants
 
 1. **Zero-Allocation Hot Path**: Memory is fully pre-allocated at startup. All runtime operations (event merging, order routing, cycle matching, and depth updates) utilize static buffers, object pools, or flat array indexes.
