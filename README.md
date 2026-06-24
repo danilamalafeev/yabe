@@ -112,17 +112,17 @@ Conversions from Tardis formatted archives are supported via `scripts/tardis_to_
 Tested locally in a Release build on Apple Silicon:
 
 ### 1. Multi-Asset Graph Arbitrage (`GraphEngine` / `GraphEngineLarge`)
-- **Throughput**: **7.0M - 7.5M EPS** (Events Per Second).
+- **Throughput**: **6.5M - 7.7M EPS** (up to **11.8M EPS** CPU user time).
 - Replays full Tardis L2 update streams and detects arbitrage cycles in real-time.
 
 ### 2. Single-Asset L2 Backtester (`L2BacktestEngine`)
-- **Throughput**: **~6.6M EPS**.
-- Replays 1.33M incremental L2 updates with active market-maker strategies in **0.20 seconds**.
+- **Throughput**: **~7.1M EPS**.
+- Replays 1.33M incremental L2 updates with active market-maker strategies in **0.19 seconds**.
 
 ### 3. Single-Asset L3 Backtester (`BacktestEngine`)
-- **Throughput**: **~868k EPS**.
+- **Throughput**: **~852k EPS**.
 - Simulates detailed L3 order matching against a dense book containing up to 7,000+ active resting orders placed by the strategy.
 
 ### 4. Microbenchmarks (MatchingBook)
-- **Resting Limit Order Insert**: **~1.9 microseconds** (measured using Google Benchmark including harness setup/teardown overhead).
+- **Resting Limit Order Insert**: **~2.0 microseconds** (measured using Google Benchmark including harness setup/teardown overhead).
 
