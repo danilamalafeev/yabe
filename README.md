@@ -104,3 +104,25 @@ timestamp,is_snapshot,is_bid,price,qty
 *   `qty`: Quantities of `0` denote price level deletion.
 
 Conversions from Tardis formatted archives are supported via `scripts/tardis_to_l2update.py`.
+
+---
+
+## Performance & Throughput
+
+Tested locally in a Release build on Apple Silicon:
+
+### 1. Multi-Asset Graph Arbitrage (`GraphEngine` / `GraphEngineLarge`)
+- **Throughput**: **7.0M - 7.5M EPS** (Events Per Second).
+- Replays full Tardis L2 update streams and detects arbitrage cycles in real-time.
+
+### 2. Single-Asset L2 Backtester (`L2BacktestEngine`)
+- **Throughput**: **~6.6M EPS**.
+- Replays 1.33M incremental L2 updates with active market-maker strategies in **0.20 seconds**.
+
+### 3. Single-Asset L3 Backtester (`BacktestEngine`)
+- **Throughput**: **~868k EPS**.
+- Simulates detailed L3 order matching against a dense book containing up to 7,000+ active resting orders placed by the strategy.
+
+### 4. Microbenchmarks (MatchingBook)
+- **Resting Limit Order Insert**: **~1.9 microseconds** (measured using Google Benchmark including harness setup/teardown overhead).
+
