@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <filesystem>
@@ -12,15 +13,17 @@
 
 #include "lob/async_logger.hpp"
 #include "lob/event_merger.hpp"
-#include "lob/order_book.hpp"
+#include "lob/indexed_pending_min_heap.hpp"
+#include "lob/fixed_matching_book.hpp"
 #include "lob/strategy.hpp"
 #include "lob/wallet.hpp"
 
 namespace lob {
 
 template <std::size_t N, typename Parser = CsvParser>
-class MultiAssetBacktestEngine final : public OrderGateway {
+class MultiAssetBacktestEngine final : public OrderGateway<MultiAssetBacktestEngine<N, Parser>> {
 public:
+    using Self = MultiAssetBacktestEngine<N, Parser>;
     using ParserArray = std::array<Parser, N>;
     using PathArray = std::array<std::filesystem::path, N>;
 
@@ -81,20 +84,19 @@ public:
         std::uint64_t dropped_pending_orders {};
     };
 
-    MultiAssetBacktestEngine(Strategy& strategy, ParserArray parsers, Config config = {})
+    MultiAssetBacktestEngine(Strategy<Self>& strategy, ParserArray parsers, Config config = {})
         : strategy_(strategy),
           config_(config),
           merger_(std::move(parsers)),
           rng_(config.latency.rng_seed),
           exponential_jitter_(config.latency.jitter_mean_ns > 0.0 ? 1.0 / config.latency.jitter_mean_ns : 1.0),
-          lognormal_jitter_(config.latency.lognormal_mu, config.latency.lognormal_sigma),
-          wallet_(Wallet {
-              .usdt = config.initial_cash,
-          }) {
+          lognormal_jitter_(config.latency.lognormal_mu, config.latency.lognormal_sigma) {
+        wallet_.reset(3U, kUsdtAsset, Wallet::from_double_or_throw(config.initial_cash));
+        refresh_wallet_factors();
         trade_buffer_.reserve(1'024U);
     }
 
-    MultiAssetBacktestEngine(Strategy& strategy, const PathArray& file_paths, Config config = {})
+    MultiAssetBacktestEngine(Strategy<Self>& strategy, const PathArray& file_paths, Config config = {})
         : MultiAssetBacktestEngine(strategy, MakeParsers(file_paths), config) {}
 
     [[nodiscard]] Result run() {
@@ -121,14 +123,14 @@ public:
         }
 
         result.initial_usdt = config_.initial_cash;
-        result.final_cash = wallet_.usdt;
+        result.final_cash = Wallet::to_double(wallet_.balance(kUsdtAsset));
         result.final_portfolio = wallet_;
         result.btc_usdt_mid = last_mid_[0U];
         if constexpr (N > 1U) {
             result.eth_usdt_mid = last_mid_[1U];
         }
-        result.final_mtm_nav_usdt = wallet_.mark_to_market_nav(result.btc_usdt_mid, result.eth_usdt_mid);
-        result.inventory_risk_usdt = wallet_.get_total_inventory_risk(result.btc_usdt_mid, result.eth_usdt_mid);
+        result.final_mtm_nav_usdt = Wallet::to_double(wallet_.mark_to_market_nav());
+        result.inventory_risk_usdt = Wallet::to_double(wallet_.get_total_inventory_risk());
         result.final_position = position_;
         result.per_asset_stats = per_asset_stats_;
         result.execution = execution_;
@@ -136,13 +138,13 @@ public:
         return result;
     }
 
-    [[nodiscard]] std::uint64_t submit_order(
+    [[nodiscard]] std::uint64_t submit_order_impl(
         AssetID asset_id,
         Side side,
         double price,
         std::uint64_t quantity,
         std::uint64_t timestamp
-    ) override {
+    ) {
         (void)timestamp;
 
         const std::uint64_t order_id = next_strategy_order_id_++;
@@ -180,7 +182,7 @@ public:
         return order_id;
     }
 
-    [[nodiscard]] bool cancel_order(AssetID asset_id, std::uint64_t order_id) override {
+    [[nodiscard]] bool cancel_order_impl(AssetID asset_id, std::uint64_t order_id) {
         if (!pending_orders_.push(PendingOrder {
             .type = PendingCommandType::Cancel,
             .asset_id = asset_id,
@@ -194,7 +196,7 @@ public:
         return true;
     }
 
-    [[nodiscard]] std::uint64_t current_timestamp() const noexcept override {
+    [[nodiscard]] std::uint64_t current_timestamp_impl() const noexcept {
         return current_time_ns_;
     }
 
@@ -216,7 +218,7 @@ public:
         return std::move(snapshots_);
     }
 
-    [[nodiscard]] OrderGroupResult execute_group(const OrderGroup& group) override {
+    [[nodiscard]] OrderGroupResult execute_group_impl(const OrderGroup& group) {
         OrderGroupResult dummy {};
         dummy.group_id = group.group_id;
         
@@ -251,7 +253,7 @@ public:
                     leg_timestamp,
                     request.asset_id,
                     request.side,
-                    report.vwap_price,
+                    static_cast<double>(report.vwap_price) / 100'000'000.0,
                     report.filled_quantity
                 );
                 panic_close_group(result, leg_index, leg_timestamp);
@@ -283,64 +285,6 @@ private:
         OrderGroup group {};
     };
 
-    template <typename T, std::size_t Capacity>
-    class PendingMinHeap {
-    public:
-        [[nodiscard]] bool empty() const noexcept {
-            return size_ == 0U;
-        }
-
-        [[nodiscard]] const T& top() const noexcept {
-            return heap_[0];
-        }
-
-        bool push(const T& item) noexcept {
-            if (size_ == Capacity) {
-                return false;
-            }
-
-            std::size_t index = size_++;
-            heap_[index] = item;
-            while (index > 0U) {
-                const std::size_t parent = (index - 1U) / 2U;
-                if (heap_[parent].release_time_ns <= heap_[index].release_time_ns) {
-                    break;
-                }
-
-                std::swap(heap_[parent], heap_[index]);
-                index = parent;
-            }
-            return true;
-        }
-
-        void pop() noexcept {
-            heap_[0] = heap_[--size_];
-            std::size_t index = 0U;
-            while (true) {
-                const std::size_t left = (index * 2U) + 1U;
-                const std::size_t right = left + 1U;
-                if (left >= size_) {
-                    break;
-                }
-
-                std::size_t smallest = left;
-                if (right < size_ && heap_[right].release_time_ns < heap_[left].release_time_ns) {
-                    smallest = right;
-                }
-                if (heap_[index].release_time_ns <= heap_[smallest].release_time_ns) {
-                    break;
-                }
-
-                std::swap(heap_[index], heap_[smallest]);
-                index = smallest;
-            }
-        }
-
-    private:
-        std::array<T, Capacity> heap_ {};
-        std::size_t size_ {};
-    };
-
     struct LiveOrder {
         AssetID asset_id {};
         std::uint64_t order_id {};
@@ -358,6 +302,9 @@ private:
     static constexpr std::size_t kInvalidOrderIndex = std::numeric_limits<std::size_t>::max();
     static constexpr std::uint64_t kNanosecondsPerMillisecond = 1'000'000ULL;
     static constexpr double kQuantityScale = 100'000'000.0;
+    static constexpr AssetID kUsdtAsset = 0U;
+    static constexpr AssetID kBtcAsset = 1U;
+    static constexpr AssetID kEthAsset = 2U;
 
     [[nodiscard]] static ParserArray MakeParsers(const PathArray& file_paths) {
         ParserArray parsers {};
@@ -391,7 +338,7 @@ private:
             return;
         }
 
-        const OrderBook& book = books_[asset_id];
+        const FixedMatchingBook& book = books_[asset_id];
         const double best_bid = book.get_best_bid();
         const double best_ask = book.get_best_ask();
         snapshots_.push_back(MarketSnapshot {
@@ -475,61 +422,55 @@ private:
     }
 
     void sweep_book(LiveOrder& live_order, std::uint64_t timestamp) {
-        OrderBook& book = books_[live_order.asset_id];
+        FixedMatchingBook& book = books_[live_order.asset_id];
         const AssetID asset_id = live_order.asset_id;
         const std::uint64_t order_id = live_order.order_id;
         const Side side = live_order.side;
-        const double limit_price = live_order.price;
+        const std::int64_t limit_price = FixedMatchingBook::price_to_ticks(live_order.price);
         std::uint64_t remaining_quantity = live_order.remaining_quantity;
 
         if (side == Side::Buy) {
-            for (auto ask_it = book.asks().begin();
-                 ask_it != book.asks().end() && remaining_quantity > 0U && ask_it->first <= limit_price;
-                 ++ask_it) {
-                std::uint64_t level_quantity = 0U;
-                for (const Order& order : ask_it->second.orders) {
-                    level_quantity += order.quantity;
+            book.for_each_level(Side::Sell, [&](std::int64_t price, std::uint64_t level_quantity) {
+                if (remaining_quantity == 0U || price > limit_price) {
+                    return false;
                 }
-                const std::uint64_t fill_quantity =
-                    level_quantity < remaining_quantity ? level_quantity : remaining_quantity;
+                const std::uint64_t fill_quantity = std::min(level_quantity, remaining_quantity);
                 if (fill_quantity > 0U) {
                     route_fill(FillEvent {
-                        .asset_id = asset_id,
                         .order_id = order_id,
-                        .side = Side::Buy,
-                        .price = ask_it->first,
+                        .price = price,
                         .quantity = fill_quantity,
                         .timestamp = timestamp,
+                        .asset_id = asset_id,
+                        .side = Side::Buy,
                         .liquidity_role = LiquidityRole::Taker,
                     });
                     remaining_quantity -= fill_quantity;
                 }
-            }
+                return remaining_quantity > 0U;
+            });
             return;
         }
 
-        for (auto bid_it = book.bids().begin();
-             bid_it != book.bids().end() && remaining_quantity > 0U && bid_it->first >= limit_price;
-             ++bid_it) {
-            std::uint64_t level_quantity = 0U;
-            for (const Order& order : bid_it->second.orders) {
-                level_quantity += order.quantity;
+        book.for_each_level(Side::Buy, [&](std::int64_t price, std::uint64_t level_quantity) {
+            if (remaining_quantity == 0U || price < limit_price) {
+                return false;
             }
-            const std::uint64_t fill_quantity =
-                level_quantity < remaining_quantity ? level_quantity : remaining_quantity;
+            const std::uint64_t fill_quantity = std::min(level_quantity, remaining_quantity);
             if (fill_quantity > 0U) {
                 route_fill(FillEvent {
-                    .asset_id = asset_id,
                     .order_id = order_id,
-                    .side = Side::Sell,
-                    .price = bid_it->first,
+                    .price = price,
                     .quantity = fill_quantity,
                     .timestamp = timestamp,
+                    .asset_id = asset_id,
+                    .side = Side::Sell,
                     .liquidity_role = LiquidityRole::Taker,
                 });
                 remaining_quantity -= fill_quantity;
             }
-        }
+            return remaining_quantity > 0U;
+        });
     }
 
     void route_fill(
@@ -538,11 +479,12 @@ private:
         LogEventType log_event_type = LogEventType::Fill
     ) {
         const double quantity_units = static_cast<double>(fill.quantity) / kQuantityScale;
-        const double notional = fill.price * quantity_units;
+        const double fill_price_double = static_cast<double>(fill.price) / 100'000'000.0;
+        const double notional = fill_price_double * quantity_units;
         const double fee_bps =
             fill.liquidity_role == LiquidityRole::Maker ? config_.maker_fee_bps : config_.taker_fee_bps;
         const double fee_usdt = fee_to_usdt(fill.asset_id, fill.side, quantity_units, notional, fee_bps);
-        const double slippage_usdt = slippage_to_usdt(fill.asset_id, fill.side, fill.price, quantity_units);
+        const double slippage_usdt = slippage_to_usdt(fill.asset_id, fill.side, fill_price_double, quantity_units);
         const double pnl_impact = -fee_usdt - slippage_usdt;
         apply_portfolio_fill(fill.asset_id, fill.side, quantity_units, notional, fee_bps);
 
@@ -586,7 +528,7 @@ private:
                 .event_type = log_event_type,
                 .group_id = group_id,
                 .side = fill.side,
-                .price = fill.price,
+                .price = fill_price_double,
                 .qty = quantity_units,
                 .pnl_impact = pnl_impact,
                 .current_nav = mark_to_market_nav(),
@@ -603,34 +545,37 @@ private:
         OrderExecutionReport& report
     ) {
         report = OrderExecutionReport {
+            .expected_price = request.expected_price > 0 ? request.expected_price : request.price,
+            .requested_quantity = request.quantity,
             .asset_id = request.asset_id,
             .side = request.side,
-            .expected_price = request.expected_price > 0.0 ? request.expected_price : request.price,
-            .requested_quantity = request.quantity,
         };
 
         if (request.asset_id >= N || request.quantity == 0U) {
             return;
         }
 
+        const double request_price_double = static_cast<double>(request.price) / 100'000'000.0;
         const std::uint64_t available_quantity =
-            available_cross_quantity(request.asset_id, request.side, request.price, request.quantity);
+            available_cross_quantity(request.asset_id, request.side, request_price_double, request.quantity);
         if (available_quantity < request.quantity) {
             return;
         }
 
         const std::uint64_t order_id = next_strategy_order_id_++;
+        double vwap_price_double = 0.0;
         report.filled_quantity = sweep_request(
             request.asset_id,
             request.side,
-            request.price,
+            request_price_double,
             request.quantity,
             timestamp,
             order_id,
             group.group_id,
             LogEventType::Fill,
-            &report.vwap_price
+            &vwap_price_double
         );
+        report.vwap_price = static_cast<std::int64_t>(std::llround(vwap_price_double * 100'000'000.0));
         report.fully_filled = report.filled_quantity == request.quantity;
         report.slippage_breached = report.fully_filled && is_slippage_breached(report, group);
     }
@@ -646,61 +591,58 @@ private:
         LogEventType log_event_type,
         double* vwap_price
     ) {
-        OrderBook& book = books_[asset_id];
+        FixedMatchingBook& book = books_[asset_id];
         std::uint64_t remaining_quantity = quantity;
         std::uint64_t filled_quantity = 0U;
         double notional = 0.0;
+        const std::int64_t limit_ticks = FixedMatchingBook::price_to_ticks(limit_price);
 
         if (side == Side::Buy) {
-            for (auto ask_it = book.asks().begin();
-                 ask_it != book.asks().end() && remaining_quantity > 0U && ask_it->first <= limit_price;
-                 ++ask_it) {
-                std::uint64_t level_quantity = 0U;
-                for (const Order& order : ask_it->second.orders) {
-                    level_quantity += order.quantity;
+            book.for_each_level(Side::Sell, [&](std::int64_t price, std::uint64_t level_quantity) {
+                if (remaining_quantity == 0U || price > limit_ticks) {
+                    return false;
                 }
-                const std::uint64_t fill_quantity =
-                    level_quantity < remaining_quantity ? level_quantity : remaining_quantity;
+                const std::uint64_t fill_quantity = std::min(level_quantity, remaining_quantity);
                 if (fill_quantity > 0U) {
                     route_fill(FillEvent {
-                        .asset_id = asset_id,
                         .order_id = order_id,
+                        .price = price,
+                        .quantity = fill_quantity,
+                        .timestamp = timestamp,
+                        .asset_id = asset_id,
                         .side = Side::Buy,
-                        .price = ask_it->first,
-                        .quantity = fill_quantity,
-                        .timestamp = timestamp,
                         .liquidity_role = LiquidityRole::Taker,
                     }, group_id, log_event_type);
                     remaining_quantity -= fill_quantity;
                     filled_quantity += fill_quantity;
-                    notional += ask_it->first * (static_cast<double>(fill_quantity) / kQuantityScale);
+                    notional += FixedMatchingBook::ticks_to_price(price) *
+                        (static_cast<double>(fill_quantity) / kQuantityScale);
                 }
-            }
+                return remaining_quantity > 0U;
+            });
         } else {
-            for (auto bid_it = book.bids().begin();
-                 bid_it != book.bids().end() && remaining_quantity > 0U && bid_it->first >= limit_price;
-                 ++bid_it) {
-                std::uint64_t level_quantity = 0U;
-                for (const Order& order : bid_it->second.orders) {
-                    level_quantity += order.quantity;
+            book.for_each_level(Side::Buy, [&](std::int64_t price, std::uint64_t level_quantity) {
+                if (remaining_quantity == 0U || price < limit_ticks) {
+                    return false;
                 }
-                const std::uint64_t fill_quantity =
-                    level_quantity < remaining_quantity ? level_quantity : remaining_quantity;
+                const std::uint64_t fill_quantity = std::min(level_quantity, remaining_quantity);
                 if (fill_quantity > 0U) {
                     route_fill(FillEvent {
-                        .asset_id = asset_id,
                         .order_id = order_id,
-                        .side = Side::Sell,
-                        .price = bid_it->first,
+                        .price = price,
                         .quantity = fill_quantity,
                         .timestamp = timestamp,
+                        .asset_id = asset_id,
+                        .side = Side::Sell,
                         .liquidity_role = LiquidityRole::Taker,
                     }, group_id, log_event_type);
                     remaining_quantity -= fill_quantity;
                     filled_quantity += fill_quantity;
-                    notional += bid_it->first * (static_cast<double>(fill_quantity) / kQuantityScale);
+                    notional += FixedMatchingBook::ticks_to_price(price) *
+                        (static_cast<double>(fill_quantity) / kQuantityScale);
                 }
-            }
+                return remaining_quantity > 0U;
+            });
         }
 
         if (vwap_price != nullptr && filled_quantity > 0U) {
@@ -711,7 +653,7 @@ private:
 
     [[nodiscard]] bool is_slippage_breached(const OrderExecutionReport& report, const OrderGroup& group) const noexcept {
         const double tolerance = group.slippage_tolerance > 0.0 ? group.slippage_tolerance : 0.0;
-        if (report.expected_price <= 0.0 || tolerance <= 0.0) {
+        if (report.expected_price <= 0 || tolerance <= 0.0) {
             return false;
         }
 
@@ -787,7 +729,32 @@ private:
         }
 
         const double fill_price = quote_notional / base_quantity;
-        wallet_.apply_spot_fill(asset_id, side, base_quantity, fill_price, fee_bps);
+        AssetID base_asset = kUsdtAsset;
+        AssetID quote_asset = kUsdtAsset;
+        switch (asset_id) {
+            case 0U:
+                base_asset = kBtcAsset;
+                quote_asset = kUsdtAsset;
+                break;
+            case 1U:
+                base_asset = kEthAsset;
+                quote_asset = kUsdtAsset;
+                break;
+            case 2U:
+                base_asset = kEthAsset;
+                quote_asset = kBtcAsset;
+                break;
+            default:
+                return;
+        }
+        (void)wallet_.apply_spot_fill(
+            base_asset,
+            quote_asset,
+            side,
+            static_cast<std::uint64_t>(std::llround(base_quantity * kQuantityScale)),
+            FixedMatchingBook::price_to_ticks(fill_price),
+            fee_bps
+        );
     }
 
     void update_last_mid(AssetID asset_id) noexcept {
@@ -799,7 +766,26 @@ private:
         const double best_ask = books_[asset_id].get_best_ask();
         if (best_bid > 0.0 && best_ask > 0.0) {
             last_mid_[asset_id] = (best_bid + best_ask) * 0.5;
+            refresh_wallet_factors();
         }
+    }
+
+    void refresh_wallet_factors() noexcept {
+        (void)wallet_.refresh_liquidation_factors([this](AssetID asset) noexcept {
+            double factor = 0.0;
+            if (asset == kBtcAsset) {
+                factor = last_mid_[0U];
+            } else if (asset == kEthAsset) {
+                if constexpr (N > 1U) {
+                    factor = last_mid_[1U];
+                }
+                if (factor <= 0.0 && N > 2U && last_mid_[2U] > 0.0 && last_mid_[0U] > 0.0) {
+                    factor = last_mid_[2U] * last_mid_[0U];
+                }
+            }
+            std::int64_t fixed {};
+            return Wallet::from_double(factor, fixed) ? fixed : 0;
+        });
     }
 
     [[nodiscard]] double quote_notional_to_usdt(AssetID asset_id, double quote_notional) const noexcept {
@@ -859,7 +845,7 @@ private:
     }
 
     [[nodiscard]] double mark_to_market_nav() const noexcept {
-        return wallet_.mark_to_market_nav(last_mid_[0U], N > 1U ? last_mid_[1U] : 0.0);
+        return Wallet::to_double(wallet_.mark_to_market_nav());
     }
 
     [[nodiscard]] std::uint64_t available_cross_quantity(const LiveOrder& live_order) const noexcept {
@@ -881,33 +867,28 @@ private:
             return 0U;
         }
 
-        const OrderBook& book = books_[asset_id];
+        const FixedMatchingBook& book = books_[asset_id];
         std::uint64_t available_quantity = 0U;
+        const std::int64_t limit_ticks = FixedMatchingBook::price_to_ticks(limit_price);
 
         if (side == Side::Buy) {
-            for (auto ask_it = book.asks().begin();
-                 ask_it != book.asks().end() && ask_it->first <= limit_price;
-                 ++ask_it) {
-                for (const Order& order : ask_it->second.orders) {
-                    available_quantity += order.quantity;
-                    if (available_quantity >= target_quantity) {
-                        return available_quantity;
-                    }
+            book.for_each_level(Side::Sell, [&](std::int64_t price, std::uint64_t quantity) {
+                if (price > limit_ticks) {
+                    return false;
                 }
-            }
+                available_quantity += quantity;
+                return available_quantity < target_quantity;
+            });
             return available_quantity;
         }
 
-        for (auto bid_it = book.bids().begin();
-             bid_it != book.bids().end() && bid_it->first >= limit_price;
-             ++bid_it) {
-            for (const Order& order : bid_it->second.orders) {
-                available_quantity += order.quantity;
-                if (available_quantity >= target_quantity) {
-                    return available_quantity;
-                }
+        book.for_each_level(Side::Buy, [&](std::int64_t price, std::uint64_t quantity) {
+            if (price < limit_ticks) {
+                return false;
             }
-        }
+            available_quantity += quantity;
+            return available_quantity < target_quantity;
+        });
         return available_quantity;
     }
 
@@ -964,7 +945,7 @@ private:
             return false;
         }
 
-        const OrderBook& book = books_[asset_id];
+        const FixedMatchingBook& book = books_[asset_id];
         if (side == Side::Buy) {
             const double best_ask = book.get_best_ask();
             return best_ask > 0.0 && price >= best_ask;
@@ -988,12 +969,12 @@ private:
         }
     }
 
-    Strategy& strategy_;
+    Strategy<Self>& strategy_;
     Config config_ {};
     EventMerger<N, Parser> merger_;
-    std::array<OrderBook, N> books_ {};
-    PendingMinHeap<PendingOrder, kPendingOrderCapacity> pending_orders_ {};
-    PendingMinHeap<PendingGroup, kPendingOrderCapacity> pending_groups_ {};
+    std::array<FixedMatchingBook, N> books_ {};
+    IndexedPendingMinHeap<PendingOrder, kPendingOrderCapacity> pending_orders_ {};
+    IndexedPendingMinHeap<PendingGroup, kPendingOrderCapacity> pending_groups_ {};
     std::array<LiveOrder, kLiveOrderCapacity> live_orders_ {};
     std::size_t live_order_count_ {};
     std::vector<Trade> trade_buffer_ {};

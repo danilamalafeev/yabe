@@ -115,7 +115,8 @@ int RunBacktest(
     constexpr std::uint64_t kEquitySampleIntervalNs = kEquitySampleIntervalMs * 1'000'000ULL;
     constexpr double kQuantityScale = 100'000'000.0;
 
-    lob::InventorySkewStrategy strategy {lob::InventorySkewStrategy::Config {
+    using Strategy = lob::InventorySkewStrategy<lob::BacktestEngine>;
+    Strategy strategy {Strategy::Config {
         .target_position = 0.0,
         .max_position = 10.0,
         .base_spread = base_spread,
@@ -209,7 +210,8 @@ int RunTriangularBacktest(
 ) {
     using Engine = lob::MultiAssetBacktestEngine<3U>;
 
-    lob::TriangularArbitrageStrategy strategy {lob::TriangularArbitrageStrategy::Config {
+    using Strategy = lob::TriangularArbitrageStrategy<Engine>;
+    Strategy strategy {Strategy::Config {
         .taker_fee_bps = runtime_options.taker_fee_bps,
         .verbose = runtime_options.verbose_arb,
     }};
@@ -260,9 +262,12 @@ int RunTriangularBacktest(
     std::cout << '\n';
     std::cout << "=== Multi-Asset Execution Analytics ===\n";
     std::cout << "Initial USDT: " << std::fixed << std::setprecision(2) << result.initial_usdt << '\n';
-    std::cout << "Final USDT Liquid: " << std::fixed << std::setprecision(2) << result.final_portfolio.usdt << '\n';
-    std::cout << "Final BTC Balance: " << std::fixed << std::setprecision(8) << result.final_portfolio.btc << '\n';
-    std::cout << "Final ETH Balance: " << std::fixed << std::setprecision(8) << result.final_portfolio.eth << '\n';
+    std::cout << "Final USDT Liquid: " << std::fixed << std::setprecision(2)
+              << lob::Wallet::to_double(result.final_portfolio.balance(0U)) << '\n';
+    std::cout << "Final BTC Balance: " << std::fixed << std::setprecision(8)
+              << lob::Wallet::to_double(result.final_portfolio.balance(1U)) << '\n';
+    std::cout << "Final ETH Balance: " << std::fixed << std::setprecision(8)
+              << lob::Wallet::to_double(result.final_portfolio.balance(2U)) << '\n';
     std::cout << "Final BTCUSDT Mid: " << std::fixed << std::setprecision(2) << result.btc_usdt_mid << '\n';
     std::cout << "Final ETHUSDT Mid: " << std::fixed << std::setprecision(2) << result.eth_usdt_mid << '\n';
     std::cout << "Total MTM NAV USDT: " << std::fixed << std::setprecision(2) << result.final_mtm_nav_usdt << '\n';
@@ -297,9 +302,9 @@ int RunTriangularBacktest(
     std::cout << "RESULT_TRI_CSV,"
               << std::fixed << std::setprecision(6)
               << result.events_processed << ','
-              << result.final_portfolio.usdt << ','
-              << result.final_portfolio.btc << ','
-              << result.final_portfolio.eth << ','
+              << lob::Wallet::to_double(result.final_portfolio.balance(0U)) << ','
+              << lob::Wallet::to_double(result.final_portfolio.balance(1U)) << ','
+              << lob::Wallet::to_double(result.final_portfolio.balance(2U)) << ','
               << result.final_mtm_nav_usdt << ','
               << (result.final_mtm_nav_usdt - result.initial_usdt) << ','
               << result.inventory_risk_usdt << ','

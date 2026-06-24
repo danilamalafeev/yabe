@@ -1,39 +1,125 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <cstddef>
-#include <vector>
+#include <cstdint>
 
 #include "lob/event_l2_update.hpp"
 
 namespace lob {
 
-class L2OrderBook {
+template <typename T, std::size_t Capacity>
+class StaticVector {
 public:
-    static constexpr std::size_t kDefaultMaxLevelsPerSide = 4096U;
+    using value_type = T;
+    using size_type = std::size_t;
+    using iterator = T*;
+    using const_iterator = const T*;
 
-    struct Level {
-        double price {};
-        double qty {};
-        double depleted_qty {};
+    StaticVector() = default;
 
-        [[nodiscard]] double effective_qty() const noexcept {
-            return qty > depleted_qty ? qty - depleted_qty : 0.0;
+    [[nodiscard]] size_type size() const noexcept { return size_; }
+    [[nodiscard]] bool empty() const noexcept { return size_ == 0U; }
+    [[nodiscard]] static constexpr size_type capacity() noexcept { return Capacity; }
+    [[nodiscard]] bool full() const noexcept { return size_ == Capacity; }
+
+    [[nodiscard]] iterator begin() noexcept { return data_.data(); }
+    [[nodiscard]] const_iterator begin() const noexcept { return data_.data(); }
+    [[nodiscard]] const_iterator cbegin() const noexcept { return data_.data(); }
+    [[nodiscard]] iterator end() noexcept { return data_.data() + size_; }
+    [[nodiscard]] const_iterator end() const noexcept { return data_.data() + size_; }
+    [[nodiscard]] const_iterator cend() const noexcept { return data_.data() + size_; }
+
+    [[nodiscard]] T& front() noexcept { return data_[0]; }
+    [[nodiscard]] const T& front() const noexcept { return data_[0]; }
+    [[nodiscard]] T& back() noexcept { return data_[size_ - 1]; }
+    [[nodiscard]] const T& back() const noexcept { return data_[size_ - 1]; }
+    [[nodiscard]] T& operator[](size_type idx) noexcept { return data_[idx]; }
+    [[nodiscard]] const T& operator[](size_type idx) const noexcept { return data_[idx]; }
+
+    void clear() noexcept { size_ = 0U; }
+
+    [[nodiscard]] bool push_back(const T& value) noexcept {
+        if (full()) {
+            return false;
         }
-    };
-    using LevelIterator = std::vector<Level>::iterator;
-    using ConstLevelIterator = std::vector<Level>::const_iterator;
-
-    explicit L2OrderBook(std::size_t max_levels_per_side = kDefaultMaxLevelsPerSide)
-        : max_levels_per_side_(max_levels_per_side) {
-        bids_.reserve(max_levels_per_side_);
-        asks_.reserve(max_levels_per_side_);
+        data_[size_++] = value;
+        return true;
     }
 
-    void reserve(std::size_t max_levels_per_side) {
-        max_levels_per_side_ = max_levels_per_side;
-        bids_.reserve(max_levels_per_side_);
-        asks_.reserve(max_levels_per_side_);
+    [[nodiscard]] bool pop_back() noexcept {
+        if (empty()) {
+            return false;
+        }
+        --size_;
+        return true;
+    }
+
+    iterator insert(const_iterator pos, const T& value) noexcept {
+        if (full()) {
+            return end();
+        }
+
+        const size_type idx = static_cast<size_type>(pos - cbegin());
+        if (idx > size_) {
+            return end();
+        }
+
+        for (size_type i = size_; i > idx; --i) {
+            data_[i] = data_[i - 1];
+        }
+        data_[idx] = value;
+        ++size_;
+        return data_.data() + idx;
+    }
+
+    iterator erase(const_iterator pos) noexcept {
+        const size_type idx = static_cast<size_type>(pos - cbegin());
+        if (idx >= size_) {
+            return end();
+        }
+
+        for (size_type i = idx; i + 1U < size_; ++i) {
+            data_[i] = data_[i + 1];
+        }
+        --size_;
+        return data_.data() + idx;
+    }
+
+    [[nodiscard]] static constexpr bool reserve(size_type requested_capacity) noexcept {
+        return requested_capacity <= Capacity;
+    }
+
+private:
+    std::array<T, Capacity> data_ {};
+    std::size_t size_ {0U};
+};
+
+class L2OrderBook {
+public:
+    static constexpr std::size_t kCapacity = 128U;
+    using NotionalTicksLots = __int128_t;
+
+    struct Level {
+        std::int64_t price {};         // PriceTicks
+        std::uint64_t qty {};          // QtyLots
+        std::uint64_t depleted_qty {}; // QtyLots
+
+        [[nodiscard]] std::uint64_t effective_qty() const noexcept {
+            return qty > depleted_qty ? qty - depleted_qty : 0U;
+        }
+    };
+
+    using LevelContainer = StaticVector<Level, kCapacity>;
+    using LevelIterator = LevelContainer::iterator;
+    using ConstLevelIterator = LevelContainer::const_iterator;
+
+    explicit L2OrderBook(std::size_t max_levels_per_side = kCapacity)
+        : max_levels_per_side_(clamp_capacity(max_levels_per_side)) {}
+
+    void reserve(std::size_t max_levels_per_side) noexcept {
+        max_levels_per_side_ = clamp_capacity(max_levels_per_side);
         trim_to_capacity(true, bids_);
         trim_to_capacity(false, asks_);
     }
@@ -41,33 +127,31 @@ public:
     void clear() noexcept {
         bids_.clear();
         asks_.clear();
-        bid_total_qty_ = 0.0;
-        ask_total_qty_ = 0.0;
-        bid_total_notional_ = 0.0;
-        ask_total_notional_ = 0.0;
-        bid_depleted_qty_ = 0.0;
-        ask_depleted_qty_ = 0.0;
-        bid_depleted_notional_ = 0.0;
-        ask_depleted_notional_ = 0.0;
+        bid_total_qty_ = 0U;
+        ask_total_qty_ = 0U;
+        bid_total_notional_ = 0;
+        ask_total_notional_ = 0;
+        bid_depleted_qty_ = 0U;
+        ask_depleted_qty_ = 0U;
+        bid_depleted_notional_ = 0;
+        ask_depleted_notional_ = 0;
     }
 
     void apply_update(const L2UpdateEvent& event) {
-        if (event.is_snapshot) {
-            clear();
-        }
+        if (event.is_snapshot) { clear(); }
         update_level(event.is_bid, event.price, event.qty);
     }
 
-    void update_level(bool is_bid, double price, double qty) {
-        if (price <= 0.0) {
+    void update_level(bool is_bid, std::int64_t price, std::uint64_t qty) {
+        if (price <= 0) {
             return;
         }
 
-        std::vector<Level>& side = levels_for(is_bid);
+        LevelContainer& side = levels_for(is_bid);
         auto level_it = find_level(side, is_bid, price);
         const bool found = level_it != side.end() && level_it->price == price;
 
-        if (qty <= 0.0) {
+        if (qty == 0U) {
             if (found) {
                 acc_subtract(is_bid, *level_it);
                 side.erase(level_it);
@@ -90,25 +174,27 @@ public:
                 return;
             }
             acc_subtract(is_bid, side.back());
-            side.pop_back();
+            (void)side.pop_back();
             level_it = find_level(side, is_bid, price);
         }
 
         Level new_level {
             .price = price,
             .qty = qty,
-            .depleted_qty = 0.0,
+            .depleted_qty = 0U,
         };
-        acc_add(is_bid, new_level);
-        side.insert(level_it, new_level);
+        const auto inserted = side.insert(level_it, new_level);
+        if (inserted != side.end()) {
+            acc_add(is_bid, *inserted);
+        }
     }
 
-    void deplete_level(bool is_bid, double price, double consumed_qty) noexcept {
-        if (price <= 0.0 || consumed_qty <= 0.0) {
+    void deplete_level(bool is_bid, std::int64_t price, std::uint64_t consumed_qty) noexcept {
+        if (price <= 0 || consumed_qty == 0U) {
             return;
         }
 
-        std::vector<Level>& side = levels_for(is_bid);
+        LevelContainer& side = levels_for(is_bid);
         auto level_it = find_level(side, is_bid, price);
         if (level_it == side.end() || level_it->price != price) {
             return;
@@ -117,21 +203,23 @@ public:
         level_it->depleted_qty += consumed_qty;
         if (is_bid) {
             bid_depleted_qty_ += consumed_qty;
-            bid_depleted_notional_ += consumed_qty * price;
+            bid_depleted_notional_ +=
+                static_cast<NotionalTicksLots>(price) * static_cast<NotionalTicksLots>(consumed_qty);
         } else {
             ask_depleted_qty_ += consumed_qty;
-            ask_depleted_notional_ += consumed_qty * price;
+            ask_depleted_notional_ +=
+                static_cast<NotionalTicksLots>(price) * static_cast<NotionalTicksLots>(consumed_qty);
         }
     }
 
     template <typename PriceContainer>
     void remove_levels_not_in(bool is_bid, const PriceContainer& prices) {
-        std::vector<Level>& side = levels_for(is_bid);
+        LevelContainer& side = levels_for(is_bid);
         auto level_it = side.begin();
         while (level_it != side.end()) {
             bool found = false;
-            for (const double price : prices) {
-                if (price > 0.0 && price == level_it->price) {
+            for (const std::int64_t price : prices) {
+                if (price > 0 && price == level_it->price) {
                     found = true;
                     break;
                 }
@@ -146,24 +234,24 @@ public:
         }
     }
 
-    [[nodiscard]] double effective_qty(bool is_bid, double price) const noexcept {
-        if (price <= 0.0) {
-            return 0.0;
+    [[nodiscard]] std::uint64_t effective_qty(bool is_bid, std::int64_t price) const noexcept {
+        if (price <= 0) {
+            return 0U;
         }
 
-        const std::vector<Level>& side = levels_for(is_bid);
+        const LevelContainer& side = levels_for(is_bid);
         auto level_it = find_level(side, is_bid, price);
         if (level_it == side.end() || level_it->price != price) {
-            return 0.0;
+            return 0U;
         }
         return level_it->effective_qty();
     }
 
-    [[nodiscard]] const std::vector<Level>& bids() const noexcept {
+    [[nodiscard]] const LevelContainer& bids() const noexcept {
         return bids_;
     }
 
-    [[nodiscard]] const std::vector<Level>& asks() const noexcept {
+    [[nodiscard]] const LevelContainer& asks() const noexcept {
         return asks_;
     }
 
@@ -171,36 +259,55 @@ public:
         return max_levels_per_side_;
     }
 
-    [[nodiscard]] double best_bid() const noexcept {
-        return bids_.empty() ? 0.0 : bids_.front().price;
+    [[nodiscard]] std::int64_t best_bid() const noexcept {
+        return bids_.empty() ? 0 : bids_.front().price;
     }
 
-    [[nodiscard]] double best_ask() const noexcept {
-        return asks_.empty() ? 0.0 : asks_.front().price;
+    [[nodiscard]] std::int64_t best_ask() const noexcept {
+        return asks_.empty() ? 0 : asks_.front().price;
+    }
+
+    [[nodiscard]] std::int64_t effective_best_bid() const noexcept {
+        for (const Level& level : bids_) {
+            if (level.effective_qty() > 0U) {
+                return level.price;
+            }
+        }
+        return 0;
+    }
+
+    [[nodiscard]] std::int64_t effective_best_ask() const noexcept {
+        for (const Level& level : asks_) {
+            if (level.effective_qty() > 0U) {
+                return level.price;
+            }
+        }
+        return 0;
     }
 
     // --- O(1) accumulator accessors ---
 
-    [[nodiscard]] double bid_total_qty() const noexcept { return bid_total_qty_; }
-    [[nodiscard]] double ask_total_qty() const noexcept { return ask_total_qty_; }
-    [[nodiscard]] double bid_total_notional() const noexcept { return bid_total_notional_; }
-    [[nodiscard]] double ask_total_notional() const noexcept { return ask_total_notional_; }
+    [[nodiscard]] std::uint64_t bid_total_qty() const noexcept { return bid_total_qty_; }
+    [[nodiscard]] std::uint64_t ask_total_qty() const noexcept { return ask_total_qty_; }
+    [[nodiscard]] NotionalTicksLots bid_total_notional() const noexcept { return bid_total_notional_; }
+    [[nodiscard]] NotionalTicksLots ask_total_notional() const noexcept { return ask_total_notional_; }
 
-    [[nodiscard]] double bid_effective_qty() const noexcept {
-        const double v = bid_total_qty_ - bid_depleted_qty_;
-        return v > 0.0 ? v : 0.0;
+    [[nodiscard]] std::uint64_t bid_depleted_qty() const noexcept { return bid_depleted_qty_; }
+    [[nodiscard]] std::uint64_t ask_depleted_qty() const noexcept { return ask_depleted_qty_; }
+    [[nodiscard]] NotionalTicksLots bid_depleted_notional() const noexcept { return bid_depleted_notional_; }
+    [[nodiscard]] NotionalTicksLots ask_depleted_notional() const noexcept { return ask_depleted_notional_; }
+
+    [[nodiscard]] std::uint64_t bid_effective_qty() const noexcept {
+        return bid_total_qty_ > bid_depleted_qty_ ? bid_total_qty_ - bid_depleted_qty_ : 0U;
     }
-    [[nodiscard]] double ask_effective_qty() const noexcept {
-        const double v = ask_total_qty_ - ask_depleted_qty_;
-        return v > 0.0 ? v : 0.0;
+    [[nodiscard]] std::uint64_t ask_effective_qty() const noexcept {
+        return ask_total_qty_ > ask_depleted_qty_ ? ask_total_qty_ - ask_depleted_qty_ : 0U;
     }
-    [[nodiscard]] double bid_effective_notional() const noexcept {
-        const double v = bid_total_notional_ - bid_depleted_notional_;
-        return v > 0.0 ? v : 0.0;
+    [[nodiscard]] NotionalTicksLots bid_effective_notional() const noexcept {
+        return bid_total_notional_ > bid_depleted_notional_ ? bid_total_notional_ - bid_depleted_notional_ : 0;
     }
-    [[nodiscard]] double ask_effective_notional() const noexcept {
-        const double v = ask_total_notional_ - ask_depleted_notional_;
-        return v > 0.0 ? v : 0.0;
+    [[nodiscard]] NotionalTicksLots ask_effective_notional() const noexcept {
+        return ask_total_notional_ > ask_depleted_notional_ ? ask_total_notional_ - ask_depleted_notional_ : 0;
     }
 
 private:
@@ -209,46 +316,67 @@ private:
     void acc_add(bool is_bid, const Level& level) noexcept {
         if (is_bid) {
             bid_total_qty_ += level.qty;
-            bid_total_notional_ += level.price * level.qty;
+            bid_total_notional_ +=
+                static_cast<NotionalTicksLots>(level.price) * static_cast<NotionalTicksLots>(level.qty);
             bid_depleted_qty_ += level.depleted_qty;
-            bid_depleted_notional_ += level.price * level.depleted_qty;
+            bid_depleted_notional_ +=
+                static_cast<NotionalTicksLots>(level.price) * static_cast<NotionalTicksLots>(level.depleted_qty);
         } else {
             ask_total_qty_ += level.qty;
-            ask_total_notional_ += level.price * level.qty;
+            ask_total_notional_ +=
+                static_cast<NotionalTicksLots>(level.price) * static_cast<NotionalTicksLots>(level.qty);
             ask_depleted_qty_ += level.depleted_qty;
-            ask_depleted_notional_ += level.price * level.depleted_qty;
+            ask_depleted_notional_ +=
+                static_cast<NotionalTicksLots>(level.price) * static_cast<NotionalTicksLots>(level.depleted_qty);
         }
     }
 
     void acc_subtract(bool is_bid, const Level& level) noexcept {
         if (is_bid) {
             bid_total_qty_ -= level.qty;
-            bid_total_notional_ -= level.price * level.qty;
+            bid_total_notional_ -=
+                static_cast<NotionalTicksLots>(level.price) * static_cast<NotionalTicksLots>(level.qty);
             bid_depleted_qty_ -= level.depleted_qty;
-            bid_depleted_notional_ -= level.price * level.depleted_qty;
+            bid_depleted_notional_ -=
+                static_cast<NotionalTicksLots>(level.price) * static_cast<NotionalTicksLots>(level.depleted_qty);
         } else {
             ask_total_qty_ -= level.qty;
-            ask_total_notional_ -= level.price * level.qty;
+            ask_total_notional_ -=
+                static_cast<NotionalTicksLots>(level.price) * static_cast<NotionalTicksLots>(level.qty);
             ask_depleted_qty_ -= level.depleted_qty;
-            ask_depleted_notional_ -= level.price * level.depleted_qty;
+            ask_depleted_notional_ -=
+                static_cast<NotionalTicksLots>(level.price) * static_cast<NotionalTicksLots>(level.depleted_qty);
         }
     }
 
-    [[nodiscard]] std::vector<Level>& levels_for(bool is_bid) noexcept {
+    [[nodiscard]] LevelContainer& levels_for(bool is_bid) noexcept {
         return is_bid ? bids_ : asks_;
     }
 
-    [[nodiscard]] const std::vector<Level>& levels_for(bool is_bid) const noexcept {
+    [[nodiscard]] const LevelContainer& levels_for(bool is_bid) const noexcept {
         return is_bid ? bids_ : asks_;
     }
 
-    [[nodiscard]] static LevelIterator find_level(std::vector<Level>& side, bool is_bid, double price) noexcept {
+    [[nodiscard]] static LevelIterator find_level(LevelContainer& side, bool is_bid, std::int64_t price) noexcept {
+        if (side.size() <= 16U) {
+            if (is_bid) {
+                for (auto it = side.begin(); it != side.end(); ++it) {
+                    if (it->price <= price) return it;
+                }
+                return side.end();
+            }
+            for (auto it = side.begin(); it != side.end(); ++it) {
+                if (it->price >= price) return it;
+            }
+            return side.end();
+        }
+
         if (is_bid) {
             return std::lower_bound(
                 side.begin(),
                 side.end(),
                 price,
-                [](const Level& level, double target_price) noexcept {
+                [](const Level& level, std::int64_t target_price) noexcept {
                     return level.price > target_price;
                 }
             );
@@ -258,23 +386,36 @@ private:
             side.begin(),
             side.end(),
             price,
-            [](const Level& level, double target_price) noexcept {
+            [](const Level& level, std::int64_t target_price) noexcept {
                 return level.price < target_price;
             }
         );
     }
 
     [[nodiscard]] static ConstLevelIterator find_level(
-        const std::vector<Level>& side,
+        const LevelContainer& side,
         bool is_bid,
-        double price
+        std::int64_t price
     ) noexcept {
+        if (side.size() <= 16U) {
+            if (is_bid) {
+                for (auto it = side.begin(); it != side.end(); ++it) {
+                    if (it->price <= price) return it;
+                }
+                return side.end();
+            }
+            for (auto it = side.begin(); it != side.end(); ++it) {
+                if (it->price >= price) return it;
+            }
+            return side.end();
+        }
+
         if (is_bid) {
             return std::lower_bound(
                 side.begin(),
                 side.end(),
                 price,
-                [](const Level& level, double target_price) noexcept {
+                [](const Level& level, std::int64_t target_price) noexcept {
                     return level.price > target_price;
                 }
             );
@@ -284,36 +425,43 @@ private:
             side.begin(),
             side.end(),
             price,
-            [](const Level& level, double target_price) noexcept {
+            [](const Level& level, std::int64_t target_price) noexcept {
                 return level.price < target_price;
             }
         );
     }
 
-    [[nodiscard]] static bool is_deeper_or_equal(bool is_bid, double price, double tail_price) noexcept {
+    [[nodiscard]] static bool is_deeper_or_equal(bool is_bid, std::int64_t price, std::int64_t tail_price) noexcept {
         return is_bid ? price <= tail_price : price >= tail_price;
     }
 
-    void trim_to_capacity(bool is_bid, std::vector<Level>& side) {
+    void trim_to_capacity(bool is_bid, LevelContainer& side) noexcept {
         while (side.size() > max_levels_per_side_) {
             acc_subtract(is_bid, side.back());
-            side.pop_back();
+            (void)side.pop_back();
         }
     }
 
-    std::size_t max_levels_per_side_ {};
-    std::vector<Level> bids_ {};
-    std::vector<Level> asks_ {};
+    [[nodiscard]] static constexpr std::size_t clamp_capacity(std::size_t value) noexcept {
+        if (value == 0U) {
+            return 1U;
+        }
+        return value > kCapacity ? kCapacity : value;
+    }
 
-    // Incremental accumulators — maintained in O(1) per update
-    double bid_total_qty_ {};
-    double ask_total_qty_ {};
-    double bid_total_notional_ {};
-    double ask_total_notional_ {};
-    double bid_depleted_qty_ {};
-    double ask_depleted_qty_ {};
-    double bid_depleted_notional_ {};
-    double ask_depleted_notional_ {};
+    std::size_t max_levels_per_side_ {kCapacity};
+    LevelContainer bids_ {};
+    LevelContainer asks_ {};
+
+    // Incremental accumulators — maintained in O(1) per update (integer arithmetic)
+    std::uint64_t bid_total_qty_ {};
+    std::uint64_t ask_total_qty_ {};
+    NotionalTicksLots bid_total_notional_ {};
+    NotionalTicksLots ask_total_notional_ {};
+    std::uint64_t bid_depleted_qty_ {};
+    std::uint64_t ask_depleted_qty_ {};
+    NotionalTicksLots bid_depleted_notional_ {};
+    NotionalTicksLots ask_depleted_notional_ {};
 };
 
 }  // namespace lob

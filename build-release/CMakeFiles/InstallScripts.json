@@ -1,13 +1,13 @@
 {
 	"InstallScripts" : 
 	[
-		"/Users/danilamalafeev/Documents/New project/build-release/cmake_install.cmake",
-		"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-build/cmake_install.cmake",
-		"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-build/googlemock/cmake_install.cmake",
-		"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-build/googletest/cmake_install.cmake",
-		"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/cmake_install.cmake",
-		"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-build/src/cmake_install.cmake",
-		"/Users/danilamalafeev/Documents/New project/build-release/_deps/pybind11-build/cmake_install.cmake"
+		"/Users/danilamalafeev/Documents/YABE/build-release/cmake_install.cmake",
+		"/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-build/cmake_install.cmake",
+		"/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-build/googlemock/cmake_install.cmake",
+		"/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-build/googletest/cmake_install.cmake",
+		"/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/cmake_install.cmake",
+		"/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-build/src/cmake_install.cmake",
+		"/Users/danilamalafeev/Documents/YABE/build-release/_deps/pybind11-build/cmake_install.cmake"
 	],
 	"Parallel" : false
 }

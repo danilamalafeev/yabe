@@ -1,5 +1,5 @@
-if(EXISTS "/Users/danilamalafeev/Documents/New project/build-release/lob_tests[1]_tests.cmake")
-  include("/Users/danilamalafeev/Documents/New project/build-release/lob_tests[1]_tests.cmake")
+if(EXISTS "/Users/danilamalafeev/Documents/YABE/build-release/lob_tests[1]_tests.cmake")
+  include("/Users/danilamalafeev/Documents/YABE/build-release/lob_tests[1]_tests.cmake")
 else()
   add_test(lob_tests_NOT_BUILT lob_tests_NOT_BUILT)
 endif()

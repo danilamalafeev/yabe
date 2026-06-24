@@ -1,6 +1,6 @@
 CMakeFiles/lob_core.dir/src/csv_parser.cpp.o: \
-  /Users/danilamalafeev/Documents/New\ project/src/csv_parser.cpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/csv_parser.hpp \
+  /Users/danilamalafeev/Documents/YABE/src/csv_parser.cpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/csv_parser.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cstdint \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config_site \
@@ -950,8 +950,13 @@ CMakeFiles/lob_core.dir/src/csv_parser.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/path_iterator.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/recursive_directory_iterator.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/u8path.h \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/event.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/order.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/event.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/order.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/fixed_matching_book.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/sim/matching_book.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/sim/types.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/venue_replay.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/trade.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/fcntl.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/fcntl.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_o_sync.h \
@@ -965,10 +970,4 @@ CMakeFiles/lob_core.dir/src/csv_parser.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/select.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_select.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_uuid_t.h \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/gethostuuid.h \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/order_book.hpp \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/list \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/price_level.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/trade.hpp
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/gethostuuid.h

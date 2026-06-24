@@ -1,7 +1,7 @@
 {
 	"InstallScripts" : 
 	[
-		"/Users/danilamalafeev/Documents/New project/build-release/_deps/googletest-subbuild/cmake_install.cmake"
+		"/Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-subbuild/cmake_install.cmake"
 	],
 	"Parallel" : false
 }

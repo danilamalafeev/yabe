@@ -2,37 +2,37 @@
 	"sources" : 
 	[
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/CMakeFiles/googlebenchmark-populate"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/CMakeFiles/googlebenchmark-populate"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/CMakeFiles/googlebenchmark-populate.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/CMakeFiles/googlebenchmark-populate.rule"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/CMakeFiles/googlebenchmark-populate-complete.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/CMakeFiles/googlebenchmark-populate-complete.rule"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-build.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-build.rule"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-configure.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-configure.rule"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-download.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-download.rule"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-install.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-install.rule"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-mkdir.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-mkdir.rule"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-patch.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-patch.rule"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-test.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-test.rule"
 		},
 		{
-			"file" : "/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-update.rule"
+			"file" : "/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-subbuild/googlebenchmark-populate-prefix/src/googlebenchmark-populate-stamp/googlebenchmark-populate-update.rule"
 		}
 	],
 	"target" : 

@@ -7,7 +7,8 @@
 
 namespace lob {
 
-class MarketMakerStrategy final : public Strategy {
+template <typename Gateway>
+class MarketMakerStrategy final : public Strategy<Gateway> {
 public:
     struct Config {
         double quote_offset {5.0};
@@ -18,7 +19,7 @@ public:
     MarketMakerStrategy() : MarketMakerStrategy(Config {}) {}
     explicit MarketMakerStrategy(Config config) : config_(config) {}
 
-    void on_tick(AssetID asset_id, const OrderBook& book, OrderGateway& gateway) override {
+    void on_tick(AssetID asset_id, const FixedMatchingBook& book, Gateway& gateway) override {
         const double best_bid = book.get_best_bid();
         const double best_ask = book.get_best_ask();
         const std::uint64_t timestamp = gateway.current_timestamp();
@@ -50,7 +51,7 @@ public:
         next_refresh_timestamp_ = timestamp + config_.refresh_interval_ns;
     }
 
-    void on_fill(const StrategyFill& fill, OrderGateway& gateway) override {
+    void on_fill(const StrategyFill& fill, Gateway& gateway) override {
         (void)gateway;
 
         if (fill.order_id == bid_order_id_) {
@@ -71,7 +72,7 @@ public:
     }
 
 private:
-    void cancel_active_quotes(AssetID asset_id, OrderGateway& gateway) {
+    void cancel_active_quotes(AssetID asset_id, Gateway& gateway) {
         if (bid_order_id_ != 0U && gateway.cancel_order(asset_id, bid_order_id_)) {
             bid_order_id_ = 0U;
             bid_remaining_quantity_ = 0U;

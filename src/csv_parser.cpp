@@ -10,7 +10,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "lob/order_book.hpp"
 
 namespace lob {
 namespace {
@@ -77,6 +76,32 @@ constexpr std::uint64_t kQuantityScale = 100'000'000U;
     }
 
     return scaled_quantity;
+}
+
+[[nodiscard]] inline std::int64_t ParseScaledPriceField(const char*& cursor, const char* end) {
+    std::uint64_t integer_part = 0U;
+    while (cursor < end && IsDigit(*cursor)) {
+        integer_part = (integer_part * 10U) + static_cast<std::uint64_t>(*cursor - '0');
+        ++cursor;
+    }
+
+    std::uint64_t scaled_price = integer_part * 100'000'000ULL;
+    if (cursor < end && *cursor == '.') {
+        ++cursor;
+
+        std::uint64_t multiplier = 10'000'000ULL;
+        while (cursor < end && IsDigit(*cursor) && multiplier > 0U) {
+            scaled_price += static_cast<std::uint64_t>(*cursor - '0') * multiplier;
+            multiplier /= 10U;
+            ++cursor;
+        }
+
+        while (cursor < end && IsDigit(*cursor)) {
+            ++cursor;
+        }
+    }
+
+    return static_cast<std::int64_t>(scaled_price);
 }
 
 [[nodiscard]] inline Side ParseIncomingSideField(const char*& cursor, const char* end) {
@@ -260,7 +285,7 @@ void CsvParser::parse_next() {
         Order order {};
         order.id = ParseUnsignedField(cursor_, end_);
         ExpectComma(cursor_, end_);
-        order.price = ParseDoubleField(cursor_, end_);
+        order.price = ParseScaledPriceField(cursor_, end_);
         ExpectComma(cursor_, end_);
         order.quantity = ParseScaledQuantityField(cursor_, end_);
         ExpectComma(cursor_, end_);
@@ -297,18 +322,17 @@ std::uint64_t CsvParser::parse_file(const std::filesystem::path& file_path, cons
     return parsed_orders;
 }
 
-std::uint64_t CsvParser::process_file(const std::filesystem::path& file_path, OrderBook& order_book) const {
+std::uint64_t CsvParser::process_file(const std::filesystem::path& file_path, FixedMatchingBook& book) const {
     CsvParser parser {file_path};
     std::uint64_t processed_orders = 0U;
     while (parser.has_next()) {
-        const auto trades = order_book.process_order(parser.pop().order);
-        (void)trades;
+        (void)book.submit(parser.pop().order);
         ++processed_orders;
     }
     return processed_orders;
 }
 
-CsvParser::ReplayStats CsvParser::replay_file(const std::filesystem::path& file_path, OrderBook& order_book) const {
+CsvParser::ReplayStats CsvParser::replay_file(const std::filesystem::path& file_path, FixedMatchingBook& book) const {
     ReplayStats replay_stats {};
     CsvParser parser {file_path};
 
@@ -320,7 +344,7 @@ CsvParser::ReplayStats CsvParser::replay_file(const std::filesystem::path& file_
 
         replay_stats.last_timestamp = order.timestamp;
         ++replay_stats.orders_processed;
-        replay_stats.generated_trades += static_cast<std::uint64_t>(order_book.process_order(order).size());
+        replay_stats.generated_trades += static_cast<std::uint64_t>(book.submit(order).execution_count / 2U);
     }
 
     return replay_stats;

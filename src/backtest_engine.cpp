@@ -1,6 +1,8 @@
 #include "lob/backtest_engine.hpp"
 
+#include <cmath>
 #include <iomanip>
+#include <iostream>
 #include <stdexcept>
 #include <utility>
 
@@ -30,10 +32,10 @@ constexpr std::uint64_t kNanosecondsPerMillisecond = 1'000'000ULL;
 
 }  // namespace
 
-BacktestEngine::BacktestEngine(Strategy& strategy)
+BacktestEngine::BacktestEngine(Strategy<BacktestEngine>& strategy)
     : BacktestEngine(strategy, Config {}) {}
 
-BacktestEngine::BacktestEngine(Strategy& strategy, Config config)
+BacktestEngine::BacktestEngine(Strategy<BacktestEngine>& strategy, Config config)
     : strategy_(strategy),
       config_(config),
       rng_(config.latency.rng_seed),
@@ -47,7 +49,7 @@ BacktestEngine::BacktestEngine(Strategy& strategy, Config config)
 BacktestEngine::Result BacktestEngine::run(const std::filesystem::path& file_path) {
     Result result {};
     result.initial_cash = config_.initial_cash;
-    order_book_ = OrderBook {};
+    order_book_.clear();
     pending_orders_.clear();
     live_order_count_ = 0U;
     snapshot_ = MarketSnapshot {};
@@ -102,7 +104,7 @@ BacktestEngine::Result BacktestEngine::run(const std::filesystem::path& file_pat
     return result;
 }
 
-std::uint64_t BacktestEngine::submit_order(
+std::uint64_t BacktestEngine::submit_order_impl(
     AssetID asset_id,
     Side side,
     double price,
@@ -114,12 +116,13 @@ std::uint64_t BacktestEngine::submit_order(
         return order_id;
     }
 
+    const std::int64_t price_ticks = FixedMatchingBook::price_to_ticks(price);
     const std::uint64_t release_time_ns = current_time_ns_ + sample_latency_ns();
     if (!add_live_order(LiveOrder {
         .asset_id = asset_id,
         .order_id = order_id,
         .side = side,
-        .price = price,
+        .price = price_ticks,
         .remaining_quantity = quantity,
         .volume_ahead = 0U,
         .active = false,
@@ -135,7 +138,7 @@ std::uint64_t BacktestEngine::submit_order(
         .release_time_ns = release_time_ns,
         .order_id = order_id,
         .side = side,
-        .price = price,
+        .price = price_ticks,
         .quantity = quantity,
     })) {
         erase_live_order(find_live_order_index(order_id));
@@ -146,7 +149,7 @@ std::uint64_t BacktestEngine::submit_order(
     return order_id;
 }
 
-bool BacktestEngine::cancel_order(AssetID asset_id, std::uint64_t order_id) {
+bool BacktestEngine::cancel_order_impl(AssetID asset_id, std::uint64_t order_id) {
     const std::uint64_t release_time_ns = current_time_ns_ + sample_latency_ns();
     if (!pending_orders_.push(PendingOrder {
         .type = PendingCommandType::Cancel,
@@ -161,7 +164,7 @@ bool BacktestEngine::cancel_order(AssetID asset_id, std::uint64_t order_id) {
     return true;
 }
 
-std::uint64_t BacktestEngine::current_timestamp() const noexcept {
+std::uint64_t BacktestEngine::current_timestamp_impl() const noexcept {
     return snapshot_.ts;
 }
 
@@ -184,24 +187,24 @@ void BacktestEngine::route_trades(const std::vector<Trade>& trades) {
 
         if (own_buy) {
             pending_fills_.push_back(StrategyFill {
-                .asset_id = 0U,
                 .order_id = trade.buyer_id,
-                .side = Side::Buy,
                 .price = trade.price,
                 .quantity = trade.quantity,
                 .timestamp = trade.timestamp,
+                .asset_id = 0U,
+                .side = Side::Buy,
                 .liquidity_role = trade.buyer_id == trade.taker_order_id ? LiquidityRole::Taker : LiquidityRole::Maker,
             });
         }
 
         if (own_sell) {
             pending_fills_.push_back(StrategyFill {
-                .asset_id = 0U,
                 .order_id = trade.seller_id,
-                .side = Side::Sell,
                 .price = trade.price,
                 .quantity = trade.quantity,
                 .timestamp = trade.timestamp,
+                .asset_id = 0U,
+                .side = Side::Sell,
                 .liquidity_role = trade.seller_id == trade.taker_order_id ? LiquidityRole::Taker : LiquidityRole::Maker,
             });
         }
@@ -214,7 +217,7 @@ void BacktestEngine::route_trades(const std::vector<Trade>& trades) {
 
 void BacktestEngine::route_strategy_fill(const StrategyFill& fill) {
     const double quantity_units = QuantityToUnits(fill.quantity);
-    const double notional = fill.price * quantity_units;
+    const double notional = (static_cast<double>(fill.price) / 100'000'000.0) * quantity_units;
     const double fee_bps = fill.liquidity_role == LiquidityRole::Maker
         ? config_.maker_fee_bps
         : config_.taker_fee_bps;
@@ -322,72 +325,47 @@ void BacktestEngine::sweep_book(LiveOrder& live_order, std::uint64_t timestamp) 
         return;
     }
 
+    const std::uint64_t order_id = live_order.order_id;
+    const AssetID asset_id = live_order.asset_id;
+    const std::int64_t limit_ticks = live_order.price;
     if (live_order.side == Side::Buy) {
-        for (auto ask_it = order_book_.asks().begin();
-             ask_it != order_book_.asks().end()
-             && live_order.remaining_quantity > 0U
-             && ask_it->first <= live_order.price;
-             ++ask_it) {
-            std::uint64_t level_quantity = 0U;
-            for (const Order& order : ask_it->second.orders) {
-                level_quantity += order.quantity;
+        order_book_.for_each_level(Side::Sell, [&](std::int64_t price_ticks, std::uint64_t level_quantity) {
+            const std::size_t index = find_live_order_index(order_id);
+            if (index == kInvalidOrderIndex || price_ticks > limit_ticks) {
+                return false;
             }
-
-            if (level_quantity == 0U) {
-                continue;
-            }
-
-            const std::uint64_t fill_quantity = level_quantity < live_order.remaining_quantity
-                ? level_quantity
-                : live_order.remaining_quantity;
+            const std::uint64_t fill_quantity = std::min(level_quantity, live_orders_[index].remaining_quantity);
             route_strategy_fill(StrategyFill {
-                .asset_id = live_order.asset_id,
-                .order_id = live_order.order_id,
-                .side = Side::Buy,
-                .price = ask_it->first,
+                .order_id = order_id,
+                .price = price_ticks,
                 .quantity = fill_quantity,
                 .timestamp = timestamp,
+                .asset_id = asset_id,
+                .side = Side::Buy,
                 .liquidity_role = LiquidityRole::Taker,
             });
-
-            if (find_live_order_index(live_order.order_id) == kInvalidOrderIndex) {
-                return;
-            }
-        }
+            return find_live_order_index(order_id) != kInvalidOrderIndex;
+        });
         return;
     }
 
-    for (auto bid_it = order_book_.bids().begin();
-         bid_it != order_book_.bids().end()
-         && live_order.remaining_quantity > 0U
-         && bid_it->first >= live_order.price;
-         ++bid_it) {
-        std::uint64_t level_quantity = 0U;
-        for (const Order& order : bid_it->second.orders) {
-            level_quantity += order.quantity;
+    order_book_.for_each_level(Side::Buy, [&](std::int64_t price_ticks, std::uint64_t level_quantity) {
+        const std::size_t index = find_live_order_index(order_id);
+        if (index == kInvalidOrderIndex || price_ticks < limit_ticks) {
+            return false;
         }
-
-        if (level_quantity == 0U) {
-            continue;
-        }
-
-        const std::uint64_t fill_quantity = level_quantity < live_order.remaining_quantity
-            ? level_quantity
-            : live_order.remaining_quantity;
+        const std::uint64_t fill_quantity = std::min(level_quantity, live_orders_[index].remaining_quantity);
         route_strategy_fill(StrategyFill {
-            .asset_id = live_order.asset_id,
-            .order_id = live_order.order_id,
-            .side = Side::Sell,
-            .price = bid_it->first,
+            .order_id = order_id,
+            .price = price_ticks,
             .quantity = fill_quantity,
             .timestamp = timestamp,
+            .asset_id = asset_id,
+            .side = Side::Sell,
             .liquidity_role = LiquidityRole::Taker,
         });
-
-        if (find_live_order_index(live_order.order_id) == kInvalidOrderIndex) {
-            return;
-        }
-    }
+        return find_live_order_index(order_id) != kInvalidOrderIndex;
+    });
 }
 
 void BacktestEngine::update_passive_queue_on_market_trade(const Order& market_order) {
@@ -425,12 +403,12 @@ void BacktestEngine::update_passive_queue_on_market_trade(const Order& market_or
 
         const std::uint64_t order_id = live_order.order_id;
         route_strategy_fill(StrategyFill {
-            .asset_id = live_order.asset_id,
             .order_id = order_id,
-            .side = live_order.side,
             .price = live_order.price,
             .quantity = fill_quantity,
             .timestamp = market_order.timestamp,
+            .asset_id = live_order.asset_id,
+            .side = live_order.side,
             .liquidity_role = LiquidityRole::Maker,
         });
         trade_quantity_remaining -= fill_quantity;
@@ -493,22 +471,22 @@ void BacktestEngine::sample_equity(std::uint64_t timestamp) {
     }
 }
 
-void BacktestEngine::update_snapshot(std::uint64_t timestamp, double fallback_price) {
+void BacktestEngine::update_snapshot(std::uint64_t timestamp, std::int64_t fallback_price_ticks) {
     snapshot_.ts = timestamp;
     snapshot_.asset = 0U;
 
-    snapshot_.bid_p = order_book_.get_best_bid();
-    snapshot_.ask_p = order_book_.get_best_ask();
-    snapshot_.bid_q = snapshot_.bid_p > 0.0
-        ? QuantityToUnits(order_book_.get_total_quantity_at_price(Side::Buy, snapshot_.bid_p))
-        : 0.0;
-    snapshot_.ask_q = snapshot_.ask_p > 0.0
-        ? QuantityToUnits(order_book_.get_total_quantity_at_price(Side::Sell, snapshot_.ask_p))
-        : 0.0;
+    const std::int64_t best_bid = order_book_.best_bid_ticks();
+    const std::int64_t best_ask = order_book_.best_ask_ticks();
+
+    snapshot_.bid_p = best_bid > 0 ? FixedMatchingBook::ticks_to_price(best_bid) : 0.0;
+    snapshot_.ask_p = best_ask > 0 ? FixedMatchingBook::ticks_to_price(best_ask) : 0.0;
+    snapshot_.bid_q = best_bid > 0 ? QuantityToUnits(order_book_.total_quantity_at_price(Side::Buy, best_bid)) : 0.0;
+    snapshot_.ask_q = best_ask > 0 ? QuantityToUnits(order_book_.total_quantity_at_price(Side::Sell, best_ask)) : 0.0;
 
     if (SnapshotMidPrice(snapshot_) <= 0.0) {
-        snapshot_.bid_p = fallback_price;
-        snapshot_.ask_p = fallback_price;
+        const double fallback = FixedMatchingBook::ticks_to_price(fallback_price_ticks);
+        snapshot_.bid_p = fallback;
+        snapshot_.ask_p = fallback;
     }
 }
 
@@ -565,12 +543,12 @@ std::size_t BacktestEngine::find_live_order_index(std::uint64_t order_id) const 
 
 bool BacktestEngine::is_aggressive(const LiveOrder& live_order) const noexcept {
     if (live_order.side == Side::Buy) {
-        const double best_ask = order_book_.get_best_ask();
-        return best_ask > 0.0 && live_order.price >= best_ask;
+        const std::int64_t best_ask = order_book_.best_ask_ticks();
+        return best_ask > 0 && live_order.price >= best_ask;
     }
 
-    const double best_bid = order_book_.get_best_bid();
-    return best_bid > 0.0 && live_order.price <= best_bid;
+    const std::int64_t best_bid = order_book_.best_bid_ticks();
+    return best_bid > 0 && live_order.price <= best_bid;
 }
 
 bool BacktestEngine::add_live_order(const LiveOrder& live_order) noexcept {

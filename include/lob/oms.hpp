@@ -11,26 +11,28 @@ namespace lob {
 
 static constexpr std::size_t kOrderGroupLegCount = 3U;
 
-struct OrderRequest {
-    AssetID asset_id {};
-    Side side {Side::Buy};
-    double price {};
+struct alignas(64) OrderRequest {
     std::uint64_t quantity {};
     std::uint64_t timestamp {};
-    double expected_price {};
+    std::int64_t price {};
+    std::int64_t expected_price {};
     double slippage_tolerance {};
-};
-
-struct OrderExecutionReport {
     AssetID asset_id {};
     Side side {Side::Buy};
-    double expected_price {};
-    double vwap_price {};
+};
+static_assert(sizeof(OrderRequest) == 64);
+
+struct alignas(64) OrderExecutionReport {
+    std::int64_t expected_price {};
+    std::int64_t vwap_price {};
     std::uint64_t requested_quantity {};
     std::uint64_t filled_quantity {};
+    AssetID asset_id {};
+    Side side {Side::Buy};
     bool fully_filled {};
     bool slippage_breached {};
 };
+static_assert(sizeof(OrderExecutionReport) == 64);
 
 struct OrderGroup {
     std::uint64_t group_id {};

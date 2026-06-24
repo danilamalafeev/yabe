@@ -4,11 +4,11 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DBENCHMARK_STATIC_DEFINE -DHAVE_POSIX_REGEX -DHAVE_STD_REGEX -DHAVE_STEADY_CLOCK -DHAVE_THREAD_SAFETY_ATTRIBUTES -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE
 
-CXX_INCLUDES = -I"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/include" -I"/Users/danilamalafeev/Documents/New project/build-release/_deps/googlebenchmark-src/src"
+CXX_INCLUDES = -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/include -I/Users/danilamalafeev/Documents/YABE/build-release/_deps/googlebenchmark-src/src
 
-CXX_FLAGSarm64 = -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden
+CXX_FLAGSarm64 =   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden
 
-CXX_FLAGS = -O3 -march=native -DNDEBUG  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden
+CXX_FLAGS =   -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wconversion  -Werror  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32  -fstrict-aliasing  -Wno-deprecated-declarations  -Wno-deprecated  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG -std=c++17 -arch arm64 -fvisibility=hidden -fvisibility-inlines-hidden
 
 # Custom defines: _deps/googlebenchmark-build/src/CMakeFiles/benchmark.dir/benchmark.cc.o_DEFINES = BENCHMARK_VERSION="v1.9.1"
 

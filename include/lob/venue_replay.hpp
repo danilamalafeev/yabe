@@ -1,8 +1,7 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
-#include <string>
-#include <unordered_map>
 
 namespace lob {
 
@@ -25,6 +24,7 @@ enum class ReplayValidationStatus : std::uint8_t {
     SequenceGap,
     SequenceReorder,
     SnapshotEpochRegression,
+    UnsupportedAddress,
 };
 
 struct FeedEnvelope {
@@ -52,7 +52,11 @@ public:
         : gap_policy_(gap_policy) {}
 
     [[nodiscard]] ReplayValidationStatus validate(const FeedEnvelope& envelope) {
-        ProductState& state = product_states_[key(envelope.venue_id, envelope.product_id)];
+        if (envelope.venue_id >= kMaxVenues || envelope.product_id >= kMaxProducts) {
+            return ReplayValidationStatus::UnsupportedAddress;
+        }
+
+        ProductState& state = product_states_[index(envelope.venue_id, envelope.product_id)];
         if (!state.initialized) {
             state.initialized = true;
             state.last_sequence = envelope.sequence;
@@ -84,7 +88,7 @@ public:
     }
 
     void reset() {
-        product_states_.clear();
+        product_states_.fill(ProductState {});
     }
 
 private:
@@ -94,12 +98,15 @@ private:
         bool initialized {};
     };
 
-    [[nodiscard]] static constexpr std::uint64_t key(VenueID venue_id, ProductID product_id) noexcept {
-        return (static_cast<std::uint64_t>(venue_id) << 32U) | static_cast<std::uint64_t>(product_id);
+    static constexpr std::size_t kMaxVenues = 16U;
+    static constexpr std::size_t kMaxProducts = 256U;
+
+    [[nodiscard]] static constexpr std::size_t index(VenueID venue_id, ProductID product_id) noexcept {
+        return static_cast<std::size_t>(venue_id) * kMaxProducts + static_cast<std::size_t>(product_id);
     }
 
     ReplayGapPolicy gap_policy_ {ReplayGapPolicy::Reject};
-    std::unordered_map<std::uint64_t, ProductState> product_states_ {};
+    std::array<ProductState, kMaxVenues * kMaxProducts> product_states_ {};
 };
 
 }  // namespace lob

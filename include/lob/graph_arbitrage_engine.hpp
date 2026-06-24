@@ -14,7 +14,7 @@
 #include <vector>
 
 #include "lob/event.hpp"
-#include "lob/dynamic_wallet.hpp"
+#include "lob/wallet.hpp"
 #include "lob/l2_order_book.hpp"
 #include "lob/l2_update_csv_parser.hpp"
 #include "lob/lookup_policy.hpp"
@@ -140,10 +140,14 @@ public:
         }
 
         refresh_all_edges();
-        result.final_usdt = wallet_.balance(quote_asset_id_);
-        result.final_nav = wallet_.mark_to_market_nav(edges_, config_.taker_fee_bps);
-        result.inventory_risk = wallet_.get_total_inventory_risk(edges_, config_.taker_fee_bps);
-        result.balances = wallet_.balances();
+        refresh_wallet_factors();
+        result.final_usdt = wallet_balance_units(quote_asset_id_);
+        result.final_nav = Wallet::to_double(wallet_.mark_to_market_nav());
+        result.inventory_risk = Wallet::to_double(wallet_.get_total_inventory_risk());
+        result.balances.reserve(wallet_.active_asset_count());
+        for (std::size_t index = 0U; index < wallet_.active_asset_count(); ++index) {
+            result.balances.push_back(Wallet::to_double(wallet_.balance(static_cast<AssetID>(index))));
+        }
         result.last_cycle = cycle_;
         result.cycle_snapshots = cycle_snapshots_.to_vector();
         result.cycle_snapshots_overwritten = cycle_snapshots_.overwritten_count();
@@ -158,6 +162,7 @@ public:
 private:
     static constexpr std::size_t kPendingCycleCapacity = 16'384U;
     static constexpr double kEpsilon = 1e-12;
+    static constexpr double kWalletQuantum = 1e-8;
 
     struct Edge {
         AssetID from {};
@@ -255,6 +260,10 @@ private:
             return heap_[0];
         }
 
+        void clear() noexcept {
+            size_ = 0U;
+        }
+
         bool push(const T& item) noexcept {
             if (size_ == Capacity) {
                 return false;
@@ -348,12 +357,12 @@ private:
         }
         cycle_.clear();
         cycle_.reserve(asset_count + 1U);
-        wallet_.reset(asset_count, quote_asset_id_, config_.initial_usdt);
+        wallet_.reset(asset_count, quote_asset_id_, Wallet::from_double_or_throw(config_.initial_usdt));
         edges_.clear();
         edges_.reserve(pairs_.size() * 2U);
         build_static_edges();
         refresh_all_edges();
-        pending_cycles_ = PendingMinHeap<PendingCycle, kPendingCycleCapacity> {};
+        pending_cycles_.clear();
         cycle_snapshots_.reset(config_.cycle_snapshot_reserve);
         snapshot_clear_times_.assign(pair_states_.size(), 0U);
         snapshot_clear_valid_.assign(pair_states_.size(), 0U);
@@ -461,13 +470,15 @@ private:
         state.book.update_level(event.is_bid, event.price, event.qty);
         update_pair_edges(pair_id);
 
-        const double bid_depth = state.book.bid_total_qty();
-        const double ask_depth = state.book.ask_total_qty();
-        const double bid_notional = state.book.bid_total_notional();
-        const double ask_notional = state.book.ask_total_notional();
+        const double kQtyScale = 100'000'000.0;
+        const double kNotionalScale = 10'000'000'000'000'000.0;  // 1e16 (ticks * lots)
+        const double bid_depth = static_cast<double>(state.book.bid_total_qty()) / kQtyScale;
+        const double ask_depth = static_cast<double>(state.book.ask_total_qty()) / kQtyScale;
+        const double bid_notional = static_cast<double>(state.book.bid_total_notional()) / kNotionalScale;
+        const double ask_notional = static_cast<double>(state.book.ask_total_notional()) / kNotionalScale;
         const double depth_sum = bid_depth + ask_depth;
-        const double best_bid = state.book.best_bid();
-        const double best_ask = state.book.best_ask();
+        const double best_bid = static_cast<double>(state.book.best_bid()) / kQtyScale;
+        const double best_ask = static_cast<double>(state.book.best_ask()) / kQtyScale;
 
         if (depth_sum > kEpsilon && best_bid > 0.0 && best_ask > 0.0) {
             state.obi = (bid_depth - ask_depth) / depth_sum;
@@ -514,6 +525,7 @@ private:
         for (AssetID pair_id = 0U; pair_id < pair_states_.size(); ++pair_id) {
             update_pair_edges(pair_id);
         }
+        refresh_wallet_factors();
     }
 
     void update_pair_edges(AssetID pair_id) noexcept {
@@ -523,7 +535,7 @@ private:
 
         const PairState& pair = pair_states_[pair_id];
         if (Edge* bid_edge = mutable_edge_for(pair.base_id, pair.quote_id)) {
-            const double best_bid = pair.book.best_bid();
+            const double best_bid = static_cast<double>(pair.book.best_bid()) / 100'000'000.0;
             const double bid_capacity = side_input_capacity(pair_id, true);
             bid_edge->rate = best_bid > 0.0 && bid_capacity > 0.0 ? best_bid : 0.0;
             bid_edge->available_from_qty = bid_capacity;
@@ -531,12 +543,35 @@ private:
         }
 
         if (Edge* ask_edge = mutable_edge_for(pair.quote_id, pair.base_id)) {
-            const double best_ask = pair.book.best_ask();
+            const double best_ask = static_cast<double>(pair.book.best_ask()) / 100'000'000.0;
             const double ask_capacity = side_input_capacity(pair_id, false);
             ask_edge->rate = best_ask > 0.0 && ask_capacity > 0.0 ? 1.0 / best_ask : 0.0;
             ask_edge->available_from_qty = ask_capacity;
             ask_edge->effective_rate = ask_edge->rate * taker_fee_multiplier();
         }
+    }
+
+    void refresh_wallet_factors() noexcept {
+        (void)wallet_.refresh_liquidation_factors([this](AssetID asset) noexcept {
+            double factor = 0.0;
+            if (const Edge* direct = edge_for(asset, quote_asset_id_);
+                direct != nullptr && direct->effective_rate > 0.0) {
+                factor = direct->effective_rate;
+            } else {
+                for (const Edge& first : edges_) {
+                    if (first.from != asset || first.effective_rate <= 0.0) {
+                        continue;
+                    }
+                    const Edge* second = edge_for(first.to, quote_asset_id_);
+                    if (second != nullptr && second->effective_rate > 0.0) {
+                        factor = first.effective_rate * second->effective_rate;
+                        break;
+                    }
+                }
+            }
+            std::int64_t fixed {};
+            return Wallet::from_double(factor, fixed) ? fixed : 0;
+        });
     }
 
     [[nodiscard]] bool find_negative_cycle() noexcept {
@@ -630,7 +665,7 @@ private:
         if (!executable) {
             return;
         }
-        if (!wallet_.reserve_balance(quote_asset_id_, start_quantity)) {
+        if (!wallet_.reserve_balance(quote_asset_id_, Wallet::from_double_or_throw(start_quantity))) {
             return;
         }
 
@@ -657,14 +692,14 @@ private:
         }
 
         if (!pending_cycles_.push(pending)) {
-            wallet_.release_reserved(quote_asset_id_, start_quantity);
+            (void)wallet_.release_reserved(quote_asset_id_, Wallet::from_double_or_throw(start_quantity));
             ++result.panic_closes;
         }
     }
 
     [[nodiscard]] double calculate_fee_aware_bottleneck() const noexcept {
         double cumulative_input = 1.0;
-        const double available_quote = wallet_.free_balance(quote_asset_id_);
+        const double available_quote = Wallet::to_double(wallet_.free_balance(quote_asset_id_));
         double max_start = config_.max_cycle_notional_usdt > 0.0 ? config_.max_cycle_notional_usdt : available_quote;
         if (available_quote < max_start) {
             max_start = available_quote;
@@ -695,6 +730,7 @@ private:
     }
 
     void execute_pending_leg(PendingCycle& pending, Result& result) noexcept {
+        refresh_wallet_factors();
         if (pending.current_leg >= pending.leg_count) {
             if (pending.current_asset == quote_asset_id_) {
                 ++result.completed_cycles;
@@ -709,36 +745,57 @@ private:
         const bool has_edge = current_edge_for(pending.current_asset, next_asset, current_edge);
         const bool spending_reserved_quote = pending.current_leg == 0U && pending.current_asset == quote_asset_id_;
         const double spendable_balance = spending_reserved_quote
-            ? wallet_.reserved(pending.current_asset)
-            : wallet_.balance(pending.current_asset);
+            ? Wallet::to_double(wallet_.reserved(pending.current_asset))
+            : wallet_balance_units(pending.current_asset);
             
         if (
             !has_edge ||
             current_edge.rate < pending.expected_rates[pending.current_leg] - kEpsilon ||
-            current_edge.available_from_qty + kEpsilon < pending.current_quantity ||
-            quote_visible_depth(current_edge, pending.current_quantity) + kEpsilon < pending.leg_outputs[pending.current_leg] ||
-            spendable_balance + kEpsilon < pending.current_quantity
+            current_edge.available_from_qty + kWalletQuantum < pending.current_quantity ||
+            quote_visible_depth(current_edge, pending.current_quantity) + kWalletQuantum <
+                pending.leg_outputs[pending.current_leg] ||
+            spendable_balance + kWalletQuantum < pending.current_quantity
         ) {
             if (spending_reserved_quote) {
-                wallet_.release_reserved(pending.current_asset, pending.initial_quantity);
+                (void)wallet_.release_reserved(
+                    pending.current_asset,
+                    Wallet::from_double_or_throw(pending.initial_quantity)
+                );
             }
             panic_close_to_quote(pending.current_asset, pending.current_quantity, pending.initial_quantity, result);
             return;
         }
 
         if (spending_reserved_quote) {
-            if (!wallet_.consume_reserved(pending.current_asset, pending.current_quantity)) {
-                wallet_.release_reserved(pending.current_asset, pending.initial_quantity);
+            if (!wallet_.consume_reserved(
+                    pending.current_asset,
+                    Wallet::from_double_or_throw(pending.current_quantity))) {
+                (void)wallet_.release_reserved(
+                    pending.current_asset,
+                    Wallet::from_double_or_throw(pending.initial_quantity)
+                );
                 panic_close_to_quote(pending.current_asset, pending.current_quantity, pending.initial_quantity, result);
                 return;
             }
         } else {
-            wallet_.sub_balance(pending.current_asset, pending.current_quantity);
+            (void)wallet_.sub_balance(
+                pending.current_asset,
+                Wallet::from_double_or_throw(pending.current_quantity)
+            );
         }
 
         const double gross_output = sweep_visible_depth(current_edge, pending.current_quantity);
         update_pair_edges(current_edge.pair_id);
-        pending.current_quantity = wallet_.apply_fill(next_asset, gross_output, config_.taker_fee_bps);
+        std::int64_t net_output {};
+        if (!wallet_.apply_fill(
+                next_asset,
+                Wallet::from_double_or_throw(gross_output),
+                config_.taker_fee_bps,
+                net_output)) {
+            panic_close_to_quote(pending.current_asset, pending.current_quantity, pending.initial_quantity, result);
+            return;
+        }
+        pending.current_quantity = Wallet::to_double(net_output);
         pending.current_asset = next_asset;
         ++pending.current_leg;
 
@@ -758,13 +815,15 @@ private:
     }
 
     void panic_close_to_quote(AssetID asset_id, double quantity, double initial_quote, Result& result) noexcept {
+        refresh_wallet_factors();
         ++result.panic_closes;
         (void)initial_quote;
         if (asset_id == quote_asset_id_ || quantity <= 0.0) {
             return;
         }
 
-        const double close_quantity = wallet_.balance(asset_id) < quantity ? wallet_.balance(asset_id) : quantity;
+        const double balance = wallet_balance_units(asset_id);
+        const double close_quantity = balance < quantity ? balance : quantity;
         if (close_quantity <= 0.0) {
             return;
         }
@@ -773,8 +832,14 @@ private:
         if (recovered_quote <= 0.0) {
             return;
         }
-        wallet_.sub_balance(asset_id, close_quantity);
-        (void)wallet_.apply_fill(quote_asset_id_, recovered_quote, config_.taker_fee_bps);
+        (void)wallet_.sub_balance(asset_id, Wallet::from_double_or_throw(close_quantity));
+        std::int64_t net_quote {};
+        (void)wallet_.apply_fill(
+            quote_asset_id_,
+            Wallet::from_double_or_throw(recovered_quote),
+            config_.taker_fee_bps,
+            net_quote
+        );
     }
 
     [[nodiscard]] double convert_to_quote(AssetID asset_id, double quantity) noexcept {
@@ -824,9 +889,9 @@ private:
     [[nodiscard]] double side_input_capacity(AssetID pair_id, bool use_bid) const noexcept {
         const PairState& pair = pair_states_[pair_id];
         if (use_bid) {
-            return pair.book.bid_effective_qty();
+            return static_cast<double>(pair.book.bid_effective_qty()) / 100'000'000.0;
         }
-        return pair.book.ask_effective_notional();
+        return static_cast<double>(pair.book.ask_effective_notional()) / 10'000'000'000'000'000.0;
     }
 
     [[nodiscard]] double quote_visible_depth(const Edge& edge, double input_quantity) const noexcept {
@@ -839,27 +904,29 @@ private:
                 if (remaining <= kEpsilon) {
                     break;
                 }
-                const double effective_qty = level.effective_qty();
+                const double effective_qty = static_cast<double>(level.effective_qty()) / 100'000'000.0;
                 if (effective_qty <= 0.0) {
                     continue;
                 }
+                const double level_price = static_cast<double>(level.price) / 100'000'000.0;
                 const double consumed = remaining < effective_qty ? remaining : effective_qty;
                 remaining -= consumed;
-                output += consumed * level.price;
+                output += consumed * level_price;
             }
         } else {
             for (const auto& level : pair.book.asks()) {
                 if (remaining <= kEpsilon) {
                     break;
                 }
-                const double effective_qty = level.effective_qty();
+                const double effective_qty = static_cast<double>(level.effective_qty()) / 100'000'000.0;
                 if (effective_qty <= 0.0) {
                     continue;
                 }
-                const double level_notional = level.price * effective_qty;
+                const double level_price = static_cast<double>(level.price) / 100'000'000.0;
+                const double level_notional = level_price * effective_qty;
                 const double consumed_quote = remaining < level_notional ? remaining : level_notional;
                 remaining -= consumed_quote;
-                output += consumed_quote / level.price;
+                output += consumed_quote / level_price;
             }
         }
         return output;
@@ -875,28 +942,29 @@ private:
                 if (remaining <= kEpsilon) {
                     break;
                 }
-                const double effective_qty = level.effective_qty();
+                const double effective_qty = static_cast<double>(level.effective_qty()) / 100'000'000.0;
                 if (effective_qty <= 0.0) {
                     continue;
                 }
                 const double consumed = remaining < effective_qty ? remaining : effective_qty;
-                pair.book.deplete_level(true, level.price, consumed);
+                pair.book.deplete_level(true, level.price, static_cast<std::uint64_t>(std::llround(consumed * 100'000'000.0)));
                 remaining -= consumed;
-                output += consumed * level.price;
+                output += consumed * static_cast<double>(level.price) / 100'000'000.0;
             }
         } else {
             for (const auto& level : pair.book.asks()) {
                 if (remaining <= kEpsilon) {
                     break;
                 }
-                const double effective_qty = level.effective_qty();
+                const double effective_qty = static_cast<double>(level.effective_qty()) / 100'000'000.0;
                 if (effective_qty <= 0.0) {
                     continue;
                 }
-                const double level_notional = level.price * effective_qty;
+                const double level_price = static_cast<double>(level.price) / 100'000'000.0;
+                const double level_notional = level_price * effective_qty;
                 const double consumed_quote = remaining < level_notional ? remaining : level_notional;
-                const double consumed_base = consumed_quote / level.price;
-                pair.book.deplete_level(false, level.price, consumed_base);
+                const double consumed_base = consumed_quote / level_price;
+                pair.book.deplete_level(false, level.price, static_cast<std::uint64_t>(std::llround(consumed_base * 100'000'000.0)));
                 remaining -= consumed_quote;
                 output += consumed_base;
             }
@@ -911,12 +979,13 @@ private:
         PairState& pair = pair_states_[edge.pair_id];
         if (edge.use_bid) {
             if (!pair.book.bids().empty()) {
-                pair.book.deplete_level(true, pair.book.bids().back().price, input_quantity);
+                pair.book.deplete_level(true, pair.book.bids().back().price, static_cast<std::uint64_t>(std::llround(input_quantity * 100'000'000.0)));
             }
         } else {
             if (!pair.book.asks().empty()) {
-                const double tail_price = pair.book.asks().back().price;
-                pair.book.deplete_level(false, tail_price, input_quantity / tail_price);
+                const std::int64_t tail_price = pair.book.asks().back().price;
+                const double tail_price_double = static_cast<double>(tail_price) / 100'000'000.0;
+                pair.book.deplete_level(false, tail_price, static_cast<std::uint64_t>(std::llround((input_quantity / tail_price_double) * 100'000'000.0)));
             }
         }
     }
@@ -947,7 +1016,7 @@ private:
         }
 
         const PairState& pair = pair_states_[pair_id];
-        const double price = use_bid ? pair.book.best_bid() : pair.book.best_ask();
+        const double price = static_cast<double>(use_bid ? pair.book.best_bid() : pair.book.best_ask()) / 100'000'000.0;
         const double capacity = side_input_capacity(pair_id, use_bid);
         if (price <= 0.0 || capacity <= 0.0) {
             return false;
@@ -1071,7 +1140,11 @@ private:
     std::vector<std::uint8_t> snapshot_clear_valid_ {};
     std::vector<ParserEvent> parser_events_ {};
     CycleSnapshotRing cycle_snapshots_ {};
-    DynamicWallet wallet_ {};
+    [[nodiscard]] double wallet_balance_units(AssetID asset) const noexcept {
+        return Wallet::to_double(wallet_.balance(asset));
+    }
+
+    Wallet wallet_ {};
     PendingMinHeap<PendingCycle, kPendingCycleCapacity> pending_cycles_ {};
 
     [[nodiscard]] static constexpr std::size_t invalid_edge_index() noexcept {

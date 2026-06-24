@@ -1,6 +1,6 @@
 CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o: \
-  /Users/danilamalafeev/Documents/New\ project/tests/test_lob.cpp \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest.h \
+  /Users/danilamalafeev/Documents/YABE/tests/test_lob.cpp \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config_site \
@@ -934,17 +934,17 @@ CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/sstream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/istream \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest-assertion-result.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest-message.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-port.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest-assertion-result.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest-message.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-port.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/stat.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_s_ifmt.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_filesec_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/custom/gtest-port.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-port-arch.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/custom/gtest-port.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-port-arch.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/strings.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/unistd.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_posix_vdisable.h \
@@ -964,31 +964,31 @@ CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__stop_token/stop_token.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/any \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/span \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest-death-test.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-death-test-internal.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest-matchers.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest-printers.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-internal.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest-death-test.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-death-test-internal.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest-matchers.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest-printers.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-internal.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/float.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/float.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/float.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-filepath.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-string.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-type-util.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-filepath.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-string.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-type-util.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cxxabi.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__cxxabi_config.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/span.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/custom/gtest-printers.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest-param-test.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-param-util.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/custom/gtest-printers.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest-param-test.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/internal/gtest-param-util.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cassert \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/assert.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_static_assert.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest-test-part.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest-typed-test.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest_pred_impl.h \
-  /Users/danilamalafeev/Documents/New\ project/build-release/_deps/googletest-src/googletest/include/gtest/gtest_prod.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest-test-part.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest-typed-test.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest_pred_impl.h \
+  /Users/danilamalafeev/Documents/YABE/build-release/_deps/googletest-src/googletest/include/gtest/gtest_prod.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/filesystem \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/copy_options.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_entry.h \
@@ -1009,8 +1009,8 @@ CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/recursive_directory_iterator.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/u8path.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/fstream \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/analytics.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/backtest_engine.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/analytics.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/backtest_engine.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/random \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__random/bernoulli_distribution.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__random/uniform_real_distribution.h \
@@ -1063,27 +1063,33 @@ CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__random/seed_seq.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__random/student_t_distribution.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__random/weibull_distribution.h \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/csv_parser.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/event.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/order.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/order_book.hpp \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/list \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/price_level.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/trade.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/strategy.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/event_merger.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/order_gateway.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/oms.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/dynamic_wallet.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/graph_arbitrage_engine.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/l2_order_book.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/event_l2_update.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/l2_update_csv_parser.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/lookup_policy.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/l2_depth5_csv_parser.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/event_depth5.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/multi_asset_backtest_engine.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/async_logger.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/csv_parser.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/event.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/order.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/fixed_matching_book.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/sim/matching_book.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/sim/types.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/venue_replay.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/trade.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/indexed_pending_min_heap.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/strategy.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/event_merger.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/order_gateway.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/oms.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/graph_arbitrage_engine.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/wallet.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/l2_order_book.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/event_l2_update.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/l2_update_csv_parser.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/lookup_policy.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/l2_backtest_engine.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/l2_strategy.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/l2_market_maker_strategy.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/l2_depth5_csv_parser.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/event_depth5.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/market_maker_strategy.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/multi_asset_backtest_engine.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/async_logger.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/chrono \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/calendar.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/day.h \
@@ -1117,6 +1123,7 @@ CMakeFiles/lob_tests.dir/tests/test_lob.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__stop_token/stop_source.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__thread/thread.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__thread/this_thread.h \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/wallet.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/venue_manifest.hpp \
-  /Users/danilamalafeev/Documents/New\ project/include/lob/venue_replay.hpp
+  /Users/danilamalafeev/Documents/YABE/include/lob/PolymarketFeedAdapter.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/PolymarketOrderBook.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/PolymarketTypes.hpp \
+  /Users/danilamalafeev/Documents/YABE/include/lob/venue_manifest.hpp

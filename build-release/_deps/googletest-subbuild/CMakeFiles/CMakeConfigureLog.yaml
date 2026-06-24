@@ -20,7 +20,10 @@ events:
     names:
       - "uname"
     candidate_directories:
-      - "/Users/danilamalafeev/.codex/tmp/arg0/codex-arg0q2JANx/"
+      - "/Users/danilamalafeev/.gemini/antigravity/bin/"
+      - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin/"
+      - "/Users/danilamalafeev/.local/bin/"
+      - "/Users/danilamalafeev/yandex-cloud/bin/"
       - "/opt/anaconda3/bin/"
       - "/opt/anaconda3/condabin/"
       - "/opt/homebrew/bin/"
@@ -36,9 +39,11 @@ events:
       - "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin/"
       - "/opt/pmk/env/global/bin/"
       - "/Library/Apple/usr/bin/"
-      - "/Applications/Codex.app/Contents/Resources/"
     searched_directories:
-      - "/Users/danilamalafeev/.codex/tmp/arg0/codex-arg0q2JANx/uname"
+      - "/Users/danilamalafeev/.gemini/antigravity/bin/uname"
+      - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin/uname"
+      - "/Users/danilamalafeev/.local/bin/uname"
+      - "/Users/danilamalafeev/yandex-cloud/bin/uname"
       - "/opt/anaconda3/bin/uname"
       - "/opt/anaconda3/condabin/uname"
       - "/opt/homebrew/bin/uname"
@@ -48,7 +53,10 @@ events:
     found: "/usr/bin/uname"
     search_context:
       ENV{PATH}:
-        - "/Users/danilamalafeev/.codex/tmp/arg0/codex-arg0q2JANx"
+        - "/Users/danilamalafeev/.gemini/antigravity/bin"
+        - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin"
+        - "/Users/danilamalafeev/.local/bin"
+        - "/Users/danilamalafeev/yandex-cloud/bin"
         - "/opt/anaconda3/bin"
         - "/opt/anaconda3/condabin"
         - "/opt/homebrew/bin"
@@ -64,7 +72,6 @@ events:
         - "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
         - "/opt/pmk/env/global/bin"
         - "/Library/Apple/usr/bin"
-        - "/Applications/Codex.app/Contents/Resources"
   -
     kind: "message-v1"
     backtrace:
@@ -92,7 +99,10 @@ events:
     names:
       - "install_name_tool"
     candidate_directories:
-      - "/Users/danilamalafeev/.codex/tmp/arg0/codex-arg0q2JANx/"
+      - "/Users/danilamalafeev/.gemini/antigravity/bin/"
+      - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin/"
+      - "/Users/danilamalafeev/.local/bin/"
+      - "/Users/danilamalafeev/yandex-cloud/bin/"
       - "/opt/anaconda3/bin/"
       - "/opt/anaconda3/condabin/"
       - "/opt/homebrew/bin/"
@@ -108,13 +118,18 @@ events:
       - "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin/"
       - "/opt/pmk/env/global/bin/"
       - "/Library/Apple/usr/bin/"
-      - "/Applications/Codex.app/Contents/Resources/"
     searched_directories:
-      - "/Users/danilamalafeev/.codex/tmp/arg0/codex-arg0q2JANx/install_name_tool"
+      - "/Users/danilamalafeev/.gemini/antigravity/bin/install_name_tool"
+      - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin/install_name_tool"
+      - "/Users/danilamalafeev/.local/bin/install_name_tool"
+      - "/Users/danilamalafeev/yandex-cloud/bin/install_name_tool"
     found: "/opt/anaconda3/bin/install_name_tool"
     search_context:
       ENV{PATH}:
-        - "/Users/danilamalafeev/.codex/tmp/arg0/codex-arg0q2JANx"
+        - "/Users/danilamalafeev/.gemini/antigravity/bin"
+        - "/Users/danilamalafeev/Library/Application Support/Antigravity/bin"
+        - "/Users/danilamalafeev/.local/bin"
+        - "/Users/danilamalafeev/yandex-cloud/bin"
         - "/opt/anaconda3/bin"
         - "/opt/anaconda3/condabin"
         - "/opt/homebrew/bin"
@@ -130,6 +145,5 @@ events:
         - "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
         - "/opt/pmk/env/global/bin"
         - "/Library/Apple/usr/bin"
-        - "/Applications/Codex.app/Contents/Resources"
       CMAKE_INSTALL_PREFIX: "/usr/local"
 ...

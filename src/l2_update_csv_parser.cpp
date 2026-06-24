@@ -1,6 +1,7 @@
 #include "lob/l2_update_csv_parser.hpp"
 
 #include <cerrno>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <fcntl.h>
@@ -265,9 +266,11 @@ void L2UpdateCsvParser::parse_next() {
         ExpectComma(cursor_, end_);
         event.is_bid = ParseBoolField(cursor_, end_);
         ExpectComma(cursor_, end_);
-        event.price = ParseDoubleField(cursor_, end_);
+        const double price_double = ParseDoubleField(cursor_, end_);
         ExpectComma(cursor_, end_);
-        event.qty = ParseDoubleField(cursor_, end_);
+        const double qty_double = ParseDoubleField(cursor_, end_);
+        event.price = static_cast<std::int64_t>(std::llround(price_double * 100'000'000.0));
+        event.qty = static_cast<std::uint64_t>(std::llround(qty_double * 100'000'000.0));
 
         ConsumeRecordEnd(cursor_, end_);
         next_event_ = event;

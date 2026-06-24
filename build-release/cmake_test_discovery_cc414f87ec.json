@@ -1,97 +1,140 @@
 {
-  "tests": 30,
+  "tests": 138,
   "name": "AllTests",
   "testsuites": [
     {
-      "name": "OrderBookTest",
-      "tests": 8,
+      "name": "StaticVectorTest",
+      "tests": 2,
       "testsuite": [
         {
-          "name": "InitializesSuccessfully",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 75
+          "name": "SupportsFixedCapacityInsertionErasureAndFailureReporting",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 100
         },
         {
-          "name": "ProcessOrderRestsBuyOrderWhenBookDoesNotCross",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 229
-        },
-        {
-          "name": "ProcessOrderRestsSellOrderWhenBookDoesNotCross",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 253
-        },
-        {
-          "name": "ProcessOrderMatchesCrossSpreadUsingPriceTimePriority",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 277
-        },
-        {
-          "name": "ProcessOrderRestsResidualQuantityAfterPartialIncomingFill",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 345
-        },
-        {
-          "name": "CancelOrderRemovesEmptyBidPriceLevelAndIndexEntry",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 378
-        },
-        {
-          "name": "CancelOrderReturnsFalseForUnknownId",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 408
-        },
-        {
-          "name": "ExposesBestPricesAndL2Snapshot",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 413
+          "name": "StoresElementsInsideTheObjectWithoutDynamicStorage",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 133
         }
       ]
     },
     {
       "name": "L2OrderBookTest",
-      "tests": 6,
+      "tests": 10,
       "testsuite": [
         {
           "name": "MaintainsBidAndAskSortOrder",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 82
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 147
         },
         {
           "name": "UpdatesAndRemovesLevels",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 103
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 168
         },
         {
           "name": "AllowsSimulatedDepletionBeyondVisibleQuantityUntilFeedRefresh",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 121
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 186
         },
         {
           "name": "EnforcesCapacityByDroppingDeepLevels",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 136
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 201
+        },
+        {
+          "name": "PreservesOrderingAcrossLinearAndBinarySearchBoundary",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 237
+        },
+        {
+          "name": "EnforcesPhysicalCapacityOf128LevelsPerSide",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 269
         },
         {
           "name": "AppliesSnapshotByClearingBothSides",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 172
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 295
         },
         {
           "name": "RemovesLevelsNotPresentInSnapshotWithoutClearingRetainedDepletion",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 190
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 313
+        },
+        {
+          "name": "PreservesScaledNotionalWithoutEffectiveAggregateUnderflow",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 331
+        },
+        {
+          "name": "KeepsWideAccumulatorsCorrectAcrossReplacementAndRemoval",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 345
         }
       ]
     },
     {
-      "name": "DynamicWalletTest",
+      "name": "PolymarketOrderBookTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "MaintainsDepthByCentIndexAndFindsBboWithMasks",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 376
+        },
+        {
+          "name": "RemovesTopLevelAndRejectsOutOfRangePrices",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 395
+        }
+      ]
+    },
+    {
+      "name": "PolymarketFeedAdapterTest",
       "tests": 1,
       "testsuite": [
         {
-          "name": "TracksReservedAndFreeBalances",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 208
+          "name": "RoutesDenseTokenUpdatesToBoundBooks",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 410
+        }
+      ]
+    },
+    {
+      "name": "WalletTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "TracksFixedPointReservedAndFreeBalances",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 451
+        },
+        {
+          "name": "RejectsBoundsAndOverflow",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 463
+        },
+        {
+          "name": "UpdatesCachedNavAndRiskAfterBalanceAndFactorChanges",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 473
+        }
+      ]
+    },
+    {
+      "name": "FixedMatchingBookTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "PreservesPriceTimeAndFixedPointDepth",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 485
+        },
+        {
+          "name": "CancelsAndExportsFixedDepth",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 497
         }
       ]
     },
@@ -101,8 +144,8 @@
       "testsuite": [
         {
           "name": "ComputesPnlAndDrawdownFromEquityCurve",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 455
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 512
         }
       ]
     },
@@ -112,8 +155,8 @@
       "testsuite": [
         {
           "name": "StreamsMmapEventsWithOneEventLookahead",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 466
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 523
         }
       ]
     },
@@ -123,8 +166,8 @@
       "testsuite": [
         {
           "name": "StreamsDepth5RowsAndBackfillsBboRows",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 497
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 554
         }
       ]
     },
@@ -134,24 +177,34 @@
       "testsuite": [
         {
           "name": "StreamsRawL2UpdatesAndBooleanFormats",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 540
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 597
         }
       ]
     },
     {
       "name": "VenueReplayTest",
-      "tests": 2,
+      "tests": 4,
       "testsuite": [
         {
           "name": "RejectsSequenceGapsAndReorderingPerProduct",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 572
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 629
         },
         {
           "name": "AcceptsNewSnapshotEpochForSameProduct",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 593
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 650
+        },
+        {
+          "name": "RejectsUnsupportedDirectAddressesWithoutMutatingValidState",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 666
+        },
+        {
+          "name": "ResetClearsAllDirectAddressState",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 687
         }
       ]
     },
@@ -161,24 +214,96 @@
       "testsuite": [
         {
           "name": "DescribesVenueProductScalesAndCosts",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 609
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 703
+        }
+      ]
+    },
+    {
+      "name": "L2BacktestEngineTest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "InitializesFromSnapshotAndInvokesStrategyOnBatch",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 887
+        },
+        {
+          "name": "AppliesIncrementalUpdateAndDelete",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 916
+        },
+        {
+          "name": "MarketMakerPlacesPassiveQuotesWithoutImmediateFill",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 945
+        },
+        {
+          "name": "LatencyDelayedAggressiveOrderFillsAgainstVisibleDepth",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 975
+        },
+        {
+          "name": "DoesNotFillBeforeBookExists",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1005
+        },
+        {
+          "name": "NativeStrategyConsumesL2BookWithoutAdapter",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1030
+        },
+        {
+          "name": "NativeMarketMakerPlacesQuotes",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1059
+        },
+        {
+          "name": "NativeLatencyDelayedOrderFills",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1089
+        },
+        {
+          "name": "RecordsFeatureRowsForMlExports",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1117
+        },
+        {
+          "name": "PendingHeapReportsCapacityAndReusesSlotsAfterDrain",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1232
         }
       ]
     },
     {
       "name": "EventMergerTest",
-      "tests": 2,
+      "tests": 3,
       "testsuite": [
         {
           "name": "MergesSmallStreamSetWithFastPath",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 640
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1152
         },
         {
           "name": "MergesLargeStreamSetWithHeapPath",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 658
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1170
+        },
+        {
+          "name": "HeapPathUsesAssetIdAsDeterministicTieBreak",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1189
+        }
+      ]
+    },
+    {
+      "name": "IndexedPendingMinHeapTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "OrdersByReleaseTimeAndReusesFreedSlots",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1208
         }
       ]
     },
@@ -188,8 +313,8 @@
       "testsuite": [
         {
           "name": "RoutesMergedEventsToAssetBooksAndStrategy",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 677
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1259
         }
       ]
     },
@@ -199,28 +324,521 @@
       "testsuite": [
         {
           "name": "DetectsAndExecutesNegativeCycleThroughL2OrderBook",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 692
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1274
         },
         {
           "name": "MaxBookLevelsPerSideCapsDepthUsedByGraph",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 754
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1336
         },
         {
           "name": "SparseLookupEngineMatchesDenseEngineOnL2Scenario",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 823
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1405
         },
         {
           "name": "DetectsCompletedCycleRegardlessOfL2UpdateOrder",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 895
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1477
         },
         {
           "name": "RevalidatesVisibleDepthAtPendingLegExecution",
-          "file": "\/Users\/danilamalafeev\/Documents\/New project\/tests\/test_lob.cpp",
-          "line": 966
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_lob.cpp",
+          "line": 1548
+        }
+      ]
+    },
+    {
+      "name": "EventSchedulerTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "PopsEventsInTimestampOrder",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 179
+        },
+        {
+          "name": "SameTimestampOrdersByPhaseThenSequenceNumber",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 196
+        },
+        {
+          "name": "CapacityOverflowReturnsFalse",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 222
+        }
+      ]
+    },
+    {
+      "name": "LatencyModelTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "FixedLatencyIsDeterministic",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 231
+        },
+        {
+          "name": "UniformJitterIsDeterministicWithSeed",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 239
+        },
+        {
+          "name": "ExponentialJitterIsDeterministicAndNonnegative",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 252
+        },
+        {
+          "name": "LogNormalJitterIsDeterministicAndNonnegative",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 266
+        },
+        {
+          "name": "SameSeedProducesSameSequenceAndDifferentSeedsDiffer",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 280
+        }
+      ]
+    },
+    {
+      "name": "AgentContextTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "FacadeBindsOrderAndCancelToAgentAndOwnAccount",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 298
+        }
+      ]
+    },
+    {
+      "name": "MarketAgentTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "RegisteredAgentReceivesStartAndDuplicateRegistrationFails",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 339
+        },
+        {
+          "name": "WakeupFiresAtSimulatedTimeAndSubmitUsesBoundAgent",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 363
+        },
+        {
+          "name": "FillNotificationsReachMakerAndTakerWithPerspective",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 390
+        },
+        {
+          "name": "CancelNotificationDeliveredToOwner",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 453
+        },
+        {
+          "name": "UnknownAgentWakeupIsDroppedAndCounted",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 491
+        }
+      ]
+    },
+    {
+      "name": "MarketRegistryTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "ReturnsStableDenseIds",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 507
+        }
+      ]
+    },
+    {
+      "name": "AccountStoreTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "ReservesReleasesConsumesAndAppliesDeltas",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 529
+        },
+        {
+          "name": "ApplyDeltaRejectsOverflow",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 551
+        }
+      ]
+    },
+    {
+      "name": "SimulationEngineTest",
+      "tests": 50,
+      "testsuite": [
+        {
+          "name": "AdvancesCurrentTimeByEventOrder",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 561
+        },
+        {
+          "name": "RegisteredMarketStateOwnsMatchingBook",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 596
+        },
+        {
+          "name": "MarketRegistryIsReadOnlyFromEngine",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 621
+        },
+        {
+          "name": "SubmittedOrderDoesNotRestBeforeLatencyElapses",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 633
+        },
+        {
+          "name": "CrossingOrderExecutesOnlyAtArrivalTimestamp",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 668
+        },
+        {
+          "name": "SameTimeOrderArrivalsPreserveSchedulerSequenceOrder",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 710
+        },
+        {
+          "name": "CancelRequestIsLatencyDelayed",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 758
+        },
+        {
+          "name": "OrderArrivalUpdatesExchangeDepthBeforePublicFeedArrives",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 797
+        },
+        {
+          "name": "TwoSubscribersReceiveSameDelayedDepth",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 841
+        },
+        {
+          "name": "SubscribersCanReceiveSameSnapshotAtDifferentFeedLatencies",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 876
+        },
+        {
+          "name": "ExplicitSubscriberLatencySeedReproducesReceiveSequence",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 916
+        },
+        {
+          "name": "ExplicitSubscriberLatencyBeatsRegistrationOrder",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 969
+        },
+        {
+          "name": "CancelProducesDelayedDepthUpdate",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1001
+        },
+        {
+          "name": "SeparateOrderCancelAndMarketDataLatencyChannelsCanDiffer",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1039
+        },
+        {
+          "name": "LatencySettersRejectInvalidDistributionConfigs",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1081
+        },
+        {
+          "name": "LatencyChannelsCanUseDifferentDistributionsAndSeeds",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1096
+        },
+        {
+          "name": "SchedulingOverflowReturnsCleanRejection",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1136
+        },
+        {
+          "name": "BuyOrderRejectedWhenQuoteBalanceInsufficient",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1182
+        },
+        {
+          "name": "SellOrderRejectedWhenBaseBalanceInsufficient",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1203
+        },
+        {
+          "name": "InvalidPriceOrdersRejectedWithoutMutation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1223
+        },
+        {
+          "name": "BuyOrderRejectedWhenNotionalOverflows",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1259
+        },
+        {
+          "name": "AcceptedBuyReservesQuoteBeforeArrival",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1281
+        },
+        {
+          "name": "CancelReleasesReservation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1303
+        },
+        {
+          "name": "CrossingBuyTransfersBaseAndQuote",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1337
+        },
+        {
+          "name": "CrossingSellTransfersBaseAndQuote",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1375
+        },
+        {
+          "name": "PartialFillWithRestingResidualKeepsResidualReservation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1413
+        },
+        {
+          "name": "ReportCapacityStopReleasesIncomingUnusedReservation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1445
+        },
+        {
+          "name": "TinyAccountingSinkSurfacesOverflow",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1490
+        },
+        {
+          "name": "TinyMatchAndCancelSinksSurfaceOverflow",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1550
+        },
+        {
+          "name": "MarketDataSchedulingOverflowHalts",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1584
+        },
+        {
+          "name": "UnrestedGtcRejectionReleasesReservation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1613
+        },
+        {
+          "name": "IocBuyReleasesUnfilledReservationAfterArrival",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1646
+        },
+        {
+          "name": "IocSellReleasesUnfilledReservationAfterArrival",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1683
+        },
+        {
+          "name": "FokRejectionReleasesReservation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1720
+        },
+        {
+          "name": "FokRejectsWhenExecutionReportCapacityCannotRepresentAllFills",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1758
+        },
+        {
+          "name": "FokSucceedsWhenExecutionReportCapacityCanRepresentAllFills",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1808
+        },
+        {
+          "name": "DuplicateCancelDoesNotReleaseReservationTwice",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1856
+        },
+        {
+          "name": "NonOwnerCannotCancelRestingOrder",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1894
+        },
+        {
+          "name": "NonOwnerCancelAtArrivalDoesNotMutateOrderOrReservation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1929
+        },
+        {
+          "name": "CancelUnknownOrderHasNoAccountingSideEffect",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1966
+        },
+        {
+          "name": "CancelAfterFullFillHasNoAccountingSideEffect",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 1998
+        },
+        {
+          "name": "PartialFillThenCancelReleasesOnlyResidualReservation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2042
+        },
+        {
+          "name": "ProductSpecCanChangeBeforeActivity",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2086
+        },
+        {
+          "name": "ProductSpecChangeFailsWhileOrderEventPending",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2102
+        },
+        {
+          "name": "ProductSpecChangeAfterRestingOrderFailsAndDoesNotAffectFillAccounting",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2131
+        },
+        {
+          "name": "MakerAndTakerFeesApplyToCorrectAgentsWithCeilingRounding",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2177
+        },
+        {
+          "name": "MakerRebateAndTakerFeeApplyInSameFill",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2223
+        },
+        {
+          "name": "CorruptProductAssetCausesVisibleAccountingFailure",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2270
+        },
+        {
+          "name": "MatchingBookArrivalRejectionReleasesReservation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2308
+        },
+        {
+          "name": "InvalidMarketAndAccountRequestsDoNotMutateAccounting",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2344
+        }
+      ]
+    },
+    {
+      "name": "MatchingBookTest",
+      "tests": 22,
+      "testsuite": [
+        {
+          "name": "BuyLimitRestsWhenNotCrossing",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2395
+        },
+        {
+          "name": "SellLimitRestsWhenNotCrossing",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2409
+        },
+        {
+          "name": "InvalidPricesAreRejectedWithoutMutation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2422
+        },
+        {
+          "name": "CrossingBuyMatchesBestAskAndReturnsBothExecutions",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2438
+        },
+        {
+          "name": "CrossingSellMatchesBestBid",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2460
+        },
+        {
+          "name": "FIFOAtSamePrice",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2477
+        },
+        {
+          "name": "PartialFillLeavesResidualResting",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2493
+        },
+        {
+          "name": "ReportCapacityRejectsUnstartedCrossWithoutBookMutation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2509
+        },
+        {
+          "name": "ReportCapacityAllowsExactlyOneCompleteFill",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2528
+        },
+        {
+          "name": "ReportCapacityStopsBeforeSecondFillWithoutMutation",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2544
+        },
+        {
+          "name": "CancelRemovesRestingOrder",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2566
+        },
+        {
+          "name": "CancelUnknownOrderFailsCleanly",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2580
+        },
+        {
+          "name": "BestBidAndAskUpdateAfterFillsAndCancels",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2589
+        },
+        {
+          "name": "IndexOverflowDoesNotCreateEmptyPriceLevel",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2607
+        },
+        {
+          "name": "PriceLevelOverflowRollsBackOrderIndex",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2623
+        },
+        {
+          "name": "PartialFillResidualRestsWhenMatchingFreesCapacity",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2637
+        },
+        {
+          "name": "UnfilledGtcRejectsResidualWhenPostMatchRestCapacityUnavailable",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2658
+        },
+        {
+          "name": "DeepBookMaintainsSortedDepthAndConstantTimeLevelLookup",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2678
+        },
+        {
+          "name": "DeepBookMatchesAcrossSortedLevelsInPriceTimeOrder",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2719
+        },
+        {
+          "name": "RobinHoodIndexHandlesWrapAroundDeletionAndFreeListReuse",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2744
+        },
+        {
+          "name": "RobinHoodIndexSupportsProbeLengthsBeyondUint8Range",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2765
+        },
+        {
+          "name": "ClearResetsDeepIndicesHashesAndFreeLists",
+          "file": "\/Users\/danilamalafeev\/Documents\/YABE\/tests\/test_sim.cpp",
+          "line": 2790
         }
       ]
     }

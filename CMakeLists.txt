@@ -48,10 +48,10 @@ endif()
 add_library(lob_core STATIC
     src/backtest_engine.cpp
     src/csv_parser.cpp
+    src/l2_backtest_engine.cpp
     src/l2_csv_parser.cpp
     src/l2_depth5_csv_parser.cpp
     src/l2_update_csv_parser.cpp
-    src/order_book.cpp
 )
 target_include_directories(
     lob_core
@@ -80,6 +80,7 @@ enable_testing()
 
 add_executable(lob_tests
     tests/test_lob.cpp
+    tests/test_sim.cpp
 )
 
 target_link_libraries(
@@ -88,6 +89,7 @@ target_link_libraries(
         lob_core
         GTest::gtest_main
 )
+target_compile_definitions(lob_tests PRIVATE LOB_SIM_TESTING=1)
 
 add_executable(lob_benchmarks
     benchmarks/bench_order_book.cpp

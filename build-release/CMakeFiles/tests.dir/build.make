@@ -53,10 +53,10 @@ RM = /opt/homebrew/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/Users/danilamalafeev/Documents/New project"
+CMAKE_SOURCE_DIR = /Users/danilamalafeev/Documents/YABE
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/Users/danilamalafeev/Documents/New project/build-release"
+CMAKE_BINARY_DIR = /Users/danilamalafeev/Documents/YABE/build-release
 
 # Utility rule file for tests.
 
@@ -85,6 +85,6 @@ CMakeFiles/tests.dir/clean:
 .PHONY : CMakeFiles/tests.dir/clean
 
 CMakeFiles/tests.dir/depend:
-	cd "/Users/danilamalafeev/Documents/New project/build-release" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/Users/danilamalafeev/Documents/New project" "/Users/danilamalafeev/Documents/New project" "/Users/danilamalafeev/Documents/New project/build-release" "/Users/danilamalafeev/Documents/New project/build-release" "/Users/danilamalafeev/Documents/New project/build-release/CMakeFiles/tests.dir/DependInfo.cmake" "--color=$(COLOR)" tests
+	cd /Users/danilamalafeev/Documents/YABE/build-release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/danilamalafeev/Documents/YABE /Users/danilamalafeev/Documents/YABE /Users/danilamalafeev/Documents/YABE/build-release /Users/danilamalafeev/Documents/YABE/build-release /Users/danilamalafeev/Documents/YABE/build-release/CMakeFiles/tests.dir/DependInfo.cmake "--color=$(COLOR)" tests
 .PHONY : CMakeFiles/tests.dir/depend
 

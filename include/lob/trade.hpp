@@ -9,7 +9,7 @@ struct Trade {
     std::uint64_t buyer_id {};
     std::uint64_t seller_id {};
     std::uint64_t taker_order_id {};
-    double price {};
+    std::int64_t price {};
     std::uint64_t quantity {};
     std::uint64_t timestamp {};
 };

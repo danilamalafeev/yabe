@@ -13,7 +13,7 @@ enum class Side : std::uint8_t {
 // Order is the canonical immutable payload stored inside each price-level queue.
 struct Order {
     std::uint64_t id {};
-    double price {};
+    std::int64_t price {};
     std::uint64_t quantity {};
     Side side {Side::Buy};
     std::uint64_t timestamp {};

@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/danilamalafeev/Documents/New project/src/main_backtest.cpp" "CMakeFiles/lob_backtest.dir/src/main_backtest.cpp.o" "gcc" "CMakeFiles/lob_backtest.dir/src/main_backtest.cpp.o.d"
+  "/Users/danilamalafeev/Documents/YABE/src/main_backtest.cpp" "CMakeFiles/lob_backtest.dir/src/main_backtest.cpp.o" "gcc" "CMakeFiles/lob_backtest.dir/src/main_backtest.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

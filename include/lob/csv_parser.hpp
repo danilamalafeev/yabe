@@ -6,11 +6,10 @@
 #include <cstddef>
 
 #include "lob/event.hpp"
+#include "lob/fixed_matching_book.hpp"
 #include "lob/order.hpp"
 
 namespace lob {
-
-class OrderBook;
 
 class CsvParser {
 public:
@@ -43,8 +42,14 @@ public:
     [[nodiscard]] Event pop();
 
     [[nodiscard]] std::uint64_t parse_file(const std::filesystem::path& file_path, const OrderHandler& handler) const;
-    [[nodiscard]] std::uint64_t process_file(const std::filesystem::path& file_path, OrderBook& order_book) const;
-    [[nodiscard]] ReplayStats replay_file(const std::filesystem::path& file_path, OrderBook& order_book) const;
+    [[nodiscard]] std::uint64_t process_file(
+        const std::filesystem::path& file_path,
+        FixedMatchingBook& book
+    ) const;
+    [[nodiscard]] ReplayStats replay_file(
+        const std::filesystem::path& file_path,
+        FixedMatchingBook& book
+    ) const;
 
 private:
     void map_file(const std::filesystem::path& file_path);

@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <pybind11/numpy.h>
@@ -9,6 +10,8 @@
 #include <pybind11/stl.h>
 
 #include "lob/graph_arbitrage_engine.hpp"
+#include "lob/l2_backtest_engine.hpp"
+#include "lob/l2_market_maker_strategy.hpp"
 #include "lob/multi_asset_backtest_engine.hpp"
 #include "lob/triangular_arbitrage_strategy.hpp"
 #include "lob/wallet.hpp"
@@ -21,48 +24,38 @@ class PyWallet {
 public:
     PyWallet() = default;
 
-    PyWallet(lob::Wallet wallet, double btc_usdt_mid, double eth_usdt_mid)
-        : wallet_(wallet),
-          btc_usdt_mid_(btc_usdt_mid),
-          eth_usdt_mid_(eth_usdt_mid) {}
+    PyWallet(lob::Wallet wallet, double, double)
+        : wallet_(wallet) {}
 
     [[nodiscard]] double usdt() const noexcept {
-        return wallet_.usdt;
+        return lob::Wallet::to_double(wallet_.balance(0U));
     }
 
     [[nodiscard]] double btc() const noexcept {
-        return wallet_.btc;
+        return lob::Wallet::to_double(wallet_.balance(1U));
     }
 
     [[nodiscard]] double eth() const noexcept {
-        return wallet_.eth;
+        return lob::Wallet::to_double(wallet_.balance(2U));
     }
 
     [[nodiscard]] double get_nav() const noexcept {
-        return wallet_.mark_to_market_nav(btc_usdt_mid_, eth_usdt_mid_);
+        return lob::Wallet::to_double(wallet_.mark_to_market_nav());
     }
 
     [[nodiscard]] double get_total_inventory_risk() const noexcept {
-        return wallet_.get_total_inventory_risk(btc_usdt_mid_, eth_usdt_mid_);
+        return lob::Wallet::to_double(wallet_.get_total_inventory_risk());
     }
 
     [[nodiscard]] double balance(lob::AssetID asset_id) const {
-        switch (asset_id) {
-            case 0U:
-                return wallet_.usdt;
-            case 1U:
-                return wallet_.btc;
-            case 2U:
-                return wallet_.eth;
-            default:
-                throw std::out_of_range("wallet asset_id must be 0=USDT, 1=BTC, or 2=ETH");
+        if (!wallet_.contains(asset_id)) {
+            throw std::out_of_range("wallet asset_id is out of range");
         }
+        return lob::Wallet::to_double(wallet_.balance(asset_id));
     }
 
 private:
     lob::Wallet wallet_ {};
-    double btc_usdt_mid_ {};
-    double eth_usdt_mid_ {};
 };
 
 class PyBacktestResult {
@@ -199,6 +192,147 @@ private:
     lob::GraphArbitrageEngine::Result result_ {};
 };
 
+class PyL2BacktestResult {
+public:
+    explicit PyL2BacktestResult(lob::L2BacktestEngine::Result result)
+        : result_(std::move(result)) {}
+
+    std::uint64_t events_processed() const noexcept { return result_.events_processed; }
+    std::uint64_t market_batches_processed() const noexcept { return result_.market_batches_processed; }
+    std::uint64_t strategy_ticks() const noexcept { return result_.strategy_ticks; }
+    std::uint64_t orders_submitted() const noexcept { return result_.orders_submitted; }
+    std::uint64_t orders_canceled() const noexcept { return result_.orders_canceled; }
+    std::uint64_t dropped_pending_orders() const noexcept { return result_.dropped_pending_orders; }
+    std::uint64_t active_orders() const noexcept { return result_.active_orders; }
+    std::uint64_t last_fill_timestamp() const noexcept { return result_.last_fill_timestamp; }
+    double initial_cash() const noexcept { return result_.initial_cash; }
+    double final_cash() const noexcept { return result_.final_cash; }
+    std::int64_t final_position() const noexcept { return result_.final_position; }
+    double final_mid_price() const noexcept { return result_.final_mid_price; }
+    double final_best_bid() const noexcept { return result_.final_best_bid; }
+    double final_best_ask() const noexcept { return result_.final_best_ask; }
+    double final_nav() const noexcept { return result_.final_nav; }
+    double pnl() const noexcept { return result_.final_nav - result_.initial_cash; }
+    std::uint64_t maker_fills_count() const noexcept { return result_.execution.maker_fills_count; }
+    std::uint64_t taker_fills_count() const noexcept { return result_.execution.taker_fills_count; }
+    double maker_volume() const noexcept { return result_.execution.maker_volume; }
+    double taker_volume() const noexcept { return result_.execution.taker_volume; }
+    double maker_notional() const noexcept { return result_.execution.maker_notional; }
+    double taker_notional() const noexcept { return result_.execution.taker_notional; }
+    const std::vector<double>& equity_curve() const noexcept { return result_.equity_curve; }
+    std::size_t feature_count() const noexcept { return result_.features.size(); }
+
+    [[nodiscard]] py::dict get_features_dataframe() const {
+        const py::ssize_t size = static_cast<py::ssize_t>(result_.features.size());
+        py::array_t<std::uint64_t> timestamps {size};
+        py::array_t<double> best_bids {size};
+        py::array_t<double> best_asks {size};
+        py::array_t<double> mids {size};
+        py::array_t<double> spreads_bps {size};
+        py::array_t<double> bid_qty_1 {size};
+        py::array_t<double> ask_qty_1 {size};
+        py::array_t<double> imbalance_1 {size};
+        py::array_t<double> bid_qty_visible {size};
+        py::array_t<double> ask_qty_visible {size};
+        py::array_t<std::int64_t> positions {size};
+        py::array_t<double> navs {size};
+
+        auto* timestamp_ptr = timestamps.mutable_data();
+        auto* best_bid_ptr = best_bids.mutable_data();
+        auto* best_ask_ptr = best_asks.mutable_data();
+        auto* mid_ptr = mids.mutable_data();
+        auto* spread_bps_ptr = spreads_bps.mutable_data();
+        auto* bid_qty_1_ptr = bid_qty_1.mutable_data();
+        auto* ask_qty_1_ptr = ask_qty_1.mutable_data();
+        auto* imbalance_1_ptr = imbalance_1.mutable_data();
+        auto* bid_qty_visible_ptr = bid_qty_visible.mutable_data();
+        auto* ask_qty_visible_ptr = ask_qty_visible.mutable_data();
+        auto* position_ptr = positions.mutable_data();
+        auto* nav_ptr = navs.mutable_data();
+
+        for (py::ssize_t index = 0; index < size; ++index) {
+            const lob::L2BacktestEngine::Result::FeatureRow& row =
+                result_.features[static_cast<std::size_t>(index)];
+            timestamp_ptr[index] = row.timestamp;
+            best_bid_ptr[index] = row.best_bid;
+            best_ask_ptr[index] = row.best_ask;
+            mid_ptr[index] = row.mid_price;
+            spread_bps_ptr[index] = row.spread_bps;
+            bid_qty_1_ptr[index] = row.bid_qty_1;
+            ask_qty_1_ptr[index] = row.ask_qty_1;
+            imbalance_1_ptr[index] = row.imbalance_1;
+            bid_qty_visible_ptr[index] = row.bid_qty_visible;
+            ask_qty_visible_ptr[index] = row.ask_qty_visible;
+            position_ptr[index] = row.position;
+            nav_ptr[index] = row.nav;
+        }
+
+        py::dict frame {};
+        frame["timestamp"] = std::move(timestamps);
+        frame["best_bid"] = std::move(best_bids);
+        frame["best_ask"] = std::move(best_asks);
+        frame["mid_price"] = std::move(mids);
+        frame["spread_bps"] = std::move(spreads_bps);
+        frame["bid_qty_1"] = std::move(bid_qty_1);
+        frame["ask_qty_1"] = std::move(ask_qty_1);
+        frame["imbalance_1"] = std::move(imbalance_1);
+        frame["bid_qty_visible"] = std::move(bid_qty_visible);
+        frame["ask_qty_visible"] = std::move(ask_qty_visible);
+        frame["position"] = std::move(positions);
+        frame["nav"] = std::move(navs);
+        return frame;
+    }
+
+private:
+    lob::L2BacktestEngine::Result result_ {};
+};
+
+class PyL2MarketMakerBacktest {
+public:
+    using Strategy = lob::L2MarketMakerStrategy<lob::L2BacktestEngine>;
+
+    PyL2MarketMakerBacktest(
+        double initial_cash,
+        double maker_fee_bps,
+        double taker_fee_bps,
+        std::uint64_t latency_ns,
+        std::size_t max_book_levels_per_side,
+        double quantity_scale,
+        double quote_offset,
+        std::uint64_t quote_quantity,
+        std::uint64_t refresh_interval_ns,
+        bool record_features,
+        std::uint64_t feature_sample_interval_ns,
+        std::size_t feature_reserve
+    )
+        : engine_config_(lob::L2BacktestEngine::Config {
+              .initial_cash = initial_cash,
+              .maker_fee_bps = maker_fee_bps,
+              .taker_fee_bps = taker_fee_bps,
+              .latency_ns = latency_ns,
+              .max_book_levels_per_side = max_book_levels_per_side,
+              .quantity_scale = quantity_scale,
+              .record_features = record_features,
+              .feature_sample_interval_ns = feature_sample_interval_ns,
+              .feature_reserve = feature_reserve,
+          }),
+          strategy_config_(Strategy::Config {
+              .quote_offset = quote_offset,
+              .quote_quantity = quote_quantity,
+              .refresh_interval_ns = refresh_interval_ns,
+          }) {}
+
+    [[nodiscard]] PyL2BacktestResult run(const std::string& file_path) const {
+        Strategy strategy {strategy_config_};
+        lob::L2BacktestEngine engine {strategy, engine_config_};
+        return PyL2BacktestResult {engine.run(file_path)};
+    }
+
+private:
+    lob::L2BacktestEngine::Config engine_config_ {};
+    Strategy::Config strategy_config_ {};
+};
+
 template <typename Engine>
 class PyGraphEngine {
 public:
@@ -262,7 +396,8 @@ public:
 
         using Engine = lob::MultiAssetBacktestEngine<3U>;
 
-        lob::TriangularArbitrageStrategy strategy {lob::TriangularArbitrageStrategy::Config {
+        using Strategy = lob::TriangularArbitrageStrategy<Engine>;
+        Strategy strategy {Strategy::Config {
             .taker_fee_bps = taker_fee_bps_,
             .verbose = verbose_,
         }};
@@ -376,6 +511,56 @@ PYBIND11_MODULE(yabe, module) {
         .def_property_readonly("events_processed", &PyBacktestResult::events_processed)
         .def_property_readonly("taker_notional", &PyBacktestResult::taker_notional)
         .def_property_readonly("dropped_orders", &PyBacktestResult::dropped_orders);
+
+    py::class_<PyL2BacktestResult>(module, "L2BacktestResult")
+        .def_property_readonly("events_processed", &PyL2BacktestResult::events_processed)
+        .def_property_readonly("market_batches_processed", &PyL2BacktestResult::market_batches_processed)
+        .def_property_readonly("strategy_ticks", &PyL2BacktestResult::strategy_ticks)
+        .def_property_readonly("orders_submitted", &PyL2BacktestResult::orders_submitted)
+        .def_property_readonly("orders_canceled", &PyL2BacktestResult::orders_canceled)
+        .def_property_readonly("dropped_pending_orders", &PyL2BacktestResult::dropped_pending_orders)
+        .def_property_readonly("active_orders", &PyL2BacktestResult::active_orders)
+        .def_property_readonly("last_fill_timestamp", &PyL2BacktestResult::last_fill_timestamp)
+        .def_property_readonly("initial_cash", &PyL2BacktestResult::initial_cash)
+        .def_property_readonly("final_cash", &PyL2BacktestResult::final_cash)
+        .def_property_readonly("final_position", &PyL2BacktestResult::final_position)
+        .def_property_readonly("final_mid_price", &PyL2BacktestResult::final_mid_price)
+        .def_property_readonly("final_best_bid", &PyL2BacktestResult::final_best_bid)
+        .def_property_readonly("final_best_ask", &PyL2BacktestResult::final_best_ask)
+        .def_property_readonly("final_nav", &PyL2BacktestResult::final_nav)
+        .def_property_readonly("pnl", &PyL2BacktestResult::pnl)
+        .def_property_readonly("maker_fills_count", &PyL2BacktestResult::maker_fills_count)
+        .def_property_readonly("taker_fills_count", &PyL2BacktestResult::taker_fills_count)
+        .def_property_readonly("maker_volume", &PyL2BacktestResult::maker_volume)
+        .def_property_readonly("taker_volume", &PyL2BacktestResult::taker_volume)
+        .def_property_readonly("maker_notional", &PyL2BacktestResult::maker_notional)
+        .def_property_readonly("taker_notional", &PyL2BacktestResult::taker_notional)
+        .def_property_readonly("equity_curve", &PyL2BacktestResult::equity_curve)
+        .def_property_readonly("feature_count", &PyL2BacktestResult::feature_count)
+        .def("get_features_dataframe", &PyL2BacktestResult::get_features_dataframe);
+
+    py::class_<PyL2MarketMakerBacktest>(module, "L2MarketMakerBacktest")
+        .def(
+            py::init<double, double, double, std::uint64_t, std::size_t, double, double, std::uint64_t, std::uint64_t, bool, std::uint64_t, std::size_t>(),
+            py::arg("initial_cash") = 100'000'000.0,
+            py::arg("maker_fee_bps") = 0.0,
+            py::arg("taker_fee_bps") = 7.5,
+            py::arg("latency_ns") = 500'000U,
+            py::arg("max_book_levels_per_side") = 20U,
+            py::arg("quantity_scale") = 100'000'000.0,
+            py::arg("quote_offset") = 0.5,
+            py::arg("quote_quantity") = 1'000'000U,
+            py::arg("refresh_interval_ns") = 1'000'000'000ULL,
+            py::arg("record_features") = false,
+            py::arg("feature_sample_interval_ns") = 0U,
+            py::arg("feature_reserve") = 100'000U
+        )
+        .def(
+            "run",
+            &PyL2MarketMakerBacktest::run,
+            py::arg("file_path"),
+            py::call_guard<py::gil_scoped_release>()
+        );
 
     py::class_<PyGraphResult>(module, "GraphResult")
         .def_property_readonly("events_processed", &PyGraphResult::events_processed)
